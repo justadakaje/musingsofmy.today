@@ -52,6 +52,8 @@ async function main() {
   const isDryRun = args.includes('--dry-run');
   const replyToArg = args.find((a) => a.startsWith('--reply-to='));
   const initialReplyTo = replyToArg ? replyToArg.split('=')[1] : null;
+  const imageUrlArg = args.find((a) => a.startsWith('--image-url='));
+  const imageUrl = imageUrlArg ? imageUrlArg.split('=')[1] : null;
   const fileArg = args.find((a) => !a.startsWith('--'));
 
   if (!fileArg) {
@@ -115,11 +117,16 @@ async function main() {
     console.log(`Publishing post ${i + 1}/${rawPosts.length}...`);
 
     // 1. Create Media Container
+    const isImage = (i === 0 && Boolean(imageUrl));
     const containerParams = new URLSearchParams({
-      media_type: 'TEXT',
+      media_type: isImage ? 'IMAGE' : 'TEXT',
       text: text,
       access_token: token,
     });
+
+    if (isImage) {
+      containerParams.append('image_url', imageUrl);
+    }
 
     if (previousPostId) {
       containerParams.append('reply_to_id', previousPostId);
@@ -138,8 +145,24 @@ async function main() {
 
     const creationId = containerData.id;
 
-    // Small delay to allow container processing
-    await sleep(2000);
+    // Wait for container processing (images require async processing by Meta)
+    if (isImage) {
+      console.log('  ⏳ Waiting for media container processing...');
+      let status = 'IN_PROGRESS';
+      for (let attempt = 0; attempt < 12; attempt++) {
+        await sleep(3000);
+        const statusRes = await fetch(`${GRAPH_BASE}/${creationId}?fields=status,error_message&access_token=${token}`);
+        const statusData = await statusRes.json();
+        status = statusData.status;
+        if (status === 'FINISHED') break;
+        if (status === 'ERROR') {
+          console.error('❌ Media container processing failed:', statusData.error_message);
+          process.exit(1);
+        }
+      }
+    } else {
+      await sleep(2000);
+    }
 
     // 2. Publish Container
     const publishParams = new URLSearchParams({
