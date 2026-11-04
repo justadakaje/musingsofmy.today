@@ -46,7 +46,7 @@ legacyIds[2] = '/contact/';
       <aside class="now clip" aria-label="What I'm doing now">
         <div class="now-head"><span class="dot"></span> now.log <span class="path">~/kenhen</span></div>
         <dl>
-          {NOW.rows.slice(0, 2).map((r) => <><dt>{r.k}</dt><dd>{r.v}</dd></>)}
+          {NOW.rows.slice(0, 2).map((r) => <><dt>{r.k}</dt><dd>{r.href ? <a href={r.href}>{r.v}</a> : r.v}</dd></>)}
           {latestEp && (
             <>
               <dt>latest ep</dt>

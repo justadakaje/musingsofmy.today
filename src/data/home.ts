@@ -3,12 +3,12 @@
  * Update `now` when the work changes; `updated` is shown under it, so keep it honest.
  */
 export const NOW = {
-  updated: '2026-11-03',
+  updated: '2026-11-04',
   rows: [
-    { k: 'building', v: 'GoldFinder v0.2.0: net profit, price trends, tooltip prices' },
-    { k: 'next', v: 'tag v0.2.0 and ship it to CurseForge' },
+    { k: 'building', v: 'GoldFinder: live testing on build 70707 & in-tab search (#24)' },
+    { k: 'next', v: 'WoW: Forever Launch Live Stream · today @ 2:00 PM EST', href: 'https://www.twitch.tv/kenhenchan' },
     // `latest ep` is filled in from the newest post with a podcast episode.
-    { k: 'streaming', v: 'twitch.tv/kenhenchan · schedule varies', href: 'https://www.twitch.tv/kenhenchan' },
+    { k: 'streaming', v: 'twitch.tv/kenhenchan · Live today @ 2 PM EST', href: 'https://www.twitch.tv/kenhenchan' },
   ],
 };
 
@@ -27,10 +27,10 @@ export const FEATURED = {
 
 export const PROJECTS = [
   {
-    status: { cls: 'ship', label: 'shipped · beta' },
+    status: { cls: 'ship', label: 'shipped · v0.2.0' },
     name: 'GoldFinder',
     blurb: 'An auction house tab that finds crafting materials listed well below their usual price, with net profit after the AH cut.',
-    facts: ['v0.2.0 in the repo · v0.1.0 on CurseForge', 'price trends, tooltip prices, CSV export', 'MIT · open source'],
+    facts: ['v0.2.0 live on CurseForge', 'price trends, tooltip prices, CSV export', 'MIT · open source'],
     links: [
       { label: 'curseforge', href: 'https://www.curseforge.com/wow/addons/goldfinder' },
       { label: 'source', href: 'https://github.com/justadakaje/wow-addons' },
