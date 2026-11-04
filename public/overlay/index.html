@@ -178,23 +178,40 @@
       position: absolute;
       bottom: 16px;
       left: 20px;
+      width: 420px;
+      height: 54px;
       background: var(--bg-overlay);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-      padding: 10px 16px;
+      padding: 0 14px;
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
       z-index: 100;
-      max-width: 540px;
+      overflow: hidden;
+    }
+
+    /* Camera Frame Accent Border */
+    .cam-frame {
+      position: absolute;
+      left: 20px;
+      top: 761px;
+      width: 420px;
+      height: 235px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 12px rgba(34, 211, 238, 0.12);
+      pointer-events: none;
+      z-index: 99;
     }
 
     .hud-icon {
       width: 32px;
       height: 32px;
+      min-width: 32px;
       background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(14, 116, 144, 0.4));
       border: 1px solid var(--border-strong);
       border-radius: var(--radius-sm);
@@ -204,26 +221,34 @@
       color: var(--accent);
       font-family: var(--font-mono);
       font-weight: 700;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .hud-content {
       display: flex;
       flex-direction: column;
       gap: 2px;
+      min-width: 0;
+      overflow: hidden;
     }
 
     .hud-title {
       font-family: var(--font-display);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .hud-desc {
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   </style>
 </head>
@@ -253,21 +278,24 @@
     </div>
   </header>
 
+  <!-- Camera Frame Accent -->
+  <div class="cam-frame"></div>
+
   <!-- Bottom Addon Ticker -->
   <aside class="bottom-hud">
     <div class="hud-icon">GF</div>
     <div class="hud-content">
       <div class="hud-title">GoldFinder v0.2.0 · Live on CurseForge</div>
-      <div class="hud-desc">Built for WoW: Forever (1.60.1.70707) · Net Profit & Trends</div>
+      <div class="hud-desc">Built for WoW: Forever (1.60.1.70707) · Net Profit</div>
     </div>
   </aside>
 
   <script>
     // Smooth ticker rotation for bottom HUD
     const tickerItems = [
-      { tag: "GF", title: "GoldFinder v0.2.0 · Live on CurseForge", desc: "Built for WoW: Forever (1.60.1.70707) · Net Profit & Trends" },
-      { tag: "AGY", title: "AgyOrch + AgyBuild Harness", desc: "Autonomous AI Pair Programming & DevSecOps Workflow" },
-      { tag: "BLOG", title: "musingsofmy.today", desc: "55+ Articles in Markdown · Astro + Cloudflare Static Assets" }
+      { tag: "GF", title: "GoldFinder v0.2.0 · Live on CurseForge", desc: "Built for WoW: Forever (1.60.1.70707) · Net Profit" },
+      { tag: "AGY", title: "AgyOrch + AgyBuild Harness", desc: "Autonomous AI Pair Programming & DevSecOps" },
+      { tag: "BLOG", title: "musingsofmy.today", desc: "55+ Articles in Markdown · Astro + Workers Edge" }
     ];
 
     let currentIdx = 0;
