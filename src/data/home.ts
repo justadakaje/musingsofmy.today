@@ -6,9 +6,9 @@ export const NOW = {
   updated: '2026-11-04',
   rows: [
     { k: 'building', v: 'GoldFinder: live testing on build 70707 & in-tab search (#24)' },
-    { k: 'next', v: 'WoW: Forever Launch Live Stream · today @ 2:00 PM EST', href: 'https://www.twitch.tv/kenhenchan' },
+    { k: 'next', v: 'WoW: Forever Launch Live Stream · today @ 3:30 PM EST', href: 'https://www.twitch.tv/kenhenchan' },
     // `latest ep` is filled in from the newest post with a podcast episode.
-    { k: 'streaming', v: 'twitch.tv/kenhenchan · Live today @ 2 PM EST', href: 'https://www.twitch.tv/kenhenchan' },
+    { k: 'streaming', v: 'twitch.tv/kenhenchan · Live today @ 3:30 PM EST', href: 'https://www.twitch.tv/kenhenchan' },
   ],
 };
 
