@@ -4,7 +4,7 @@
  *
  *   node scripts/check-urls.mjs                          # frozen data/wpcom/sitemap.xml vs dist/
  *   node scripts/check-urls.mjs --live                   # fetch the live sitemap first (before cut-over!)
- *   node scripts/check-urls.mjs --base=https://x.musingsofmy-today.pages.dev   # over HTTP
+ *   node scripts/check-urls.mjs --base=https://musingsofmy-today.musingsofmy-today.workers.dev   # over HTTP
  *
  * Posts must answer 200 with no redirect ("zero redirects for posts", MIGRATION.md).
  */
@@ -69,5 +69,5 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const r = await run({ live: args.includes('--live'), base });
   console.log(`URLs from WordPress sitemap: ${r.passed}/${r.total} resolve (${r.mode})`);
   for (const f of r.failed) console.log(`  ✗ ${f.path}  ${f.how}`);
-  process.exit(r.failed.length ? 1 : 0);
+  process.exitCode = r.failed.length ? 1 : 0;
 }

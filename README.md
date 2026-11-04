@@ -1,6 +1,6 @@
 # musingsofmy.today
 
-Kenneth Henseler's blog, as Markdown in a repo. Astro builds it to static HTML, Cloudflare Pages
+Kenneth Henseler's blog, as Markdown in a repo. Astro builds it to static HTML, Cloudflare (Workers static assets)
 serves it, and every URL from the WordPress.com years still works.
 
 - **Posts** live in `src/content/posts/YYYY-MM-DD-slug/index.mdx`, with their images beside them.
@@ -65,17 +65,24 @@ Validation (`scripts/`), all against `dist/` unless given `--base=<deployed URL>
 
 ## Deploying
 
-GitHub Actions (`.github/workflows/ci.yml`) builds, validates, and then deploys to the Cloudflare
-Pages project `musingsofmy-today`: `main` to production, other branches and PRs to preview URLs.
+The site runs on **Cloudflare Workers static assets** (`wrangler.jsonc`), which is what Cloudflare
+now recommends for new static sites instead of Pages: same free plan, same `_redirects` and
+`_headers` files, no Worker code. Current production URL, until the custom domain is attached:
+https://musingsofmy-today.musingsofmy-today.workers.dev
+
+GitHub Actions (`.github/workflows/ci.yml`) builds, validates, and then deploys: `main` to
+production, pull requests to a preview URL (`pr-<number>-musingsofmy-today.<account>.workers.dev`).
 A deploy only happens if validation passes. It needs two repository secrets:
 
 - `CLOUDFLARE_ACCOUNT_ID`: Cloudflare dashboard → Workers & Pages → Account ID.
-- `CLOUDFLARE_API_TOKEN`: My Profile → API Tokens → Create Token → *Cloudflare Pages: Edit*.
+- `CLOUDFLARE_API_TOKEN`: My Profile → API Tokens → Create Token → template *Edit Cloudflare Workers*.
 
-Without them the deploy job skips and says so. Manual deploy: `npx wrangler login`, then `npm run build && npm run deploy`.
+Without them the deploy job skips and says so. Manual deploy: `npx wrangler login`, then
+`npm run build && npm run deploy` (production) or `npm run deploy:preview` (preview URL only).
 
 `_redirects` (old category, feed and archive URLs) and `_headers` are generated at build time from
-`src/site.ts`; see `astro.config.mjs`. Preview deployments send `X-Robots-Tag: noindex`.
+`src/site.ts`; see `astro.config.mjs`. Anything on `*.workers.dev` is sent with `X-Robots-Tag: noindex`,
+so previews never compete with the real domain in search.
 
 ## Comments
 

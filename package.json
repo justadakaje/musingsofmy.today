@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "musingsofmy.today, Kenneth Henseler's blog, as content-as-code (Astro + Cloudflare Pages).",
+  "description": "musingsofmy.today, Kenneth Henseler's blog, as content-as-code (Astro + Cloudflare Workers static assets).",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && pagefind --site dist",
@@ -15,7 +15,8 @@
     "validate:words": "node scripts/check-wordcount.mjs",
     "validate:rss": "node scripts/check-rss.mjs",
     "validate:links": "node scripts/check-internal-links.mjs",
-    "deploy": "wrangler pages deploy dist --project-name musingsofmy-today"
+    "deploy": "wrangler deploy",
+    "deploy:preview": "wrangler versions upload --preview-alias preview"
   },
   "engines": {
     "node": ">=22.12"

@@ -36,7 +36,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'musingsofmy.today';
 const API = `https://public-api.wordpress.com/rest/v1.1/sites/${SITE}`;
 const UA = 'musingsofmy.today-importer/1.0 (+https://github.com/justadakaje/musingsofmy.today)';
-const MAX_ASSET_BYTES = 24 * 1024 * 1024; // Cloudflare Pages rejects files over 25 MiB
+const MAX_ASSET_BYTES = 24 * 1024 * 1024; // Cloudflare static assets reject files over 25 MiB
 
 const args = new Set(process.argv.slice(2).filter((a) => !a.includes('=')));
 const kv = Object.fromEntries(process.argv.slice(2).filter((a) => a.includes('=')).map((a) => a.replace(/^--/, '').split('=')));
@@ -98,7 +98,8 @@ const decoder = parseHTML('<!doctype html><html><body></body></html>').document;
 function decode(s) {
   const el = decoder.createElement('div');
   el.innerHTML = s ?? '';
-  return el.textContent;
+  // linkedom leaves &apos; alone (Spotify uses it in iframe titles).
+  return el.textContent.replace(/&apos;/g, "'");
 }
 function stripHtml(s) {
   return decode(String(s ?? '').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
@@ -331,7 +332,8 @@ async function convert(html, ctx, report) {
   });
 
   // 1. Embeds (Gutenberg figures, classic iframes, VideoPress).
-  const embedFor = async (src, title, fallbackUrl) => {
+  const embedFor = async (src, rawTitle, fallbackUrl) => {
+    const title = rawTitle ? decode(rawTitle) : rawTitle;
     const s = src || fallbackUrl || '';
     let m;
     // Playlists first: /embed?listType=playlist&list=PL…, /embed/videoseries?list=…, /playlist?list=…
@@ -575,7 +577,15 @@ async function convert(html, ctx, report) {
 
   // 5b. Links: old absolute URLs → relative; links to WordPress media pages are dropped.
   for (const a of [...root.querySelectorAll('a[href]')]) {
-    const href = a.getAttribute('href');
+    let href = a.getAttribute('href').trim();
+    // A pasted label plus URL in the href ("http://Some Title https://real.url/…") was broken on
+    // WordPress too; keep the real URL.
+    if (/\s/.test(href) && /https?:\/\/\S+$/.test(href)) {
+      const fixed = /(https?:\/\/\S+)$/.exec(href)[1];
+      report.note(`malformed link repaired: ${fixed}`);
+      href = fixed;
+      a.setAttribute('href', href);
+    }
     if (href.startsWith('#')) continue;
     if (!/^(https?:|mailto:|tel:|\/)/i.test(href)) {
       report.warn(`relative link kept as-is: ${href}`);

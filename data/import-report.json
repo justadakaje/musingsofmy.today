@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-04T06:54:47.079Z",
+ "generated": "2026-11-04T07:12:38.998Z",
  "posts": [
   {
    "id": 2234,
@@ -650,7 +650,9 @@
    "path": "/2025/05/03/from-cardinal-to-pope/",
    "folder": "2025-05-03-from-cardinal-to-pope",
    "title": "From cardinal to Pope",
-   "notes": [],
+   "notes": [
+    "malformed link repaired: https://www.rundown.ai/tools/video-to-sound-effects-generator"
+   ],
    "warnings": [],
    "words_wp": 206,
    "section": "science-nature",

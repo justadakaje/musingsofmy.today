@@ -1,4 +1,4 @@
-// Helpers for checking a built site in dist/ the way Cloudflare Pages will serve it.
+// Helpers for checking a built site in dist/ the way Cloudflare static assets will serve it.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

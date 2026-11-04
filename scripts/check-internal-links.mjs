@@ -24,6 +24,11 @@ export async function run() {
       for (let v of values) {
         v = v.replaceAll('&amp;', '&');
         if (!v || v.startsWith('data:') || v.startsWith('mailto:') || v.startsWith('javascript:')) continue;
+        if (m[1] !== 'srcset' && /\s/.test(v.trim())) {
+          checked++;
+          broken.set(`${rel(page)} → ${v}`, 'malformed URL (contains spaces)');
+          continue;
+        }
         if (v.startsWith('#')) {
           checked++;
           const id = decodeURIComponent(v.slice(1));
@@ -51,5 +56,5 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   console.log(`Internal links: ${r.checked - r.broken.length}/${r.checked} resolve across ${r.pages} pages`);
   for (const b of r.broken.slice(0, 50)) console.log(`  ✗ ${b.where}  (${b.why})`);
   if (r.broken.length > 50) console.log(`  … and ${r.broken.length - 50} more`);
-  process.exit(r.broken.length ? 1 : 0);
+  process.exitCode = r.broken.length ? 1 : 0;
 }

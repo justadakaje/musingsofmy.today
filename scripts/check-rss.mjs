@@ -3,7 +3,7 @@
  * RSS 2.0 checks on dist/rss.xml, plus the /feed/ redirect.
  *
  *   node scripts/check-rss.mjs
- *   node scripts/check-rss.mjs --w3c=https://<preview>.pages.dev/rss.xml   # also ask the W3C Feed Validator
+ *   node scripts/check-rss.mjs --w3c=https://musingsofmy-today.musingsofmy-today.workers.dev/rss.xml   # also ask the W3C Feed Validator
  *
  * Local checks are structural (well-formed XML, required RSS elements, RFC 822 dates, unique
  * GUIDs, absolute URLs inside content:encoded, links that exist in dist/). The W3C validator is
@@ -47,6 +47,9 @@ export async function run({ w3c = null } = {}) {
   const relative = items.filter((i) => /\s(?:src|href)="\/(?!\/)/.test(i['content:encoded'] ?? ''));
   add('content:encoded has no site-relative URLs', relative.length === 0, relative.map((i) => i.title).join('; '));
   add('every item has full content', items.every((i) => (i['content:encoded'] ?? '').length > 0));
+  add('content:encoded has no iframes (readers strip them; W3C warns)', items.every((i) => !/<iframe/i.test(i['content:encoded'] ?? '')));
+  // RSS 2.0's <author> must be an email address; the name goes in <dc:creator>.
+  add('no <author> without an email address', items.every((i) => !i.author || /@/.test(String(i.author))));
 
   // GUIDs must match what WordPress published, or readers re-deliver old posts as new.
   const wp = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'wpcom', 'posts.json'), 'utf8'));
@@ -64,12 +67,15 @@ export async function run({ w3c = null } = {}) {
 
   if (w3c) {
     try {
-      const res = await fetch(`https://validator.w3.org/feed/check.cgi?output=soap12&url=${encodeURIComponent(w3c)}`, { headers: { 'user-agent': 'musingsofmy.today-validate/1.0' } });
+      // The validator caches by URL; a throwaway query string makes it fetch the current feed.
+      const target = `${w3c}${w3c.includes('?') ? '&' : '?'}v=${Date.now()}`;
+      const res = await fetch(`https://validator.w3.org/feed/check.cgi?output=soap12&url=${encodeURIComponent(target)}`, { headers: { 'user-agent': 'musingsofmy.today-validate/1.0' } });
       const body = await res.text();
+      const types = [...body.matchAll(/<type>([^<]+)<\/type>/g)].map((m) => m[1]);
       const validity = /<m:validity>(true|false)<\/m:validity>/.exec(body)?.[1];
       const errors = /<m:errorcount>(\d+)<\/m:errorcount>/.exec(body)?.[1];
       const warnings = /<m:warningcount>(\d+)<\/m:warningcount>/.exec(body)?.[1];
-      add('W3C Feed Validator: valid', validity === 'true', `${errors ?? '?'} errors, ${warnings ?? '?'} warnings (${w3c})`);
+      add('W3C Feed Validator: valid', validity === 'true', `${errors ?? '?'} errors, ${warnings ?? '?'} warnings${types.length ? `: ${types.join(', ')}` : ''} (${w3c})`);
     } catch (e) {
       add('W3C Feed Validator reachable', false, e.message);
     }
@@ -82,5 +88,5 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const r = await run({ w3c });
   console.log(`RSS checks: ${r.passed}/${r.total}`);
   for (const c of r.checks) console.log(`  ${c.ok ? '✓' : '✗'} ${c.name}${c.detail ? `  (${c.detail})` : ''}`);
-  process.exit(r.failed.length ? 1 : 0);
+  process.exitCode = r.failed.length ? 1 : 0;
 }

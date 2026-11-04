@@ -64,6 +64,8 @@ jobs:
           fail: false
 
   deploy:
+    # Cloudflare Workers static assets (wrangler.jsonc). main → production
+    # (musingsofmy-today.<account>.workers.dev, later musingsofmy.today); PRs → a preview URL.
     # Runs only once the Cloudflare secrets exist (see README → Deploying).
     needs: build
     runs-on: ubuntu-latest
@@ -82,14 +84,22 @@ jobs:
         with:
           name: dist
           path: dist
-      - name: Deploy to Cloudflare Pages
-        if: steps.creds.outputs.ok == 'true'
-        id: deploy
+      - name: Deploy to production (main)
+        if: steps.creds.outputs.ok == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=musingsofmy-today --branch=${{ github.head_ref || github.ref_name }} --commit-hash=${{ github.sha }}
+          wranglerVersion: '4.157.0'
+          command: deploy --message "${{ github.sha }}"
+      - name: Upload a preview (pull requests and other branches)
+        if: steps.creds.outputs.ok == 'true' && (github.event_name == 'pull_request' || github.ref != 'refs/heads/main')
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4.157.0'
+          command: versions upload --preview-alias ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || 'branch' }} --message "${{ github.sha }}"
       - name: Skipped
         if: steps.creds.outputs.ok != 'true'
         run: echo "::notice::Deploy skipped; CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID are not set."

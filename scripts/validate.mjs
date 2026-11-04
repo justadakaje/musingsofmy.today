@@ -4,7 +4,7 @@
  * not carry over 1:1. Exit code 1 if any hard check fails (CI gate).
  *
  *   node scripts/validate.mjs                                   # against dist/
- *   node scripts/validate.mjs --base=https://<id>.musingsofmy-today.pages.dev   # + HTTP checks on a deployment
+ *   node scripts/validate.mjs --base=https://musingsofmy-today.musingsofmy-today.workers.dev   # + HTTP checks on a deployment
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -43,6 +43,7 @@ const NOTE_GROUPS = [
   [/^image split out of a paragraph/, 'Image moved out of a paragraph (text order kept)'],
   [/^image link to an old WordPress page dropped/, 'Image link to a WordPress attachment page dropped'],
   [/^component token was inline/, 'Embed moved to its own line'],
+  [/^malformed link repaired/, 'Malformed link repaired (it was broken on WordPress too)'],
   [/^in the Podcast category but no show link/, 'Podcast category, but no show link to build an episode card from'],
 ];
 const grouped = new Map();
@@ -120,4 +121,4 @@ ${w.rows.map((x) => `| [${x.title.replace(/[[\]|]/g, '')}](${x.path}) | ${x.word
 
 fs.writeFileSync(path.join(ROOT, out), md);
 console.log(`${out}: urls ${u.passed}/${u.total}${uHttp ? `, http ${uHttp.passed}/${uHttp.total}` : ''}, words ${w.passed}/${w.total}, rss ${r.passed}/${r.total}, links ${l.checked - l.broken.length}/${l.checked}, ${warnings.length} import warnings`);
-process.exit(failedHard ? 1 : 0);
+process.exitCode = failedHard ? 1 : 0;

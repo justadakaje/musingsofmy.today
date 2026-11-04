@@ -47,5 +47,5 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const r = await run();
   console.log(`Word counts within ±${r.tolerance * 100}%: ${r.passed}/${r.total}`);
   for (const f of r.failed) console.log(`  ✗ ${f.path}  wp ${f.words} → built ${f.built ?? '—'} (${f.delta == null ? f.why : `${(f.delta * 100).toFixed(1)}%`})`);
-  process.exit(r.failed.length ? 1 : 0);
+  process.exitCode = r.failed.length ? 1 : 0;
 }
