@@ -1,0 +1,44 @@
+{
+  "name": "musingsofmy.today",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "musingsofmy.today, Kenneth Henseler's blog, as content-as-code (Astro + Cloudflare Pages).",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "preview": "astro preview",
+    "check": "astro check",
+    "import": "node scripts/import-wpcom.mjs",
+    "validate": "node scripts/validate.mjs",
+    "validate:urls": "node scripts/check-urls.mjs",
+    "validate:words": "node scripts/check-wordcount.mjs",
+    "validate:rss": "node scripts/check-rss.mjs",
+    "validate:links": "node scripts/check-internal-links.mjs",
+    "deploy": "wrangler pages deploy dist --project-name musingsofmy-today"
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^8.1.2",
+    "@astrojs/rss": "^4.0.19",
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/montserrat": "^5.3.0",
+    "astro": "^7.4.5",
+    "sanitize-html": "^2.18.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/node": "^26.6.6",
+    "@types/sanitize-html": "^2.16.2",
+    "fast-xml-parser": "^5.12.0",
+    "linkedom": "^0.18.15",
+    "pagefind": "^1.6.0",
+    "sharp": "^0.35.5",
+    "turndown": "^7.2.4",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.157.0"
+  }
+}

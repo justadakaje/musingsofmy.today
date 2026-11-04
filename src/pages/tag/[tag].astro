@@ -1,0 +1,32 @@
+---
+/** /tag/<slug>/ exactly as WordPress had it. */
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import PostRow from '../../components/PostRow.astro';
+import { getPosts, tagSlug, type Post } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const byTag = new Map<string, { name: string; posts: Post[] }>();
+  for (const p of posts) {
+    for (const name of p.data.tags) {
+      const slug = tagSlug(name);
+      if (!slug) continue;
+      if (!byTag.has(slug)) byTag.set(slug, { name, posts: [] });
+      byTag.get(slug)!.posts.push(p);
+    }
+  }
+  return [...byTag].map(([tag, v]) => ({ params: { tag }, props: v }));
+}
+interface Props {
+  name: string;
+  posts: Post[];
+}
+const { name, posts } = Astro.props;
+---
+<Base title={`Tagged “${name}”`} description={`Posts tagged ${name} on Musings of My Today.`} nav="writing">
+  <PageHead eyebrow="// tag" title={name} lede={`${posts.length} post${posts.length === 1 ? '' : 's'}.`} />
+  <main class="wrap">
+    <div class="log" style="margin-top:40px">{posts.map((p) => <PostRow post={p} />)}</div>
+  </main>
+</Base>

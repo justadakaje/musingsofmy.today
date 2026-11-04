@@ -1,0 +1,195 @@
+---
+title: "Absent from the Docs, Present in the Client: Mapping WoW Forever’s Real API Surface"
+date: "2026-09-24T21:53:41-05:00"
+updated: "2026-09-24T21:55:42-05:00"
+section: engineering
+categories: ["Gaming", "Technology"]
+tags: ["addon development", "API documentation", "beta software", "game development", "Lua", "reverse engineering", "SavedVariables", "software engineering", "World of Warcraft", "WoW Forever"]
+description: "WoW: Forever removed most legacy Lua APIs and kept the survivors inconsistently. This is what build 69913 actually exposes — measured in a running client, not read off a changelog — including the functions that are documented, present, and still crash the process."
+cover:
+  src: "./adventurerplate-post2.jpg"
+  alt: ""
+podcast:
+  show: runtime-reality
+  episode: "S26.E0924"
+  title: "An AI Said the Function Didn&apos;t Exist. It Did. Four Errors in Four Hours."
+  spotify: "https://open.spotify.com/episode/3ciuP6AMXMkH2ls5mR2K5r"
+  youtube: "https://www.youtube.com/watch?v=guSsG1I_XX0"
+legacy:
+  wpcom_id: 2235
+  views_all_time: 0
+  comments: 1
+  guid: "https://musingsofmy.today/?p=2235"
+  short_url: "https://wp.me/pbES0N-A3"
+---
+
+import img1 from './probe-chat-crop.png';
+import img2 from './card-final-crop.png';
+
+**Executive Summary:** WoW: Forever is a beta client that reports itself as mainline while running a Classic-era world, which breaks assumptions in both directions. This is what build 69913 actually exposes — measured in a running client rather than read off a changelog — including the functions that are documented, present at runtime, and still crash the process.
+
+**🎧 Listen to the Episode:**  
+This reference accompanies *Runtime Reality* S26.E0924 — *An AI Said the Function Didn’t Exist. It Did. Four Errors in Four Hours.* The episode walks the crash model in detail: why `C_Housing.GetMaxHouseLevel` passes every check reachable from Lua and still takes the client down, and why `pcall` cannot help.  
+  
+[Apple Podcasts](https://podcasts.apple.com/us/podcast/runtime-reality/id1887004265)  ·  [Spotify](https://open.spotify.com/episode/3ciuP6AMXMkH2ls5mR2K5r)  ·  [YouTube](https://youtu.be/C8AYMjWB-Rk)
+
+<Spotify type="episode" id="3ciuP6AMXMkH2ls5mR2K5r" title={"S26.E0924 – An AI Said the Function Didn&apos;t Exist. It Did. Four Errors in Four Hours."} />
+
+Retail addons find their branches taken and their files missing. Classic addons find their APIs deleted. Everything below was measured on **build 69913, Interface 16001** — by walking the global table, by calling things and recording what came back, and by opening an auctioneer. Where a measurement contradicts documentation, the measurement is what is written here.
+
+## Both offline sources are structurally blind
+
+Start here, because it invalidates a lot of otherwise reasonable conclusions. There are two ways to ask “does this API exist” without launching the game, and each is blind in a specific way:
+
+-   **An API documentation index** covers the **C** API. FrameXML **Lua** globals and tables are not in it.
+-   **A runtime `_G` dump** typically walks top-level *functions* and `C_*` namespaces. Members of plain non-`C_` global *tables* are invisible to it.
+
+Anything Lua-side living inside a global table falls through both. `Menu.ModifyMenu` is the worked example: documented nowhere, absent from a function-walking dump, and **present in the client**. A `type()` check found it in seconds.
+
+So the rule *“absent from the index means it does not exist”* holds only for the C API. For `Menu`, `UnitPopupMenus`, `UIDropDownMenu_*` and FrameXML helpers generally, nothing short of an in-client check is authoritative.
+
+> <Figure src={img1} alt={"Capability probe output printed to the WoW chat frame, reporting Interface 16001, build 69913, 269 C_ namespaces covering 4912 functions, 5889 globals, and a documented surface of 408 systems, 6577 functions, 1802 events and 1738 tables."} width={600}>The capability probe reading its own measurements back, in-client on build 69913.</Figure>
+
+## Existence does not imply safety
+
+This is the finding that most changes how you write code for this client. `C_Housing.GetMaxHouseLevel` access-violates the client. It is also:
+
+-   **documented** in the client’s own API tables, as a no-argument getter, and
+-   **present at runtime** — it shows up in the `_G` walk, one of `C_Housing`‘s 63 functions.
+
+So `if C_Foo and C_Foo.Bar then` is a nil-guard, not a crash-guard. The crash lives *inside* a function that passes every test reachable from Lua. And `pcall` does not help: it catches Lua errors, not access violations. There is nothing to test for in advance.
+
+The only mitigation that works is procedural. Print what you are about to call *before* calling it, so a hard crash leaves the culprit named on screen. Make the sequence resumable from any step. And never put an unproven call in a save path — SavedVariables are written by the client at `/reload` or logout, so a crasher there destroys the data it was supposed to persist.
+
+## Namespace coverage: the two-way gap
+
+```
+documented C_ namespaces    277
+runtime C_ namespaces       269
+
+documented AND present      250
+documented, NOT present      27
+present, NOT documented     ~19
+```
+
+Both directions matter. Twenty-seven documented namespaces do not exist at runtime, so calling into them is a nil index. Roughly nineteen exist with no documentation at all, so their signatures are unknown until you call them — which, per the previous section, is not risk-free.
+
+## Legacy globals: gone, kept, and undocumented-but-working
+
+**Gone.** `GetItemInfo`, `GetSpellInfo`, `UnitAura`, `GetAddOnMetadata`, `UnitPVPRank`, `GetPVPRankInfo`, `GetSkillLineInfo`, `GetNumSkillLines`. There is no Classic PvP rank badge to be had; Forever reworked honor, and `UnitHonor`, `UnitHonorLevel` and `GetPVPLifetimeStats` exist instead.
+
+**Kept, inconsistently.** `IsSpellKnown` survives while `GetSpellInfo` does not. Do not infer a pattern; there is not one. Check each name.
+
+**Present in `_G` but undocumented**, and all observed returning clean values:
+
+```
+GetGuildInfo("player")  ->  name, rankName, rankIndex, realm
+GetProfessions()        ->  prof1, prof2, archaeology, fishing, cooking, firstAid
+GetProfessionInfo(i)    ->  name, icon, skill, maxSkill, numAbilities,
+                            spellOffset, skillLineID, skillModifier
+GetAchievementInfo(id)  ->  all nil
+```
+
+`GetProfessionInfo`‘s seventh return is the canonical skill-line ID — 165 Leatherworking, 393 Skinning, 356 Fishing — so it is genuinely structured data, not a display string.
+
+`GetGuildInfo` is worth calling out: `C_GuildInfo` has **39 functions and not one returns your own guild name or rank**. The undocumented global is the only path. `GetAchievementInfo` returning all-nil lines up with `C_AchievementInfo` exposing five stubs: achievements are not a player-facing system here.
+
+## Native serialisation, and what it actually costs
+
+`C_EncodingUtil` is present with all ten functions — CBOR and JSON serialisation, Deflate/Zlib/Gzip compression, Base64 and hex, and the inverses. That means **no LibSerialize and no LibDeflate**, which is a real dependency saving. Measured on a realistic ~380-byte payload:
+
+```
+CBOR      386 B
+Deflate   293 B   (-24%)
+Base64    392 B   (+34%)
+JSON      517 B   (for contrast)
+
+round trip: lossless
+chunks:     2 at 240 B
+```
+
+The counter-intuitive part: the Base64 output (392 B) is *larger than the CBOR you started from* (386 B). Compression is not paying for the encoding. It is paying for the chunk boundary — Base64 of raw CBOR would be about 515 B, which is three chunks instead of two. At this size, Deflate buys you exactly one fewer message.
+
+Base64 output is plain ASCII, which matters more than it looks: addon-message transports reject control characters, so an ASCII-safe payload avoids a whole class of escaping problem.
+
+## Model widgets: all six work, including the undocumented one
+
+`PlayerModel` is **not** among the 18 documented `FrameAPI*` widget families. It works anyway.
+
+```
+widget            documented 24   legacy camera 15
+PlayerModel            24/24            15/15
+DressUpModel           24/24            15/15
+CinematicModel         24/24            15/15
+TabardModel            24/24            15/15
+Model                  24/24            15/15
+ModelScene              0/24             1/15
+```
+
+Five types share an identical surface, and **nothing documented was missing on any of them**. `ModelScene` carries none of it, which is correct — it is a scene that hosts actors rather than a model itself. The full legacy camera set is present: `SetCamera`, `SetPosition`, `SetFacing`, `SetLight`, `SetCustomCamera`, `SetPitch`, `SetViewTranslation`.
+
+Two practical traps. **A hidden model frame will not load geometry** — call `SetKeepModelOnHide(true)` before `SetUnit`, or `SetUnit` returns `false` with display ID 0 and you will misdiagnose it as a client limitation. And **`CanSetUnit` is not a predicate here**: its documented signature lists no return value, and it returns `nil` for every token including deliberately invalid ones. Use `SetUnit`‘s documented boolean instead.
+
+> <Figure src={img2} alt={"The finished Adventurer Plates card rendered in game: a landscape panel with a live 3D character portrait on the left and name, guild, motto and coloured playstyle tags on the right."}>A live 3D portrait on an undocumented PlayerModel widget, rendering correctly once SetKeepModelOnHide is called first.</Figure>
+
+<YouTube id="guSsG1I_XX0" title={"YouTube video player"} />
+
+## The auction house is modern, and that matters for addons
+
+Opening an auctioneer with a passive event recorder running produced this:
+
+```
+AUCTION_HOUSE_SHOW                     1
+AUCTION_HOUSE_BROWSE_RESULTS_ADDED     3
+AUCTION_HOUSE_BROWSE_RESULTS_UPDATED   1
+AUCTION_HOUSE_NEW_RESULTS_RECEIVED     4
+AUCTION_HOUSE_THROTTLED_MESSAGE_SENT   9
+AUCTION_HOUSE_CLOSED                   1
+
+legacy AUCTION_ITEM_LIST_UPDATE etc.   ZERO
+```
+
+Browse queries ran and returned results. Nine throttled round-trips completed. **Not one legacy event fired**, and `C_AuctionHouse` has all 85 functions at runtime.
+
+<YouTube id="lAFS9JJeLPA" title={"YouTube video player"} />
+
+For addon authors this settles which code path is correct. Auctionator, for instance, loads on this client but its AH layer does not — every relevant bundle is gated to game types that omit `camelot`:
+
+```
+Libs_ModernAH      [AllowLoadGameType cata, mists, mainline]
+Imports_ModernAH   [AllowLoadGameType cata, mists, mainline]
+Assets_ModernAH    [AllowLoadGameType cata, mists, mainline]
+Source_ModernAH    [AllowLoadGameType cata, mists, mainline]
+Source_Mainline    [AllowLoadGameType mainline]
+```
+
+It degrades silently rather than erroring — no Lua errors at all. And because the client fires modern events exclusively, `Source_ModernAH` is demonstrably the right bundle; `Source_LegacyAH` would be actively wrong. The toc gating alone could not have told you that, since `camelot` is missing from both lists.
+
+## Character data has surprises
+
+```
+UnitFullName("player")  ->  "Aeldorath Zephrai", "ClassicBetaPvE2"
+UnitRace("player")      ->  "Windshaper Skyborne", "Skyborne", 96
+```
+
+**Character names contain a space.** Forever has a surname system — `C_PlayerInfo.ShouldDisplaySurname` exists — so any parsing that splits on whitespace or assumes a single token will break. This matters for layout and for whisper targeting.
+
+**New races exist.** Skyborne, race ID 96, is not a Classic race. A race-to-icon map built from Classic IDs will not cover it. Also worth knowing: `UnitFullName` is the only name getter that reliably carries the realm — `UnitName("player")` returned the name with a `nil` realm. And `C_ClassColor.GetClassColor` takes the *file* name (`"HUNTER"`), not the localised one.
+
+## Confirmed working, for what it is worth
+
+All eight standard frame templates load: `BackdropTemplate`, `UIPanelButtonTemplate`, `UIPanelCloseButton`, `InputBoxTemplate`, `UICheckButtonTemplate`, `UIPanelScrollFrameTemplate`, `OptionsSliderTemplate`, `TooltipBorderedFrameTemplate`.
+
+`C_ChatInfo` has the full addon-message surface including `SendAddonMessageLogged`, and prefix registration returns `Enum.SendAddonMessageResult.Success`. Titles work — 111 exist — though `GetTitleName` returns a fragment with the name’s position implied, so do not splice a name into it blindly.
+
+## Before You Write Code For This Client:
+
+<Buttons links={[{"label":"Check each legacy global by name. There is no pattern to what survived."},{"label":"Treat “absent from the docs” as absent from the C API only."},{"label":"Announce undocumented calls before making them, and stay resumable."},{"label":"Use C_EncodingUtil instead of pulling in LibSerialize or LibDeflate."},{"label":"Never split a character name on whitespace."}]} />
+
+**Sources Cited:**
+
+-   Full measured findings: [docs/facts-build-69913.md](https://github.com/justadakaje/wow-addons/blob/master/docs/facts-build-69913.md)
+-   Source and tooling: [justadakaje/wow-addons](https://github.com/justadakaje/wow-addons)
+-   Capability probe that produced these numbers: [AdventurerPlates/Probe.lua](https://github.com/justadakaje/wow-addons/blob/master/addons/AdventurerPlates/Probe.lua)
+-   Companion article: [Confidently Wrong: Four AI Errors a Beta Game Client Caught in Four Hours](/2026/09/24/ai-confidently-wrong-wow-addon-verification/)
+-   Unedited sessions: WoW Addon Dev [Part 1](https://youtu.be/guSsG1I_XX0) and [Part 2](https://youtu.be/lAFS9JJeLPA)

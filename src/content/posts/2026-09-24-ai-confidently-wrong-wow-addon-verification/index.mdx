@@ -1,0 +1,156 @@
+---
+title: "Confidently Wrong: Four AI Errors a Beta Game Client Caught in Four Hours"
+date: "2026-09-24T21:55:13-05:00"
+updated: "2026-09-24T23:33:05-05:00"
+section: engineering
+categories: ["AI", "Gaming", "Technology"]
+tags: ["addon development", "AI", "AI coding", "beta software", "Claude Code", "llm", "Lua", "pair programming", "software engineering", "verification", "World of Warcraft", "WoW Forever"]
+description: "Four hours of AI-assisted development on a beta World of Warcraft client produced a working addon and four confident, plausible, completely wrong claims. None were caught by better reasoning. Each was caught by reading a primary source at the exact moment it was easiest not to — and one of them would have destroyed the session’s own data at the moment of saving it."
+cover:
+  src: "./adventurerplate-post1v2.jpg"
+  alt: ""
+podcast:
+  show: runtime-reality
+  episode: "S26.E0924"
+  title: "An AI Said the Function Didn&apos;t Exist. It Did. Four Errors in Four Hours."
+  spotify: "https://open.spotify.com/episode/3ciuP6AMXMkH2ls5mR2K5r"
+  youtube: "https://www.youtube.com/watch?v=guSsG1I_XX0"
+legacy:
+  wpcom_id: 2234
+  views_all_time: 0
+  comments: 1
+  guid: "https://musingsofmy.today/?p=2234"
+  short_url: "https://wp.me/pbES0N-A2"
+---
+
+import img1 from './post1imga.jpg';
+import img2 from './post1imgb.jpg';
+
+**Executive Summary:** Four hours of AI-assisted development on a beta game client produced a working addon and four confident, plausible, completely wrong claims. None of them were caught by better reasoning. Each was caught by reading a primary source at the exact moment the answer felt already known — and one would have destroyed the session’s own data at the moment of saving it. For engineers adopting AI assistance, the useful lesson is narrow and structural rather than philosophical.
+
+**🎧 Listen to the Episode:**  
+This post accompanies *Runtime Reality* S26.E0924 — *An AI Said the Function Didn’t Exist. It Did. Four Errors in Four Hours.* Forty-seven minutes on the same four errors, with the measured figures and the crash model that a nil-guard cannot protect you from.  
+  
+[Apple Podcasts](https://podcasts.apple.com/us/podcast/runtime-reality/id1887004265)  ·  [Spotify](https://open.spotify.com/episode/3ciuP6AMXMkH2ls5mR2K5r)  ·  [YouTube](https://youtu.be/C8AYMjWB-Rk)
+
+<Spotify type="episode" id="3ciuP6AMXMkH2ls5mR2K5r" title={"S26.E0924 – An AI Said the Function Didn&apos;t Exist. It Did. Four Errors in Four Hours."} />
+
+The interesting failure mode of an AI coding assistant is not that it writes broken code. Broken code announces itself. The interesting failure mode is that it writes *plausible* code, attached to a confident claim, that is wrong in a way nothing will surface until much later.
+
+Over roughly four hours I built an addon for **World of Warcraft: Forever** — a beta client, build 69913, where most legacy Lua APIs have been removed and the survivors were kept inconsistently. `GetItemInfo`, `GetSpellInfo` and `UnitAura` all resolve to `nil`. `IsSpellKnown` survives. There is no pattern to it.
+
+The addon works. That is not the story. The story is that in those four hours the AI — Claude Code, working against a custom API index — produced **four confident claims that were false**, and every single one was caught the same way.
+
+<YouTube id="guSsG1I_XX0" title={"YouTube video player"} />
+
+Both sessions together run close to five hours. If you would rather watch than read, the **31-minute cut** is chaptered to each of the four errors — the saved-file comparison that inverted the rename plan lands at `16:00`, and the discovery that Chomp is four libraries rather than one at `23:27`.
+
+<YouTube id="_RP-CQRNKKg" title={"YouTube video player"} />
+
+## Error one: the API that was documented as absent, and wasn’t
+
+The project’s own notes recorded, as established fact, that `Menu.ModifyMenu` — the modern right-click context-menu API — *had zero occurrences in this client’s surface*. An entire design decision rested on it: use the legacy dropdown family instead.
+
+It exists. A three-line in-game `type()` check found it immediately.
+
+What makes this worth more than an erratum is *why* it was believed, because the reason generalises. There were two independent sources of truth, and both were blind for different structural reasons:
+
+-   **The API index** documents the client’s **C** API. `Menu` is a FrameXML **Lua** table, so searching it correctly returned nothing.
+-   **The runtime `_G` dump** walks top-level *functions* and `C_*` namespaces. `Menu` is a plain non-`C_` global *table*, so its contents were invisible to it.
+
+Neither source lied. Each answered a narrower question than the one being asked, and the gap between them had a real API sitting in it. The comfortable inference — *absent from the index means absent from the client* — is true only of the C API. Stated without that qualifier it manufactures confident false negatives, and a false negative here means architecting around a capability you already have.
+
+The actual situation turned out to be *inverted* from the assumption. The modern menu API is live. It is the legacy path that is gutted — `UnitPopupButtons` is `nil`, so the approach the notes recommended could not have worked at all.
+
+## Error two: the migration that would have destroyed the data it was upgrading
+
+The addon stores data in SavedVariables under a schema version. The existing initialisation code did this on a version mismatch:
+
+```
+if db.schema ~= nil and db.schema ~= ns.DB_SCHEMA then
+    ns.Warn("stored data is schema %s, this build expects %s -- starting fresh.")
+    AdventurerPlatesDB = {}
+end
+```
+
+That reads as reasonable defensive programming. It is a data-loss bug with a delay fuse.
+
+Earlier that same session, a capability probe had run in-game for the first time and written its results into that table — measurements that cost a live client session to obtain. The very next change was to add a feature, which meant bumping `DB_SCHEMA` from 1 to 2. On the next reload, the upgrade path would have deleted the results of the upgrade’s own justification.
+
+This is the same shape as an incident already in the project’s notes: an earlier addon lost a 98-minute session to a crash handler sitting in `PLAYER_LOGOUT`, where the act of saving destroyed the data being saved.
+
+> <Figure src={img1} alt={"A magnetic tape surface covered in fine rows of glowing cyan data marks. An amber write head travels across it from right to left, and the surface behind the head is completely blank — the mechanism is erasing the archive rather than writing to it."}>The write head that clears the archive: a migration whose failure mode is destroying what it was asked to upgrade.</Figure>
+
+The replacement is a forward-walking migration table keyed by source schema. On an unrecognised version it **refuses and disables features** rather than wiping, because *“I do not understand this data”* has never been a good reason to delete it.
+
+## Error three: the separator that was textbook-correct and broke every message
+
+The addon shares data between players over the game’s addon-message channel, using the [Chomp](https://github.com/wow-rp-addons/Chomp) messaging library. Messages need a field separator. I used **ASCII 31** — the unit separator, the character that exists in the standard for precisely this purpose, and invisible so it cannot collide with display text.
+
+Then I opened Chomp’s source instead of assuming:
+
+```
+if text:find("[%z\001-\009\011-\031\127]") then
+    return false, "ASCII_CONTROL"
+```
+
+ASCII 31 is inside that rejected range. Not a dropped message — a thrown Lua error on *every single send*. The feature would have been completely non-functional, and the failure would have looked like a transport problem rather than a one-character mistake.
+
+> <Figure src={img2} alt={"A horizontal chain of glowing cyan blocks running across a black field. One block near the centre is an empty black void with amber light bleeding from its edges. Every block to its left is brightly lit; every block to its right is dark and inert."}>One rejected character in the middle of the chain, and everything downstream of it stops.</Figure>
+
+The replacement is `~`, which satisfies four constraints at once: outside the Base64 alphabet so it cannot occur inside a payload, not `|` so it is not a WoW text escape, no special meaning in a Lua pattern, and illegal in a character or realm name. The textbook answer failed the only constraint I had not thought to check.
+
+## Error four: the rescue plan that would have overwritten the real data with an empty table
+
+Late in the session the layout changed direction and two addon folders needed renaming, which meant the SavedVariables keys changed too. I flagged a data-migration hazard, correctly, and set out to write a migration that would rescue the newer dataset.
+
+Before writing it, I read both files. They said the opposite of what the screen said:
+
+```
+AdventurerPlatesDB      6 tags, hours, full motto, updated 1789952629
+AdventurerPlatesCardDB  0 tags, empty motto,       updated 0
+```
+
+The data visible on screen — tags, hours, a long motto, a recent “last edited” timestamp — **had never been written to disk**. WoW flushes SavedVariables from memory at `/reload` or logout and *then* loads addons, so the file always reflects the state as of the previous reload. A screenshot shows memory. The file shows the last save. They are routinely different, and the difference is invisible unless you look.
+
+The migration I was about to write would have faithfully rescued the empty table over the real one. Reading the files first turned a risky refactor into a no-op: the canonical addon kept its original name, so it kept its original variable and inherited the full dataset with **zero migration code**.
+
+<YouTube id="lAFS9JJeLPA" title={"YouTube video player"} />
+
+## The pattern
+
+Four errors. Look at what did *not* catch them.
+
+Not reasoning. Every one of these was *arrived at* by reasoning, and the reasoning was sound given its inputs. ASCII 31 *is* the correct separator in general. Wiping on schema mismatch *is* a defensible stance in isolation. The rename plan *was* right about there being a hazard.
+
+Not caution in general, either. I was being careful the whole time. Being careful is a disposition; it does not tell you *which artifact to open*.
+
+What caught all four was the same act in four costumes: **reading the specific primary source at the moment the answer felt already known.** Chomp’s `StringManip.lua`. The old `InitDB` function. The two `.lua` files sitting in the WTF folder. A `type()` check in a running client.
+
+> The expensive artifact in this kind of work is not the code. It is the evidence about what the system actually does.
+
+That belief shaped how the work got recorded. The commit messages say what was *wrong* and why it was believed, not just what changed. A future session reading `git log` learns that a particular test failure was a confounded experiment rather than a real client limitation — and so does not spend an afternoon designing around a constraint that never existed.
+
+## What this says about AI pair-programming
+
+The lazy conclusions are both wrong. “The AI was wrong four times, so don’t trust it” ignores that it also shipped a working addon with a non-destructive migration system, a sanitising trust boundary on untrusted network input, and three reusable build tools in the same four hours. “It caught its own mistakes, so it’s fine” ignores that it caught them *only where a primary source was available and someone insisted on opening it*.
+
+The useful conclusion is narrower and more actionable. An AI’s confidence is calibrated to how *plausible* a claim is, not to how *verified* it is, and those two things come apart hardest exactly where documentation is incomplete — beta software, undocumented APIs, third-party libraries, anything where the map and the territory have drifted.
+
+Which is, inconveniently, most of the work worth doing.
+
+So the discipline that mattered was not “check the AI’s work.” It was **structural**: build the verification tool first, wire it into the loop, and treat any claim that cannot be traced to a primary source as provisional no matter how confidently it is stated — including, especially, the ones already written down as established fact.
+
+## Verification Checklist for AI-Assisted Work:
+
+<Buttons links={[{"label":"Build the verification tool before the feature, and wire it into the loop."},{"label":"Know what each source of truth is structurally blind to before trusting its silence."},{"label":"Read the library source before adopting the textbook answer."},{"label":"Never let a migration delete data it does not recognise."},{"label":"Record what was wrong and why it was believed, not only what changed."}]} />
+
+**A note on completeness:** roughly a third of this addon is unverified as of writing. Sharing has never been tested with a second player; the guild and title fields have never rendered real data. An article arguing that verification beats confident assertion would be self-refuting if it overstated the state of the thing it describes.
+
+**Sources Cited:**
+
+-   Source, tooling and commit history: [justadakaje/wow-addons](https://github.com/justadakaje/wow-addons)
+-   Measured findings for build 69913: [docs/facts-build-69913.md](https://github.com/justadakaje/wow-addons/blob/master/docs/facts-build-69913.md)
+-   Chomp messaging library (ISC): [wow-rp-addons/Chomp](https://github.com/wow-rp-addons/Chomp)
+-   Companion reference: [Absent from the Docs, Present in the Client: Mapping WoW Forever’s Real API Surface](/2026/09/24/wow-forever-api-surface-build-69913/)
+-   Unedited sessions: WoW Addon Dev [Part 1](https://youtu.be/guSsG1I_XX0) and [Part 2](https://youtu.be/lAFS9JJeLPA)

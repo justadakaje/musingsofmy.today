@@ -1,0 +1,111 @@
+---
+import '@fontsource/inter/latin-400.css';
+import '@fontsource/inter/latin-500.css';
+import '@fontsource/inter/latin-600.css';
+import '@fontsource/inter/latin-700.css';
+import '@fontsource/montserrat/latin-700.css';
+import '@fontsource/montserrat/latin-800.css';
+import '@fontsource/montserrat/latin-900.css';
+import '@fontsource/jetbrains-mono/latin-400.css';
+import '@fontsource/jetbrains-mono/latin-500.css';
+import '@fontsource/jetbrains-mono/latin-700.css';
+import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import avatar from '../assets/avatar.png';
+import { SITE, SOCIAL, SUPPORT } from '../site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Absolute or site-relative image for link previews. */
+  image?: string;
+  type?: 'website' | 'article';
+  published?: Date;
+  noindex?: boolean;
+  nav?: 'writing' | 'podcasts' | 'about' | 'search' | null;
+}
+const { title, description = SITE.description, image = '/social.png', type = 'website', published, noindex = false, nav = null } = Astro.props;
+const fullTitle = title ? `${title} · ${SITE.title}` : `${SITE.title} · ${SITE.description}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+const icon32 = await getImage({ src: avatar, width: 32, height: 32, format: 'png' });
+const icon180 = await getImage({ src: avatar, width: 180, height: 180, format: 'png' });
+const brandImg = await getImage({ src: avatar, width: 64, height: 64, format: 'webp' });
+const sigImg = await getImage({ src: avatar, width: 104, height: 104, format: 'webp' });
+const metaDesc = description.length > 200 ? description.slice(0, 197).replace(/\s+\S*$/, '') + '…' : description;
+const links = [
+  { id: 'writing', label: 'writing', href: '/archive/' },
+  { id: 'podcasts', label: 'podcasts', href: '/podcasts/' },
+  { id: 'projects', label: 'projects', href: '/#projects' },
+  { id: 'about', label: 'about', href: '/about/' },
+  { id: 'search', label: 'search', href: '/search/' },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={metaDesc} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    <link rel="icon" type="image/png" sizes="32x32" href={icon32.src} />
+    <link rel="apple-touch-icon" href={icon180.src} />
+    <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <meta name="theme-color" content="#05070a" />
+    <meta property="og:site_name" content={SITE.title} />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title ?? SITE.title} />
+    <meta property="og:description" content={metaDesc} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    {published && <meta property="article:published_time" content={published.toISOString()} />}
+    <meta name="author" content={SITE.author} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip" href="#content">skip to content</a>
+    <header class="nav">
+      <div class="wrap">
+        <a class="brand" href="/" aria-label={`${SITE.title}, home`}>
+          <img src={brandImg.src} alt="" width="30" height="30" />
+          <span>musingsofmy<span class="tld">.today</span><span class="cursor" aria-hidden="true">_</span></span>
+        </a>
+        <nav aria-label="Main">
+          {links.map((l) => <a href={l.href} aria-current={nav === l.id ? 'page' : undefined}>{l.label}</a>)}
+        </nav>
+        <span class="spacer"></span>
+        <a class="btn ghost clip" href="/rss.xml">rss</a>
+        <a class="btn clip" href="/subscribe/">subscribe →</a>
+      </div>
+    </header>
+    <div class="main" id="content">
+      <slot />
+    </div>
+    <footer>
+      <div class="wrap">
+        <div>
+          <div class="sig">
+            <img src={sigImg.src} alt="" width="52" height="52" />
+            <div><b>Kenneth Henseler</b><span>KenHenChan · Indianapolis, IN</span></div>
+          </div>
+          <div class="motto">Real bugs, real fixes.</div>
+          <div class="colophon">Built with Astro from Markdown in <a href="https://github.com/justadakaje/musingsofmy.today">a public repo</a>.</div>
+        </div>
+        <div>
+          <h5>// elsewhere</h5>
+          <ul>{SOCIAL.map((s) => <li><a href={s.href}>{s.label}</a></li>)}</ul>
+        </div>
+        <div>
+          <h5>// support the work</h5>
+          <ul>
+            {SUPPORT.map((s) => <li><a href={s.href}>{s.label}</a></li>)}
+            <li><a href="/subscribe/">email newsletter</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

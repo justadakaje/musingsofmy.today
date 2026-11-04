@@ -1,0 +1,28 @@
+---
+/**
+ * YouTube via youtube-nocookie.com: no tracking cookies until the reader presses play.
+ * Pass `id` for one video or `playlist` for a playlist (the monthly music posts use these).
+ */
+interface Props {
+  id?: string;
+  playlist?: string;
+  title?: string;
+}
+const { id, playlist, title = playlist ? 'YouTube playlist' : 'YouTube video' } = Astro.props;
+if (!id && !playlist) throw new Error('<YouTube> needs an id or a playlist');
+const src = playlist
+  ? `https://www.youtube-nocookie.com/embed/videoseries?list=${playlist}`
+  : `https://www.youtube-nocookie.com/embed/${id}`;
+---
+<figure class="embed">
+  <div class="embed-frame ratio-video" data-wc-ignore>
+    <iframe
+      src={src}
+      title={title}
+      loading="lazy"
+      allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+      allowfullscreen
+      referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  </div>
+  {Astro.slots.has('default') && <figcaption><slot /></figcaption>}
+</figure>

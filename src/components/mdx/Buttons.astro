@@ -1,0 +1,10 @@
+---
+/** WordPress button groups. A button without href renders as a label (some posts used them as a checklist). */
+interface Props {
+  links: { href?: string; label: string }[];
+}
+const { links } = Astro.props;
+---
+<div class="buttons">
+  {links.map((l) => (l.href ? <a class="btn ghost clip" href={l.href}>{l.label}</a> : <span class="btn ghost clip label">{l.label}</span>))}
+</div>

@@ -1,0 +1,16 @@
+---
+/** Fallback for embeds with no component: a plain, labelled link. */
+interface Props {
+  href: string;
+  label?: string;
+}
+const { href, label } = Astro.props;
+let host = '';
+try {
+  host = new URL(href).hostname.replace(/^www\./, '');
+} catch {}
+---
+<figure class="embed">
+  <a class="linkcard clip" href={href} data-wc-ignore><span class="mono">{host} ↗</span><b>{label ?? href}</b></a>
+  {Astro.slots.has('default') && <figcaption><slot /></figcaption>}
+</figure>

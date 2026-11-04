@@ -1,0 +1,111 @@
+---
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PostRow from '../components/PostRow.astro';
+import PodcastCard from '../components/PodcastCard.astro';
+import avatar from '../assets/avatar.png';
+import { getPosts, postPath, fmtDate, readMinutes } from '../lib/posts';
+import { SECTIONS, SHOWS, SHOW_IDS, sectionById } from '../site';
+import { NOW, FEATURED, PROJECTS } from '../data/home';
+
+const posts = await getPosts();
+const featured = posts.find((p) => p.id === FEATURED.id) ?? posts[0];
+const latest = posts.filter((p) => p !== featured).slice(0, 8);
+const counts = Object.fromEntries(SECTIONS.map((s) => [s.id, posts.filter((p) => p.data.section === s.id).length]));
+const latestByShow = Object.fromEntries(SHOW_IDS.map((id) => [id, posts.find((p) => p.data.podcast?.show === id)]));
+const latestEp = posts.find((p) => p.data.podcast?.episode);
+const byline = await getImage({ src: avatar, width: 88, height: 88, format: 'webp' });
+const fs = sectionById(featured.data.section);
+
+// Old WordPress links like /?p=2234 and /?page_id=149 land on the home page with a query
+// string, which a static host can't redirect. This map lets a tiny script do it instead.
+const legacyIds = Object.fromEntries(posts.filter((p) => p.data.legacy).map((p) => [p.data.legacy!.wpcom_id, postPath(p)]));
+legacyIds[149] = '/about/';
+legacyIds[2] = '/contact/';
+---
+<Base nav="writing">
+  <script is:inline define:vars={{ legacyIds }}>
+    (function () {
+      var q = new URLSearchParams(location.search);
+      var id = q.get('p') || q.get('page_id');
+      if (id && legacyIds[id]) location.replace(legacyIds[id]);
+    })();
+  </script>
+  <section class="hero">
+    <div class="floor"></div><div class="horizon"></div>
+    <div class="wrap">
+      <div>
+        <div class="eyebrow">// the weblog of a curious mind</div>
+        <h1>Notes from a <span class="accent">curious engineer.</span></h1>
+        <p class="lede">Platform engineering, AI systems that misbehave, and the WoW addons I build live on stream. Plus the history, science and music I can't stop reading about.</p>
+        <div class="byline">
+          <img src={byline.src} alt="" width="44" height="44" />
+          <div><b>Kenneth Henseler</b><span class="mono">Systems &amp; Platform Engineering · Indianapolis</span></div>
+        </div>
+      </div>
+      <aside class="now clip" aria-label="What I'm doing now">
+        <div class="now-head"><span class="dot"></span> now.log <span class="path">~/kenhen</span></div>
+        <dl>
+          {NOW.rows.slice(0, 2).map((r) => <><dt>{r.k}</dt><dd>{r.v}</dd></>)}
+          {latestEp && (
+            <>
+              <dt>latest ep</dt>
+              <dd>{SHOWS[latestEp.data.podcast!.show].name} <a href={postPath(latestEp)}>{latestEp.data.podcast!.episode}</a></dd>
+            </>
+          )}
+          {NOW.rows.slice(2).map((r) => <><dt>{r.k}</dt><dd>{r.href ? <a href={r.href}>{r.v}</a> : r.v}</dd></>)}
+        </dl>
+        <div class="now-foot">last updated {NOW.updated}</div>
+      </aside>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <nav class="lanes" aria-label="Sections">
+      <a class="lane clip on" href="/archive/">all <i>{posts.length}</i></a>
+      {SECTIONS.map((s) => <a class="lane clip" href={`/section/${s.id}/`}>{s.label}{s.hint ? <i>{s.hint}</i> : <i>{counts[s.id]}</i>}</a>)}
+    </nav>
+
+    <div class="sec"><h2>// featured</h2><span class="rule"></span></div>
+    <article class="featured clip">
+      <div class="copy">
+        <div class="tags">
+          <span class="tag">{fs.label}</span>
+          {featured.data.tags.slice(0, 2).map((t, i) => <span class={`tag${i === 1 ? ' gold' : ''}`}>{t.toLowerCase()}</span>)}
+        </div>
+        <h3><a href={postPath(featured)}>{featured.data.title}</a></h3>
+        <p>{featured.data.description}</p>
+        <div class="meta"><b>{fmtDate(featured.data.date)}</b> · {readMinutes(featured.body)} min read</div>
+        <a class="readmore" href={postPath(featured)}>read the post →</a>
+      </div>
+      {featured.id === FEATURED.id && (
+        <div class="term" aria-hidden="true">
+          {FEATURED.term.map((l) =>
+            l.kind === 'prompt' ? <div><span class="prompt">$</span> {l.text}</div>
+            : l.kind === 'ok' ? <div><span class="ok">✓</span> {l.text}</div>
+            : <div><span class="x">✗</span> {l.text} <span class="c">{l.note}</span></div>,
+          )}
+        </div>
+      )}
+    </article>
+
+    <div class="sec"><h2>// latest</h2><span class="rule"></span><a href="/archive/">all {posts.length} posts →</a></div>
+    <div class="log">{latest.map((p) => <PostRow post={p} />)}</div>
+
+    <div class="sec"><h2>// podcasts</h2><span class="rule"></span><a href="/podcasts/">episodes on the blog →</a></div>
+    <div class="cards two">{SHOW_IDS.map((id) => <PodcastCard show={id} latest={latestByShow[id]} />)}</div>
+
+    <div class="sec" id="projects"><h2>// projects</h2><span class="rule"></span><a href="https://github.com/justadakaje">github.com/justadakaje →</a></div>
+    <div class="cards three">
+      {PROJECTS.map((pr) => (
+        <div class="card clip">
+          <span class={`status ${pr.status.cls}`}>{pr.status.label}</span>
+          <h4>{pr.name}</h4>
+          <p>{pr.blurb}</p>
+          <ul class="facts">{pr.facts.map((f) => <li>{f}</li>)}</ul>
+          <div class="links">{pr.links.map((l) => <a href={l.href}>{l.label}</a>)}</div>
+        </div>
+      ))}
+    </div>
+  </main>
+</Base>

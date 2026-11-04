@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { SHOWS, SHOW_IDS } from '../site';
+---
+<Base title="Subscribe" description="Follow Musings of My Today by RSS, email or podcast.">
+  <PageHead eyebrow="// subscribe" title="Follow along" lede="Three ways, none of which need an account here." />
+  <main class="wrap art-grid no-toc">
+    <div class="prose">
+      <h2 id="rss">RSS</h2>
+      <p>
+        The feed is <a href="/rss.xml">musingsofmy.today/rss.xml</a>. The old WordPress address,
+        <code>/feed/</code>, redirects there, so existing feed readers keep working without a change.
+      </p>
+      <h2 id="email">Email</h2>
+      <p>
+        If you subscribed by email on the old WordPress site, you're still on the list: it is moving to a new sender with the site.
+        New sign-ups open once that move is finished. Until then, RSS gets every post the moment it's published.
+      </p>
+      <h2 id="podcasts">Podcasts</h2>
+      <ul>
+        {SHOW_IDS.map((id) => (
+          <li><strong>{SHOWS[id].name}</strong>: <a href={SHOWS[id].apple}>Apple Podcasts</a> · <a href={SHOWS[id].spotify}>Spotify</a></li>
+        ))}
+      </ul>
+    </div>
+  </main>
+</Base>

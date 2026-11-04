@@ -1,0 +1,26 @@
+---
+import type { Post } from '../lib/posts';
+import { postPath } from '../lib/posts';
+import { SHOWS, type ShowId } from '../site';
+
+interface Props {
+  show: ShowId;
+  /** Newest post that accompanies an episode of this show, if any. */
+  latest?: Post;
+}
+const { show, latest } = Astro.props;
+const s = SHOWS[show];
+const latestTitle = latest ? (latest.data.podcast?.title ?? latest.data.title) : null;
+---
+<div class="card clip pod">
+  <div class={`art ${s.tone} clip`} aria-hidden="true">{s.short}</div>
+  <div>
+    <div class="k">{s.kicker}</div>
+    <h4>{s.name}</h4>
+    <p>
+      {s.blurb}
+      {latest && <> Latest on the blog: <a href={postPath(latest)}>{latestTitle}</a>.</>}
+    </p>
+    <div class="links"><a href={s.apple}>apple podcasts</a><a href={s.spotify}>spotify</a></div>
+  </div>
+</div>

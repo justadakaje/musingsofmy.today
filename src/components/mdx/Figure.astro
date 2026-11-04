@@ -1,0 +1,39 @@
+---
+/**
+ * An image with an optional caption (the slot) and link.
+ * Local images go through astro:assets (resized, WebP); GIFs and SVGs pass through untouched
+ * so animation survives; string sources (rare remote images) render as plain <img>.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata | string;
+  alt?: string;
+  /** Display width WordPress used, when it was smaller than the column. */
+  width?: number;
+  href?: string;
+}
+const { src, alt = '', width, href } = Astro.props;
+const local = typeof src !== 'string';
+const raster = local && !['gif', 'svg'].includes(src.format);
+const hasCaption = Astro.slots.has('default');
+const Wrap = href ? 'a' : 'span';
+---
+<figure class="fig" style={width ? `max-width:${width}px` : undefined}>
+  <Wrap class="fig-media" href={href}>
+    {raster ? (
+      <Image src={src} alt={alt} widths={[480, 720, 1080, 1440]} sizes="(max-width: 760px) 100vw, 720px" />
+    ) : (
+      <img
+        src={local ? src.src : src}
+        alt={alt}
+        width={local ? src.width : undefined}
+        height={local ? src.height : undefined}
+        loading="lazy"
+        decoding="async"
+      />
+    )}
+  </Wrap>
+  {hasCaption && <figcaption><slot /></figcaption>}
+</figure>

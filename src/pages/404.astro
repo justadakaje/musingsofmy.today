@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import PostRow from '../components/PostRow.astro';
+import { getPosts } from '../lib/posts';
+const posts = (await getPosts()).slice(0, 5);
+---
+<Base title="Not found" noindex>
+  <PageHead eyebrow="// 404" title="Nothing at this address" lede="Every post kept its old URL in the move from WordPress, so this one either never existed or was a WordPress-only page (an attachment, a date archive). Try search or the archive." />
+  <main class="wrap">
+    <div class="sec"><h2>// try</h2><span class="rule"></span></div>
+    <p class="meta"><a href="/search/">search</a> · <a href="/archive/">all posts</a> · <a href="/">home</a></p>
+    <div class="sec"><h2>// latest</h2><span class="rule"></span></div>
+    <div class="log">{posts.map((p) => <PostRow post={p} />)}</div>
+  </main>
+</Base>

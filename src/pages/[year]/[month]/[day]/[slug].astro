@@ -1,0 +1,93 @@
+---
+/**
+ * Every post at its original WordPress permalink: /YYYY/MM/DD/slug/.
+ * The path comes from the post's folder name (see src/lib/posts.ts); no redirects needed.
+ */
+import { render } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
+import Base from '../../../../layouts/Base.astro';
+import EpisodeCard from '../../../../components/EpisodeCard.astro';
+import ArchivedComments from '../../../../components/ArchivedComments.astro';
+import Giscus from '../../../../components/Giscus.astro';
+import { mdxComponents } from '../../../../components/mdx';
+import { getPosts, postParams, postPath, fmtDate, readMinutes, tagSlug, type Post } from '../../../../lib/posts';
+import { sectionById, SITE } from '../../../../site';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post, i) => {
+    postPath(post); // validates folder name vs date; throws with a clear message if they disagree
+    return {
+      params: postParams(post),
+      props: { post, newer: posts[i - 1], older: posts[i + 1] },
+    };
+  });
+}
+
+interface Props {
+  post: Post;
+  newer?: Post;
+  older?: Post;
+}
+const { post, newer, older } = Astro.props;
+const { Content, headings } = await render(post);
+const d = post.data;
+const section = sectionById(d.section);
+const minutes = readMinutes(post.body);
+
+// Table of contents: the top heading level actually used in the post.
+const top = Math.min(...headings.map((h) => h.depth).filter((x) => x >= 2), 6);
+const toc = headings.filter((h) => h.depth === top);
+const showToc = toc.length >= 2;
+
+const og = d.cover ? (await getImage({ src: d.cover.src, width: 1200, format: 'jpg' })).src : undefined;
+---
+<Base title={d.title} description={d.description} type="article" published={d.date} image={og}>
+  <header class="art-head">
+    <div class="floor" style="top:84%"></div><div class="horizon" style="top:84%"></div>
+    <div class="wrap">
+      <div class="crumbs">
+        <a href={`/section/${section.id}/`}>{section.label}</a>
+        {d.tags.slice(0, 2).map((t) => <> / <a href={`/tag/${tagSlug(t)}/`}>{tagSlug(t)}</a></>)}
+      </div>
+      <h1 data-pagefind-body>{d.title}</h1>
+      <div class="art-meta">
+        <span><b><time datetime={d.date.toISOString()}>{fmtDate(d.date)}</time></b></span>
+        <span>{minutes} min read</span>
+        <span>{SITE.author}</span>
+        {d.updated && fmtDate(d.updated) !== fmtDate(d.date) && <span>updated {fmtDate(d.updated)}</span>}
+      </div>
+    </div>
+  </header>
+  <main class={`wrap art-grid${showToc ? '' : ' no-toc'}`}>
+    {showToc && (
+      <aside class="toc" aria-label="On this page">
+        <h6>// on this page</h6>
+        <ol>{toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+      </aside>
+    )}
+    <article>
+      {d.podcast && <EpisodeCard podcast={d.podcast} fallbackTitle={d.title} />}
+      {d.cover && !d.cover.inline && (
+        <figure class="cover">
+          <Image src={d.cover.src} alt={d.cover.alt} widths={[720, 1080, 1440]} sizes="(max-width: 760px) 100vw, 720px" loading="eager" />
+        </figure>
+      )}
+      <div class="prose" data-post-body data-pagefind-body>
+        <Content components={mdxComponents} />
+      </div>
+      <div class="post-foot">
+        <div>filed under <a href={`/section/${section.id}/`}>{section.label}</a>{d.categories.length > 0 && <> · originally {d.categories.join(', ')}</>}</div>
+        {d.tags.length > 0 && (
+          <div class="tags">{d.tags.map((t) => <a class="tag" href={`/tag/${tagSlug(t)}/`}>{t}</a>)}</div>
+        )}
+      </div>
+      <ArchivedComments wpcomId={d.legacy?.wpcom_id} />
+      <Giscus />
+      <nav class="pager" aria-label="More posts">
+        {newer && <a class="newer" href={postPath(newer)}><span>← newer</span>{newer.data.title}</a>}
+        {older && <a class="next" href={postPath(older)}><span>older →</span>{older.data.title}</a>}
+      </nav>
+    </article>
+  </main>
+</Base>

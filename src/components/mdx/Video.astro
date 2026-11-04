@@ -1,0 +1,20 @@
+---
+import type { ImageMetadata } from 'astro';
+interface Props {
+  src: string;
+  poster?: ImageMetadata | string;
+  title?: string;
+}
+const { src, poster, title } = Astro.props;
+---
+<figure class="embed">
+  <video
+    class="media"
+    controls
+    preload="metadata"
+    playsinline
+    src={src}
+    poster={typeof poster === 'string' ? poster : poster?.src}
+    title={title}></video>
+  {Astro.slots.has('default') && <figcaption><slot /></figcaption>}
+</figure>

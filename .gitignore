@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.astro/
+.wrangler/
+.env
+.env.*
+!.env.example
+validation-ci.md
+*.log
+.DS_Store
+Thumbs.db
+
+# Subscriber exports must never be committed (MIGRATION.md).
+*subscribers*.csv
+*subscribers*.json
+data/private/

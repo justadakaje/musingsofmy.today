@@ -1,0 +1,94 @@
+---
+title: "From Ticket-Taking to Platform-Building: Why We Are Pivoting to Product Mode"
+date: "2026-02-16T00:04:25-06:00"
+updated: "2026-04-26T14:18:29-05:00"
+section: engineering
+categories: ["Business", "Technology", "Writings"]
+tags: ["bureaucracy", "DevOps", "engineering manifesto", "infrastructure management", "it service management", "ITStrategy", "Leadership", "platform engineering", "product building", "project polaris", "ticket factory", "ticketing process"]
+description: "Unlock the full potential of your IT infrastructure by embracing Platform Engineering. Learn how to shift from gatekeeping to cultivating, creating an Internal Developer Platform that delivers seamless access and security. Experience the future of IT management."
+cover:
+  src: "./img_5795.png"
+  alt: ""
+legacy:
+  wpcom_id: 1783
+  views_all_time: 0
+  comments: 0
+  guid: "http://musingsofmy.today/2026/02/16/from-ticket-taking-to-platform-building-why-we-are-pivoting-to-product-mode/"
+  short_url: "https://wp.me/pbES0N-sL"
+---
+
+import img1 from './img_5796.png';
+import img2 from './img_5797.png';
+import img3 from './img_5799.jpg';
+
+> A Platform Engineering Manifesto
+
+By: Kenneth Henseler, 15-FEB-2026
+
+I’ve spent a lot of time in the trenches of IT Infrastructure. If you’ve been there, you know the drill: The “Ticket Factory.”
+
+Developers need a server? Ticket.
+
+Need a firewall rule? Ticket.
+
+Need a database? Ticket.
+
+For decades, this was the industry standard. It was safe. It was controlled. But in 2026, it’s also a bottleneck that kills velocity. When your smartest engineers spend 60% of their week manually executing repetitive tasks from a queue, you aren’t managing infrastructure—you’re managing a bureaucracy.
+
+That’s why I’m leading a strategic shift in my organization: Moving from IT Service Management (ITSM) to Platform Engineering. We call it Project Polaris.
+
+Here is the philosophy behind the shift, and why “Good IT” isn’t about closing tickets anymore—it’s about building products.
+
+1\. The “Ticket Factory” Doesn’t Scale
+
+<Figure src={img1} alt={""} />
+
+Traditional IT operations are linear. If you hire 10 more developers, you generate 10x more requests, which means you need 10x more sysadmins to handle the load. That math doesn’t work.
+
+We are moving away from being “Gatekeepers” (who approve and implement) to becoming “Gardeners” (who cultivate the ecosystem).
+
+The goal of our new Platform Engineering model is simple: Self-Service with Guardrails.
+
+We are building an Internal Developer Platform (IDP) that treats our infrastructure as a product. If a developer needs a resource, they shouldn’t have to ask me for permission; they should be able to consume it via API or portal, knowing that the security and compliance checks are already baked in.
+
+2\. The “Golden Ratio” of Capacity Planning
+
+One of the hardest lessons in engineering leadership is protecting your team’s time. If you don’t defend it, “keeping the lights on” (KTLO) will eat 100% of your bandwidth.
+
+As part of this restructure, we are implementing a strict capacity model that I call the “Golden Ratio” for our sprints:
+
+<Figure src={img2} alt={""} />
+
+• 50% Strategic Enablers: Work that moves the business forward (Building the IDP, new architecture, automation).
+
+• 30% Operational/Support: The inevitable day-to-day reality of running systems.
+
+• 20% Tech Debt Repayment: Mandatory. Non-negotiable.
+
+If you don’t explicitly budget for Tech Debt, you are essentially taking out a high-interest loan on your future stability. Eventually, the interest payments (outages, slow deployments, manual patches) will bankrupt your time.
+
+3\. Governance as Code (Safety Without Speed Bumps)
+
+The biggest fear with self-service is usually security. “If we let devs provision their own DBs, won’t they leave them open to the internet?”
+
+In the old world, we stopped this by having a human review every change. In the Platform world, we stop this with Governance as Code.
+
+Instead of a manual approval board, we define our policies in the platform itself.
+
+• You want an S3 bucket? Fine, but the platform automatically enforces encryption and private access policies before it’s even created.
+
+• You need a VM? The image is pre-hardened and automatically patched.
+
+We aren’t removing the rules; we are automating the enforcement. This allows us to say “Yes” faster, without lowering our security posture.
+
+The North Star, Polaris
+
+<Figure src={img3} alt={""} />
+
+This transition isn’t easy. It requires a culture shift from “I own this server” to “I own the code that builds this server.”
+
+But the destination is worth it. By treating our platform as a product, we stop being the “Department of No” and start being the accelerator that the business actually needs.
+
+See you in the server room (or the repo).
+
+– Ken

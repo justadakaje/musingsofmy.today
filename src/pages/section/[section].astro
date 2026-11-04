@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import PostRow from '../../components/PostRow.astro';
+import { getPosts, type Post } from '../../lib/posts';
+import { SECTIONS, type Section } from '../../site';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return SECTIONS.map((section) => ({
+    params: { section: section.id },
+    props: { section, posts: posts.filter((p) => p.data.section === section.id) },
+  }));
+}
+interface Props {
+  section: Section;
+  posts: Post[];
+}
+const { section, posts } = Astro.props;
+---
+<Base title={section.label} description={section.blurb} nav="writing">
+  <PageHead eyebrow="// section" title={section.label} lede={`${section.blurb} ${posts.length} post${posts.length === 1 ? '' : 's'}.`}>
+    <nav class="lanes" aria-label="Sections">
+      <a class="lane clip" href="/archive/">all</a>
+      {SECTIONS.map((s) => <a class="lane clip" aria-current={s.id === section.id ? 'page' : undefined} href={`/section/${s.id}/`}>{s.label}</a>)}
+    </nav>
+  </PageHead>
+  <main class="wrap">
+    <div class="sec"><h2>// {posts.length} posts</h2><span class="rule"></span></div>
+    <div class="log">{posts.map((p) => <PostRow post={p} />)}</div>
+    <p class="meta" style="margin-top:28px">Old WordPress category links ({section.categories.map((c) => c.name).join(', ')}) redirect here.</p>
+  </main>
+</Base>

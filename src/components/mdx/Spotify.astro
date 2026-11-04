@@ -1,0 +1,21 @@
+---
+interface Props {
+  type: 'episode' | 'track' | 'playlist' | 'album' | 'show' | 'artist';
+  id: string;
+  title?: string;
+}
+const { type, id, title = 'Spotify' } = Astro.props;
+const tall = ['playlist', 'album', 'show', 'artist'].includes(type);
+---
+<figure class="embed">
+  <div class="embed-frame" data-wc-ignore>
+    <iframe
+      src={`https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`}
+      title={`Spotify: ${title}`}
+      height={tall ? 352 : 152}
+      loading="lazy"
+      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+      style="border-radius:12px"></iframe>
+  </div>
+  {Astro.slots.has('default') && <figcaption><slot /></figcaption>}
+</figure>

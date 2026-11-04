@@ -1,0 +1,142 @@
+[
+ {
+  "id": 32,
+  "post": 2234,
+  "parent": null,
+  "date": "2026-09-24T21:56:34-05:00",
+  "type": "pingback",
+  "author": "Absent from the Docs, Present in the Client: Mapping WoW Forever’s Real API Surface – Musings of My Today",
+  "author_url": "http://musingsofmy.today/2026/09/24/wow-forever-api-surface-build-69913/",
+  "content": "<p>[&#8230;] Companion article: Confidently Wrong: Four AI Errors a Beta Game Client Caught in Four Hours [&#8230;]</p>\n"
+ },
+ {
+  "id": 31,
+  "post": 2235,
+  "parent": null,
+  "date": "2026-09-24T21:55:24-05:00",
+  "type": "pingback",
+  "author": "Confidently Wrong: Four AI Errors a Beta Game Client Caught in Four Hours – Musings of My Today",
+  "author_url": "http://musingsofmy.today/2026/09/24/ai-confidently-wrong-wow-addon-verification/",
+  "content": "<p>[&#8230;] Companion reference: Absent from the Docs, Present in the Client: Mapping WoW Forever&#8217;s Real API Surface [&#8230;]</p>\n"
+ },
+ {
+  "id": 29,
+  "post": 1080,
+  "parent": null,
+  "date": "2026-01-30T04:06:14-06:00",
+  "type": "pingback",
+  "author": "Was ist das Jahr-2038-Problem und wie können Unternehmen es beheben? | Offizieller Blog von Kaspersky - all4IT AG",
+  "author_url": "https://all4it.ch/2026/01/30/was-ist-das-jahr-2038-problem-und-wie-koennen-unternehmen-es-beheben-offizieller-blog-von-kaspersky/",
+  "content": "<p>[&#8230;] So etwas wie eine „zentrale Datenbank für Y2K38-Schwachstellen“ gibt es nicht (1, 2, 3, 4, [&#8230;]</p>\n"
+ },
+ {
+  "id": 28,
+  "post": 1080,
+  "parent": null,
+  "date": "2026-01-19T13:16:24-06:00",
+  "type": "pingback",
+  "author": "What is the “year 2038 problem”, and how can businesses fix it?",
+  "author_url": "https://www.kaspersky.com/blog/mitigating-y2k38-vulnerability-in-organization/55150/",
+  "content": "<p>[&#8230;] fragmented. Consequently, there’s no “common Y2K38 vulnerability database” out there (1, 2, 3, 4, [&#8230;]</p>\n"
+ },
+ {
+  "id": 27,
+  "post": 1080,
+  "parent": null,
+  "date": "2026-01-19T12:07:26-06:00",
+  "type": "pingback",
+  "author": "What is the “year 2038 problem”, and how can businesses fix it? – BackBox.org News",
+  "author_url": "https://news.backbox.org/2026/01/19/what-is-the-year-2038-problem-and-how-can-businesses-fix-it/",
+  "content": "<p>[&#8230;] fragmented. Consequently, there’s no “common Y2K38 vulnerability database” out there (1, 2, 3, 4, [&#8230;]</p>\n"
+ },
+ {
+  "id": 26,
+  "post": 1080,
+  "parent": null,
+  "date": "2026-01-19T05:08:08-06:00",
+  "type": "pingback",
+  "author": "Что такое «проблема 2038», и как устранить ее в организации — InfoSecPortal.ru",
+  "author_url": "https://infosecportal.ru/agregator-runeta/agregator-blogov/chto-takoe-problema-2038-i-kak-ustranit-ee-v-organizaczii/",
+  "content": "<p>[&#8230;] поэтому никакой «общей базы уязвимостей Y2K38» нет (1, 2, 3, 4, [&#8230;]</p>\n"
+ },
+ {
+  "id": 25,
+  "post": 1080,
+  "parent": 24,
+  "date": "2025-08-23T22:06:45-05:00",
+  "type": "comment",
+  "author": "Kenneth Henseler",
+  "author_url": "https://musingsofmy.today",
+  "content": "<p>Thank you for referencing my article and for sharing these findings.</p>\n"
+ },
+ {
+  "id": 24,
+  "post": 1080,
+  "parent": null,
+  "date": "2025-08-23T22:00:22-05:00",
+  "type": "pingback",
+  "author": "PDP-11で2037年クラッシュ発見、2038年問題より早い未知のバグが判明 - digitopia",
+  "author_url": "http://digital-madoguchi.site/innovatopia/omote/2653/",
+  "content": "<p>[&#8230;] Y2K38: Risks, Solutions, and Real-World Implications（外部）2038年問題のリスクと解決策について、現実世界への影響を詳細に分析 [&#8230;]</p>\n"
+ },
+ {
+  "id": 23,
+  "post": 1080,
+  "parent": 22,
+  "date": "2025-08-05T17:04:52-05:00",
+  "type": "comment",
+  "author": "Doug (Gmail)",
+  "author_url": "http://musingsofmy.today/2025/05/02/y2k38-risks-solutions-and-real-world-implications/comment-page-1/#comment-23",
+  "content": "<p>Thank You!</p>\n<p>On Mon, Jul 28, 2025 at 4:21â¯PM Musings of My Today</p>\n"
+ },
+ {
+  "id": 22,
+  "post": 1080,
+  "parent": 20,
+  "date": "2025-07-28T18:21:42-05:00",
+  "type": "comment",
+  "author": "Kenneth Henseler",
+  "author_url": "https://musingsofmy.today",
+  "content": "<p>Works cited<br />\n1. Year 2038 problem &#8211; Wikipedia, <a href=\"https://en.wikipedia.org/wiki/Year_2038_problem\" rel=\"nofollow ugc\">https://en.wikipedia.org/wiki/Year_2038_problem</a> 2. Year 2038 problem is still alive and well | Silent&#8217;s Blog, <a href=\"https://cookieplmonster.github.io/2022/02/17/year-2038-problem/\" rel=\"nofollow ugc\">https://cookieplmonster.github.io/2022/02/17/year-2038-problem/</a> 3. Timestamp, year 2038 problem for 64 bit Ubuntu system, <a href=\"https://askubuntu.com/questions/675116/timestamp-year-2038-problem-for-64-bit-ubuntu-system\" rel=\"nofollow ugc\">https://askubuntu.com/questions/675116/timestamp-year-2038-problem-for-64-bit-ubuntu-system</a> 4. Definition of Year 2038 problem &#8211; PCMag, <a href=\"https://www.pcmag.com/encyclopedia/term/year-2038-problem\" rel=\"nofollow ugc\">https://www.pcmag.com/encyclopedia/term/year-2038-problem</a> 5. TIL there&#8217;s another Y2K in 2038, Y2K38, when systems using 32-bit integers in time-sensitive/measured processes will suffer fatal errors unless updated to 64-bit. &#8211; Reddit, <a href=\"https://www.reddit.com/r/todayilearned/comments/1kaqbl9/til_theres_another_y2k_in_2038_y2k38_when_systems/\" rel=\"nofollow ugc\">https://www.reddit.com/r/todayilearned/comments/1kaqbl9/til_theres_another_y2k_in_2038_y2k38_when_systems/</a> 6. How will &#8216;The 2038 Problem&#8217; affect people&#8217;s day-to-day lives? : r/askscience &#8211; Reddit, <a href=\"https://www.reddit.com/r/askscience/comments/c8qs9t/how_will_the_2038_problem_affect_peoples_daytoday/\" rel=\"nofollow ugc\">https://www.reddit.com/r/askscience/comments/c8qs9t/how_will_the_2038_problem_affect_peoples_daytoday/</a> 7. In the year 2038&#8230; : r/linux &#8211; Reddit, <a href=\"https://www.reddit.com/r/linux/comments/xjtf3q/in_the_year_2038/\" rel=\"nofollow ugc\">https://www.reddit.com/r/linux/comments/xjtf3q/in_the_year_2038/</a> 8. ReleaseGoals/64bit-time &#8211; Debian Wiki, <a href=\"https://wiki.debian.org/ReleaseGoals/64bit-time\" rel=\"nofollow ugc\">https://wiki.debian.org/ReleaseGoals/64bit-time</a> 9. 64-bit time_t in Linux Kernel &#8211; Stack Overflow, <a href=\"https://stackoverflow.com/questions/29085124/64-bit-time-t-in-linux-kernel\" rel=\"nofollow ugc\">https://stackoverflow.com/questions/29085124/64-bit-time-t-in-linux-kernel</a> 10. 64-bit time_t transition in progress &#8211; Debian Mailing Lists, <a href=\"https://lists.debian.org/debian-devel-announce/2024/02/msg00000.html\" rel=\"nofollow ugc\">https://lists.debian.org/debian-devel-announce/2024/02/msg00000.html</a> 11. Y2038ProofnessDesign &#8211; glibc wiki, <a href=\"https://sourceware.org/glibc/wiki/Y2038ProofnessDesign\" rel=\"nofollow ugc\">https://sourceware.org/glibc/wiki/Y2038ProofnessDesign</a> 12. Is there any way to get 64-bit time_t in 32-bit programs in Linux? &#8211; Stack Overflow, <a href=\"https://stackoverflow.com/questions/14361651/is-there-any-way-to-get-64-bit-time-t-in-32-bit-programs-in-linux\" rel=\"nofollow ugc\">https://stackoverflow.com/questions/14361651/is-there-any-way-to-get-64-bit-time-t-in-32-bit-programs-in-linux</a> 13. Solving the Year 2038 problem in the Linux kernel &#8211; Opensource.com, <a href=\"https://opensource.com/article/19/1/year2038-problem-linux-kernel\" rel=\"nofollow ugc\">https://opensource.com/article/19/1/year2038-problem-linux-kernel</a> 14. Fixing the 2038 problem (64-bit time_t) &#8211; Raspberry Pi Forums, <a href=\"https://forums.raspberrypi.com/viewtopic.php?t=351042\" rel=\"nofollow ugc\">https://forums.raspberrypi.com/viewtopic.php?t=351042</a> 15. The Year 2038 Problem &#8211; What it is, Why it will happen &amp; How to fix it, <a href=\"https://theyear2038problem.com/\" rel=\"nofollow ugc\">https://theyear2038problem.com/</a> 16. The Epochalypse: Y2K All Over Again? &#8211; 4CA, <a href=\"https://www.4ca.com.au/trending/entertainment/the-epochalypse-y2k-all-over-again/\" rel=\"nofollow ugc\">https://www.4ca.com.au/trending/entertainment/the-epochalypse-y2k-all-over-again/</a> 17. Y2k38 an Integer Overflow Threat-Epoch &#8211; International Journal of Computer Sciences and Engineering Open Access Digital World Bug, <a href=\"https://ijcseonline.isroset.org/pub_paper/22-IJCSE-01974-3.pdf\" rel=\"nofollow ugc\">https://ijcseonline.isroset.org/pub_paper/22-IJCSE-01974-3.pdf</a> 18. The 2038 Problem &#8211; CodeReliant, <a href=\"https://www.codereliant.io/the-2038-problem/\" rel=\"nofollow ugc\">https://www.codereliant.io/the-2038-problem/</a> 19. The Y2K38 Bug &#8211; Only 14 years to go &#8211; Paul Taylor Associates, <a href=\"https://www.paultaylor.associates/2024/04/28/the-y2k38-bug-only-14-years-to-go/\" rel=\"nofollow ugc\">https://www.paultaylor.associates/2024/04/28/the-y2k38-bug-only-14-years-to-go/</a> 20. 2038 Bug Survival Guide: Lessons From Leap Year Code Issues &#8211; Tanium, <a href=\"https://www.tanium.com/blog/2038-bug-survival-guide/\" rel=\"nofollow ugc\">https://www.tanium.com/blog/2038-bug-survival-guide/</a> 21. Embedded Linux and the Year 2038 Problem &#8211; SYSGO, <a href=\"https://www.sysgo.com/blog/article/embedded-linux-and-the-year-2038-problem\" rel=\"nofollow ugc\">https://www.sysgo.com/blog/article/embedded-linux-and-the-year-2038-problem</a> 22. Implementing time_t as 64 bit to solve Y2038 problem. &#8211; Nordic DevZone, <a href=\"https://devzone.nordicsemi.com/f/nordic-q-a/87950/implementing-time_t-as-64-bit-to-solve-y2038-problem\" rel=\"nofollow ugc\">https://devzone.nordicsemi.com/f/nordic-q-a/87950/implementing-time_t-as-64-bit-to-solve-y2038-problem</a> 23. What is the Year 2038 problem and how to fix it? &#8211; Datalabs, <a href=\"https://datalabsua.com/en/what-is-the-year-2038-problem-and-how-to-fix-it/\" rel=\"nofollow ugc\">https://datalabsua.com/en/what-is-the-year-2038-problem-and-how-to-fix-it/</a> 24. The Y2038 Problem. Sooner than you think. &#8211; Better Embedded System SW, <a href=\"https://betterembsw.blogspot.com/2021/01/the-y2038-problem-sooner-than-you-think.html\" rel=\"nofollow ugc\">https://betterembsw.blogspot.com/2021/01/the-y2038-problem-sooner-than-you-think.html</a> 25. Y2038: utmp, wtmp and lastlog &#8211; media.ccc.de &#8211; Chaos Computer Club, <a href=\"https://media.ccc.de/v/4578-y2038-utmp-wtmp-and-lastlog\" rel=\"nofollow ugc\">https://media.ccc.de/v/4578-y2038-utmp-wtmp-and-lastlog</a> 26. Y2038.md &#8211; thkukuk/utmpx &#8211; GitHub, <a href=\"https://github.com/thkukuk/utmpx/blob/main/Y2038.md\" rel=\"nofollow ugc\">https://github.com/thkukuk/utmpx/blob/main/Y2038.md</a> 27. System call conversion for year 2038 &#8211; Linux Weekly News, <a href=\"https://lwn.net/Articles/643234/\" rel=\"nofollow ugc\">https://lwn.net/Articles/643234/</a> 28. 2038: only 21 years away &#8211; PVS-Studio, <a href=\"https://pvs-studio.com/en/blog/posts/cpp/0505/\" rel=\"nofollow ugc\">https://pvs-studio.com/en/blog/posts/cpp/0505/</a> 29. Year 2038 Bug: What is it? How to solve it? &#8211; Stack Overflow, <a href=\"https://stackoverflow.com/questions/2012589/year-2038-bug-what-is-it-how-to-solve-it\" rel=\"nofollow ugc\">https://stackoverflow.com/questions/2012589/year-2038-bug-what-is-it-how-to-solve-it</a> 30. If you have a column that is datetime, what can you do to avoid the Y2038 problem? : r/mysql, <a href=\"https://www.reddit.com/r/mysql/comments/18vzk3r/if_you_have_a_column_that_is_datetime_what_can/\" rel=\"nofollow ugc\">https://www.reddit.com/r/mysql/comments/18vzk3r/if_you_have_a_column_that_is_datetime_what_can/</a> 31. The Y2038 problem explained : r/linux &#8211; Reddit, <a href=\"https://www.reddit.com/r/linux/comments/18of33p/the_y2038_problem_explained/\" rel=\"nofollow ugc\">https://www.reddit.com/r/linux/comments/18of33p/the_y2038_problem_explained/</a> 32. Year 2038 problem : r/sysadmin &#8211; Reddit, <a href=\"https://www.reddit.com/r/sysadmin/comments/et2dvr/year_2038_problem/\" rel=\"nofollow ugc\">https://www.reddit.com/r/sysadmin/comments/et2dvr/year_2038_problem/</a> 33. Should you worry about the Year 2038? &#8211; Solution-Soft, <a href=\"https://solution-soft.com/content/should-you-worry-about-year-2038\" rel=\"nofollow ugc\">https://solution-soft.com/content/should-you-worry-about-year-2038</a> 34. What is the Year 2038 problem? &#8211; Computer | HowStuffWorks, <a href=\"https://computer.howstuffworks.com/question75.htm\" rel=\"nofollow ugc\">https://computer.howstuffworks.com/question75.htm</a> 35. How to prevent the year 2038 bug &#8211; stm32mpu &#8211; ST wiki, <a href=\"https://wiki.st.com/stm32mpu/wiki/How_to_prevent_the_year_2038_bug\" rel=\"nofollow ugc\">https://wiki.st.com/stm32mpu/wiki/How_to_prevent_the_year_2038_bug</a> 36. Y2K and the Year 2038 Problem &#8211; NeuroLogica Blog, <a href=\"https://theness.com/neurologicablog/y2k-and-the-year-2038-problem/\" rel=\"nofollow ugc\">https://theness.com/neurologicablog/y2k-and-the-year-2038-problem/</a> 37. TIL of the Y2k38 Problem. Similar in nature to the Y2K bug, when the year 2038 strikes 03:14:07 UTC on 19 March, computers still using 32-bit systems to process the date and time may not be able to cope with the time change and could revert to the year 1901. : r/ &#8211; Reddit, <a href=\"https://www.reddit.com/r/todayilearned/comments/16a2l6v/til_of_the_y2k38_problem_similar_in_nature_to_the/\" rel=\"nofollow ugc\">https://www.reddit.com/r/todayilearned/comments/16a2l6v/til_of_the_y2k38_problem_similar_in_nature_to_the/</a> 38. Year 2038 problem (similar to the Y2K problem) : r/wikipedia &#8211; Reddit, <a href=\"https://www.reddit.com/r/wikipedia/comments/4yajji/year_2038_problem_similar_to_the_y2k_problem/\" rel=\"nofollow ugc\">https://www.reddit.com/r/wikipedia/comments/4yajji/year_2038_problem_similar_to_the_y2k_problem/</a> 39. The 2038 Problem Is The Next Y2K Bug – So How Ready For It Are We? | IFLScience, <a href=\"https://www.iflscience.com/the-2038-problem-is-the-next-y2k-bug-so-how-ready-for-it-are-we-78420\" rel=\"nofollow ugc\">https://www.iflscience.com/the-2038-problem-is-the-next-y2k-bug-so-how-ready-for-it-are-we-78420</a> 40. The Looming Linux Time Epoch Problem and What&#8217;s Being Done to Fix It, <a href=\"https://www.moserit.com/blog/the-looming-linux-time-epoch-problem\" rel=\"nofollow ugc\">https://www.moserit.com/blog/the-looming-linux-time-epoch-problem</a> 41. Avoiding the year 2038 problem (GNU Gnulib), <a href=\"https://www.gnu.org/software/gnulib/manual/html_node/Avoiding-the-year-2038-problem.html\" rel=\"nofollow ugc\">https://www.gnu.org/software/gnulib/manual/html_node/Avoiding-the-year-2038-problem.html</a> 42. What is year 2038 problem? How to find out if the existing code has that problem and solve it? &#8211; Stack Overflow, <a href=\"https://stackoverflow.com/questions/6408914/what-is-year-2038-problem-how-to-find-out-if-the-existing-code-has-that-problem\" rel=\"nofollow ugc\">https://stackoverflow.com/questions/6408914/what-is-year-2038-problem-how-to-find-out-if-the-existing-code-has-that-problem</a> 43. Why does the year 2038 problem occur in the first place? &#8211; Unix &amp; Linux Stack Exchange, <a href=\"https://unix.stackexchange.com/questions/615563/why-does-the-year-2038-problem-occur-in-the-first-place\" rel=\"nofollow ugc\">https://unix.stackexchange.com/questions/615563/why-does-the-year-2038-problem-occur-in-the-first-place</a> 44. The perils of transition to 64-bit time_t – Michał Górny, <a href=\"https://blogs.gentoo.org/mgorny/2024/09/28/the-perils-of-transition-to-64-bit-time_t/\" rel=\"nofollow ugc\">https://blogs.gentoo.org/mgorny/2024/09/28/the-perils-of-transition-to-64-bit-time_t/</a> 45. 103886 – Use 64-bit time_t on 32-bit glibc targets &#8211; GNU, <a href=\"https://gcc.gnu.org/bugzilla/show_bug.cgi?id=103886\" rel=\"nofollow ugc\">https://gcc.gnu.org/bugzilla/show_bug.cgi?id=103886</a> 46. Today is y2k38 commemoration day T-14 : r/linux &#8211; Reddit, <a href=\"https://www.reddit.com/r/linux/comments/19a95cl/today_is_y2k38_commemoration_day_t14/\" rel=\"nofollow ugc\">https://www.reddit.com/r/linux/comments/19a95cl/today_is_y2k38_commemoration_day_t14/</a> 47. Bug #2053071 “faketime i386 and armhf fail to fake timestamps th&#8230;” &#8211; Launchpad Bugs, <a href=\"https://bugs.launchpad.net/bugs/2053071\" rel=\"nofollow ugc\">https://bugs.launchpad.net/bugs/2053071</a> 48. debian 32 bit support &#8211; Reddit, <a href=\"https://www.reddit.com/r/debian/comments/1as3tt1/debian_32_bit_support/\" rel=\"nofollow ugc\">https://www.reddit.com/r/debian/comments/1as3tt1/debian_32_bit_support/</a> 49. musl: Change `time_t` definition on 32-bit targets according to &#8220;time64&#8221; · Issue #1848 · rust-lang/libc &#8211; GitHub, <a href=\"https://github.com/rust-lang/libc/issues/1848\" rel=\"nofollow ugc\">https://github.com/rust-lang/libc/issues/1848</a> 50. HEADS UP: FreeBSD is stopping all 32-bit Hardware support except ARMv7 | Page 4, <a href=\"https://forums.freebsd.org/threads/heads-up-freebsd-is-stopping-all-32-bit-hardware-support-except-armv7.91811/page-4\" rel=\"nofollow ugc\">https://forums.freebsd.org/threads/heads-up-freebsd-is-stopping-all-32-bit-hardware-support-except-armv7.91811/page-4</a> 51. 2038 Problem with 32bit time in Linux &#8211; PicoMODA9 &#8211; NXP i.MX6 &#8211; F&amp;S Support Forum, <a href=\"https://forum.fs-net.de/index.php?thread/4609-2038-problem-with-32bit-time-in-linux/\" rel=\"nofollow ugc\">https://forum.fs-net.de/index.php?thread/4609-2038-problem-with-32bit-time-in-linux/</a> 52. [glibc] Always define __USE_TIME_BITS64 when 64 bit time_t is used &#8211; Adhemerval Zanella &#8211; public-inbox &#8211; Sourceware, <a href=\"https://inbox.sourceware.org/glibc-cvs/20240402184714.B5DF13858D28@sourceware.org/\" rel=\"nofollow ugc\">https://inbox.sourceware.org/glibc-cvs/20240402184714.B5DF13858D28@sourceware.org/</a> 53. How do I work with 64 bit time? : r/C_Programming &#8211; Reddit, <a href=\"https://www.reddit.com/r/C_Programming/comments/19finif/how_do_i_work_with_64_bit_time/\" rel=\"nofollow ugc\">https://www.reddit.com/r/C_Programming/comments/19finif/how_do_i_work_with_64_bit_time/</a> 54. Future of 32-bit platform support in FreeBSD &#8211; Hacker News, <a href=\"https://news.ycombinator.com/item?id=39440034\" rel=\"nofollow ugc\">https://news.ycombinator.com/item?id=39440034</a> 55. Debian 64-bit time_t transition in progress &#8211; Aptivi &#8211; WordPress.com, <a href=\"https://officialaptivi.wordpress.com/2024/02/27/debian-64-bit-time_t-transition-in-progress/\" rel=\"nofollow ugc\">https://officialaptivi.wordpress.com/2024/02/27/debian-64-bit-time_t-transition-in-progress/</a> 56. Debian: 64-bit time_t transition in progress &#8211; OSnews, <a href=\"https://www.osnews.com/story/138518/debian-64-bit-time_t-transition-in-progress/\" rel=\"nofollow ugc\">https://www.osnews.com/story/138518/debian-64-bit-time_t-transition-in-progress/</a> 57. Re: 64-bit time_t transition in progress &#8211; Debian Mailing Lists, <a href=\"https://lists.debian.org/debian-devel/2024/02/msg00074.html\" rel=\"nofollow ugc\">https://lists.debian.org/debian-devel/2024/02/msg00074.html</a> 58. 236065 – TimeStamp Overflow 2106 year &#8211; FreeBSD Bugzilla, <a href=\"https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=236065\" rel=\"nofollow ugc\">https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=236065</a> 59. Classic Mac OS will survive Y2038 (and maybe longer) &#8211; 68kMLA, <a href=\"https://68kmla.org/bb/index.php?threads/classic-mac-os-will-survive-y2038-and-maybe-longer.27047/\" rel=\"nofollow ugc\">https://68kmla.org/bb/index.php?threads/classic-mac-os-will-survive-y2038-and-maybe-longer.27047/</a> 60. Today is y2k38 commemoration day : r/linux &#8211; Reddit, <a href=\"https://www.reddit.com/r/linux/comments/10fqx1t/today_is_y2k38_commemoration_day/\" rel=\"nofollow ugc\">https://www.reddit.com/r/linux/comments/10fqx1t/today_is_y2k38_commemoration_day/</a> 61. Date and Time in Java Time and date APIs seem to have been a last-minute addition to Java 1, <a href=\"https://wpollock.com/Java/DatesAndTimesInJava.pdf\" rel=\"nofollow ugc\">https://wpollock.com/Java/DatesAndTimesInJava.pdf</a> 62. [JDK-8262110] DST starts from incorrect time in 2038 &#8211; Java Bug System, <a href=\"https://bugs.openjdk.org/browse/JDK-8262110\" rel=\"nofollow ugc\">https://bugs.openjdk.org/browse/JDK-8262110</a> 63. y2038/y2038-list: A list of what is safe, and not safe from the 2038 Problem &#8211; GitHub, <a href=\"https://github.com/y2038/y2038-list\" rel=\"nofollow ugc\">https://github.com/y2038/y2038-list</a> 64. Upgrading an ext4 filesystem for the year 2038 &#8211; Feeding the Cloud, <a href=\"https://feeding.cloud.geek.nz/posts/upgrading-ext4-filesystem-for-y2k38/\" rel=\"nofollow ugc\">https://feeding.cloud.geek.nz/posts/upgrading-ext4-filesystem-for-y2k38/</a> 65. xfs filesystem being mounted at /disk supports timestamps until 2038 (0x7fffffff) &#8211; Ask Ubuntu, <a href=\"https://askubuntu.com/questions/1302943/xfs-filesystem-being-mounted-at-disk-supports-timestamps-until-2038-0x7fffffff\" rel=\"nofollow ugc\">https://askubuntu.com/questions/1302943/xfs-filesystem-being-mounted-at-disk-supports-timestamps-until-2038-0x7fffffff</a> 66. NetApp and the Year 2038 bug &#8211; Reddit, <a href=\"https://www.reddit.com/r/netapp/comments/18ctn7c/netapp_and_the_year_2038_bug/\" rel=\"nofollow ugc\">https://www.reddit.com/r/netapp/comments/18ctn7c/netapp_and_the_year_2038_bug/</a> 67. MySQL &#8211; The Year 2038 bug blog &#8211; Ed Vielmetti &#8211; TypePad, <a href=\"https://vielmetti.typepad.com/y2k38/mysql/\" rel=\"nofollow ugc\">https://vielmetti.typepad.com/y2k38/mysql/</a> 68. WL#1872: Add support for dates from 2038 till 2116 as values of TIMESTAMP type &#8211; MySQL, <a href=\"https://dev.mysql.com/worklog/task/?id=1872\" rel=\"nofollow ugc\">https://dev.mysql.com/worklog/task/?id=1872</a> 69. [meta] Y2K38: Unix Millennium bug [#65474] | Drupal.org, <a href=\"https://www.drupal.org/project/drupal/issues/65474\" rel=\"nofollow ugc\">https://www.drupal.org/project/drupal/issues/65474</a> 70. The 2038 Problem | Epoch101.com, <a href=\"https://www.epoch101.com/The-2038-Problem\" rel=\"nofollow ugc\">https://www.epoch101.com/The-2038-Problem</a> 71. The 2038 Problem &#8211; Embedded Software, <a href=\"https://blogs.sw.siemens.com/embedded-software/2020/03/23/the-2038-problem/\" rel=\"nofollow ugc\">https://blogs.sw.siemens.com/embedded-software/2020/03/23/the-2038-problem/</a> 72. The Impending Date Issue In Business: The Implications Of 32-Bit Operating Systems In 2038, <a href=\"https://computerbusiness.com/news/the-impending-date-issue-in-business-the-implications-of-32-bit-operating-systems-in-2038/\" rel=\"nofollow ugc\">https://computerbusiness.com/news/the-impending-date-issue-in-business-the-implications-of-32-bit-operating-systems-in-2038/</a> 73. utmp, wtmp, failedlogin File Format &#8211; IBM, <a href=\"https://www.ibm.com/docs/hr/ssw_aix_72/filesreference/utmp.html\" rel=\"nofollow ugc\">https://www.ibm.com/docs/hr/ssw_aix_72/filesreference/utmp.html</a> 74. Investigating the Impact of the Y2K Problem&#8211;Critical Infrastructures &#8211; GovInfo, <a href=\"https://www.govinfo.gov/content/pkg/GPO-CPRT-106sprt10/pdf/GPO-CPRT-106sprt10-6-2.pdf\" rel=\"nofollow ugc\">https://www.govinfo.gov/content/pkg/GPO-CPRT-106sprt10/pdf/GPO-CPRT-106sprt10-6-2.pdf</a> 75. 2697: Y2K and 2038 &#8211; explain xkcd, <a href=\"https://www.explainxkcd.com/wiki/index.php/2697:_Y2K_and_2038\" rel=\"nofollow ugc\">https://www.explainxkcd.com/wiki/index.php/2697:_Y2K_and_2038</a> 76. Analysis of the Y2K problem from the viewpoint of risk communication &#8211; ResearchGate, <a href=\"https://www.researchgate.net/publication/271450080_Analysis_of_the_Y2K_problem_from_the_viewpoint_of_risk_communication\" rel=\"nofollow ugc\">https://www.researchgate.net/publication/271450080_Analysis_of_the_Y2K_problem_from_the_viewpoint_of_risk_communication</a> 77. Year 2000 problem &#8211; Wikipedia, <a href=\"https://en.wikipedia.org/wiki/Year_2000_problem\" rel=\"nofollow ugc\">https://en.wikipedia.org/wiki/Year_2000_problem</a></p>\n"
+ },
+ {
+  "id": 21,
+  "post": 1080,
+  "parent": 20,
+  "date": "2025-07-28T18:12:08-05:00",
+  "type": "comment",
+  "author": "Kenneth Henseler",
+  "author_url": "https://musingsofmy.today",
+  "content": "<p>Thank you! Yes, I will gather and share.</p>\n"
+ },
+ {
+  "id": 20,
+  "post": 1080,
+  "parent": null,
+  "date": "2025-07-28T14:39:12-05:00",
+  "type": "comment",
+  "author": "Doug",
+  "author_url": "http://musingsofmy.today/2025/05/02/y2k38-risks-solutions-and-real-world-implications/comment-page-1/#comment-20",
+  "content": "<p>Great article!  Are the references available?</p>\n"
+ },
+ {
+  "id": 3,
+  "post": 175,
+  "parent": 2,
+  "date": "2020-11-23T07:53:21-06:00",
+  "type": "comment",
+  "author": "Kenneth Henseler",
+  "author_url": "https://musingsofmy.today",
+  "content": "<p>Glad to be back!</p>\n"
+ },
+ {
+  "id": 2,
+  "post": 175,
+  "parent": null,
+  "date": "2020-11-23T05:09:34-06:00",
+  "type": "comment",
+  "author": "Irma Tolin",
+  "author_url": "http://musingsofmy.today/2020/11/21/road-trippin-for-thanksgiving/comment-page-1/#comment-2",
+  "content": "<p>Glad to hear you&#8217;re in our state. It&#8217;s home.</p>\n"
+ }
+]

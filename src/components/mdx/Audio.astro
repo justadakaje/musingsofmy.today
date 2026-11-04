@@ -1,0 +1,10 @@
+---
+interface Props {
+  src: string;
+}
+const { src } = Astro.props;
+---
+<figure class="embed">
+  <audio class="media" controls preload="none" src={src}></audio>
+  {Astro.slots.has('default') && <figcaption><slot /></figcaption>}
+</figure>

@@ -1,0 +1,25 @@
+---
+/** Static pages from src/content/pages/<slug>/index.mdx at /<slug>/ (About, Contact). */
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { mdxComponents } from '../components/mdx';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');
+  return pages.map((page) => ({ params: { page: page.id }, props: { page } }));
+}
+interface Props {
+  page: CollectionEntry<'pages'>;
+}
+const { page } = Astro.props;
+const { Content } = await render(page);
+---
+<Base title={page.data.title} description={page.data.description || undefined} nav={page.id === 'about' ? 'about' : null}>
+  <PageHead eyebrow={`// ${page.id}`} title={page.data.title} />
+  <main class="wrap art-grid no-toc">
+    <div class="prose" data-post-body>
+      <Content components={mdxComponents} />
+    </div>
+  </main>
+</Base>

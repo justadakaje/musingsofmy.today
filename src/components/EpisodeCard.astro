@@ -1,0 +1,24 @@
+---
+import type { Post } from '../lib/posts';
+import { SHOWS } from '../site';
+
+interface Props {
+  podcast: NonNullable<Post['data']['podcast']>;
+  fallbackTitle: string;
+}
+const { podcast, fallbackTitle } = Astro.props;
+const show = SHOWS[podcast.show];
+const listen = podcast.spotify ?? podcast.apple ?? podcast.youtube ?? show.spotify;
+---
+<div class="episode clip">
+  <a class="play clip" href={listen} aria-label={`Listen to ${podcast.title ?? fallbackTitle}`}>▶</a>
+  <div>
+    <div class="k">{show.name.toUpperCase()}{podcast.episode && ` · ${podcast.episode}`}</div>
+    <div class="n">{podcast.title ?? fallbackTitle}</div>
+  </div>
+  <div class="links">
+    <a href={podcast.apple ?? show.apple}>apple podcasts</a>
+    <a href={podcast.spotify ?? show.spotify}>spotify</a>
+    {podcast.youtube && <a href={podcast.youtube}>youtube</a>}
+  </div>
+</div>

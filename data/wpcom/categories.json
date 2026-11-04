@@ -1,0 +1,198 @@
+[
+ {
+  "ID": 14067,
+  "name": "AI",
+  "slug": "ai",
+  "parent": 6,
+  "post_count": 3
+ },
+ {
+  "ID": 490,
+  "name": "Animals",
+  "slug": "animals",
+  "parent": 0,
+  "post_count": 1
+ },
+ {
+  "ID": 4936,
+  "name": "Biology",
+  "slug": "biology",
+  "parent": 0,
+  "post_count": 2
+ },
+ {
+  "ID": 179,
+  "name": "Business",
+  "slug": "business",
+  "parent": 0,
+  "post_count": 4
+ },
+ {
+  "ID": 2502782,
+  "name": "calaveras literarias",
+  "slug": "calaveras-literarias",
+  "parent": 422,
+  "post_count": 1
+ },
+ {
+  "ID": 9279,
+  "name": "Cigars",
+  "slug": "cigars",
+  "parent": 0,
+  "post_count": 1
+ },
+ {
+  "ID": 148,
+  "name": "Design",
+  "slug": "design",
+  "parent": 0,
+  "post_count": 2
+ },
+ {
+  "ID": 1186,
+  "name": "Films",
+  "slug": "films",
+  "parent": 0,
+  "post_count": 1
+ },
+ {
+  "ID": 4269,
+  "name": "Finance",
+  "slug": "finance",
+  "parent": 0,
+  "post_count": 1
+ },
+ {
+  "ID": 586,
+  "name": "Food",
+  "slug": "food",
+  "parent": 0,
+  "post_count": 1
+ },
+ {
+  "ID": 1256,
+  "name": "Gaming",
+  "slug": "gaming",
+  "parent": 0,
+  "post_count": 3
+ },
+ {
+  "ID": 2311,
+  "name": "Government",
+  "slug": "government",
+  "parent": 0,
+  "post_count": 5
+ },
+ {
+  "ID": 678,
+  "name": "History",
+  "slug": "history",
+  "parent": 0,
+  "post_count": 14
+ },
+ {
+  "ID": 682504343,
+  "name": "LyricalAnalysis",
+  "slug": "lyricalanalysis",
+  "parent": 18,
+  "post_count": 1
+ },
+ {
+  "ID": 547444747,
+  "name": "Mini Motorways",
+  "slug": "mini-motorways",
+  "parent": 1256,
+  "post_count": 1
+ },
+ {
+  "ID": 18,
+  "name": "Music",
+  "slug": "music",
+  "parent": 0,
+  "post_count": 16
+ },
+ {
+  "ID": 1099,
+  "name": "Nature",
+  "slug": "nature",
+  "parent": 0,
+  "post_count": 11
+ },
+ {
+  "ID": 15734,
+  "name": "Plants",
+  "slug": "plants",
+  "parent": 0,
+  "post_count": 3
+ },
+ {
+  "ID": 785191845,
+  "name": "Playlist Explained",
+  "slug": "playlist-explained",
+  "parent": 18,
+  "post_count": 4
+ },
+ {
+  "ID": 1142,
+  "name": "Podcast",
+  "slug": "podcast",
+  "parent": 0,
+  "post_count": 8
+ },
+ {
+  "ID": 422,
+  "name": "Poetry",
+  "slug": "poetry",
+  "parent": 0,
+  "post_count": 1
+ },
+ {
+  "ID": 398,
+  "name": "Politics",
+  "slug": "politics",
+  "parent": 0,
+  "post_count": 9
+ },
+ {
+  "ID": 173,
+  "name": "Science",
+  "slug": "science",
+  "parent": 0,
+  "post_count": 3
+ },
+ {
+  "ID": 174,
+  "name": "Space",
+  "slug": "space",
+  "parent": 0,
+  "post_count": 2
+ },
+ {
+  "ID": 6,
+  "name": "Technology",
+  "slug": "technology",
+  "parent": 0,
+  "post_count": 17
+ },
+ {
+  "ID": 200,
+  "name": "Travel",
+  "slug": "travel",
+  "parent": 0,
+  "post_count": 0
+ },
+ {
+  "ID": 54920,
+  "name": "True Crime",
+  "slug": "true-crime",
+  "parent": 0,
+  "post_count": 2
+ },
+ {
+  "ID": 2322,
+  "name": "Writings",
+  "slug": "writings",
+  "parent": 0,
+  "post_count": 4
+ }
+]

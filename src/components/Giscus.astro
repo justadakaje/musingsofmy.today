@@ -1,0 +1,41 @@
+---
+/**
+ * New comments via Giscus (GitHub Discussions). Renders nothing until GISCUS.repoId and
+ * GISCUS.categoryId in src/site.ts are filled in from https://giscus.app.
+ * Loads giscus.app's script only on post pages, and only after the reader scrolls near it.
+ */
+import { GISCUS } from '../site';
+const on = Boolean(GISCUS.repoId && GISCUS.categoryId);
+---
+{on && (
+  <section class="comments" aria-label="Comments">
+    <h2>// comments</h2>
+    <div
+      class="giscus-host"
+      data-repo={GISCUS.repo}
+      data-repo-id={GISCUS.repoId}
+      data-category={GISCUS.category}
+      data-category-id={GISCUS.categoryId}></div>
+    <script>
+      const host = document.querySelector<HTMLElement>('.giscus-host');
+      if (host) {
+        const load = () => {
+          const s = document.createElement('script');
+          s.src = 'https://giscus.app/client.js';
+          s.async = true;
+          s.crossOrigin = 'anonymous';
+          const d = host.dataset;
+          Object.entries({
+            'data-repo': d.repo!, 'data-repo-id': d.repoId!, 'data-category': d.category!, 'data-category-id': d.categoryId!,
+            'data-mapping': 'pathname', 'data-strict': '1', 'data-reactions-enabled': '1', 'data-input-position': 'top',
+            'data-theme': 'transparent_dark', 'data-lang': 'en', 'data-loading': 'lazy',
+          }).forEach(([k, v]) => s.setAttribute(k, v));
+          host.appendChild(s);
+        };
+        new IntersectionObserver((entries, obs) => {
+          if (entries.some((e) => e.isIntersecting)) { obs.disconnect(); load(); }
+        }, { rootMargin: '400px' }).observe(host);
+      }
+    </script>
+  </section>
+)}

@@ -1,0 +1,21 @@
+---
+/** path: e.g. /us/podcast/runtime-reality/id1887004265?i=1000788687492 */
+interface Props {
+  path: string;
+}
+const { path } = Astro.props;
+const episode = path.includes('?i=');
+---
+<figure class="embed">
+  <div class="embed-frame" data-wc-ignore>
+    <iframe
+      src={`https://embed.podcasts.apple.com${path}`}
+      title="Apple Podcasts player"
+      height={episode ? 175 : 450}
+      loading="lazy"
+      allow="autoplay *; encrypted-media *; clipboard-write"
+      sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+      style="border-radius:10px"></iframe>
+  </div>
+  {Astro.slots.has('default') && <figcaption><slot /></figcaption>}
+</figure>

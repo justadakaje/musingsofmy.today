@@ -1,0 +1,26 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  images: { src: ImageMetadata | string; alt?: string; caption?: string }[];
+}
+const { images } = Astro.props;
+const cols = Math.min(3, images.length);
+const optimisable = (s: ImageMetadata | string): boolean => typeof s !== 'string' && !['gif', 'svg'].includes(s.format);
+---
+<figure class="gallery" style={`--cols:${cols}`}>
+  <div class="gallery-grid">
+    {images.map((im) => (
+      <figure class="gallery-item">
+        {optimisable(im.src) ? (
+          <Image src={im.src as ImageMetadata} alt={im.alt ?? ''} widths={[360, 540, 720]} sizes="(max-width: 760px) 50vw, 240px" />
+        ) : (
+          <img src={typeof im.src === 'string' ? im.src : im.src.src} alt={im.alt ?? ''} loading="lazy" decoding="async" />
+        )}
+        {im.caption && <figcaption>{im.caption}</figcaption>}
+      </figure>
+    ))}
+  </div>
+  {Astro.slots.has('default') && <figcaption><slot /></figcaption>}
+</figure>

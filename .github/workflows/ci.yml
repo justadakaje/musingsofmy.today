@@ -1,0 +1,95 @@
+name: build, validate, deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  deployments: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Type-check content and components
+        run: npx astro check
+      - name: Build (Astro + Pagefind)
+        run: npm run build
+      - name: Validate (URLs, word counts, RSS, internal links)
+        run: node scripts/validate.mjs --out=validation-ci.md
+      - name: Report
+        if: always()
+        run: cat validation-ci.md >> "$GITHUB_STEP_SUMMARY" || true
+      - uses: actions/upload-artifact@v5
+        with:
+          name: dist
+          path: dist
+          retention-days: 7
+
+  links:
+    # Internal links already gate the build above; this adds external ones.
+    # Informational: third-party sites rate-limit and block bots, so it never blocks a deploy.
+    needs: build
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
+        with:
+          name: dist
+          path: dist
+      - name: lychee (internal, offline)
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline --no-progress --root-dir "${{ github.workspace }}/dist" --exclude-path dist/pagefind 'dist/**/*.html'
+          fail: true
+      - name: lychee (external)
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --max-concurrency 8 --accept 200..=299,403,429 --exclude-path dist/pagefind --root-dir "${{ github.workspace }}/dist" 'dist/**/*.html'
+          fail: false
+
+  deploy:
+    # Runs only once the Cloudflare secrets exist (see README → Deploying).
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: Check for Cloudflare credentials
+        id: creds
+        run: echo "ok=${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v5
+        if: steps.creds.outputs.ok == 'true'
+      - uses: actions/download-artifact@v5
+        if: steps.creds.outputs.ok == 'true'
+        with:
+          name: dist
+          path: dist
+      - name: Deploy to Cloudflare Pages
+        if: steps.creds.outputs.ok == 'true'
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=musingsofmy-today --branch=${{ github.head_ref || github.ref_name }} --commit-hash=${{ github.sha }}
+      - name: Skipped
+        if: steps.creds.outputs.ok != 'true'
+        run: echo "::notice::Deploy skipped; CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID are not set."

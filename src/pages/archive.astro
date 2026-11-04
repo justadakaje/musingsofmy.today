@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import PostRow from '../components/PostRow.astro';
+import { getPosts } from '../lib/posts';
+import { SECTIONS } from '../site';
+
+const posts = await getPosts();
+const years = [...new Set(posts.map((p) => p.id.slice(0, 4)))];
+---
+<Base title="All posts" description={`All ${posts.length} posts on Musings of My Today, newest first.`} nav="writing">
+  <PageHead eyebrow="// archive" title="Every post" lede={`${posts.length} posts since ${years.at(-1)}, newest first. Filter by section:`}>
+    <nav class="lanes" aria-label="Sections">
+      <a class="lane clip" aria-current="page" href="/archive/">all <i>{posts.length}</i></a>
+      {SECTIONS.map((s) => <a class="lane clip" href={`/section/${s.id}/`}>{s.label}</a>)}
+    </nav>
+  </PageHead>
+  <main class="wrap">
+    {years.map((y) => (
+      <section>
+        <h2 class="year">// {y}</h2>
+        <div class="log">{posts.filter((p) => p.id.startsWith(y)).map((p) => <PostRow post={p} />)}</div>
+      </section>
+    ))}
+  </main>
+</Base>

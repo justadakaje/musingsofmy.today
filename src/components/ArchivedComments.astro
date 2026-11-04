@@ -1,0 +1,45 @@
+---
+/**
+ * Read-only comments carried over from WordPress.com (data/wpcom/comments.json).
+ * The archive holds names and text only: no emails, IPs or avatars were exported.
+ */
+import sanitizeHtml from 'sanitize-html';
+import archive from '../../data/wpcom/comments.json';
+import { fmtDate } from '../lib/posts';
+
+interface Props {
+  wpcomId?: number;
+}
+const { wpcomId } = Astro.props;
+type C = { id: number; post: number; parent: number | null; date: string; type: string; author: string; author_url: string; content: string };
+const all = (archive as C[]).filter((c) => c.post === wpcomId).sort((a, b) => a.date.localeCompare(b.date));
+const comments = all.filter((c) => c.type !== 'pingback' && c.type !== 'trackback');
+const pings = all.filter((c) => c.type === 'pingback' || c.type === 'trackback');
+const clean = (html: string) =>
+  sanitizeHtml(html, {
+    allowedTags: ['p', 'br', 'a', 'em', 'strong', 'b', 'i', 'blockquote', 'code', 'ul', 'ol', 'li'],
+    allowedAttributes: { a: ['href'] },
+    transformTags: { a: sanitizeHtml.simpleTransform('a', { rel: 'nofollow ugc noopener' }) },
+  });
+const isReply = (c: C) => c.parent != null;
+---
+{all.length > 0 && (
+  <section class="comments" aria-labelledby="archived-comments">
+    <h2 id="archived-comments">// archived comments</h2>
+    <p class="note">From the WordPress.com era of this blog, kept read-only.</p>
+    {comments.map((c) => (
+      <article class={`comment${isReply(c) ? ' reply' : ''}`}>
+        <div class="who">{c.author || 'anonymous'}<time datetime={c.date}>{fmtDate(new Date(c.date))}</time></div>
+        <div class="body" set:html={clean(c.content)} />
+      </article>
+    ))}
+    {pings.length > 0 && (
+      <>
+        <p class="note">Linked from:</p>
+        <ul class="facts">
+          {pings.map((c) => <li><a href={c.author_url} rel="nofollow ugc">{c.author || c.author_url}</a></li>)}
+        </ul>
+      </>
+    )}
+  </section>
+)}

@@ -1,0 +1,28 @@
+---
+/**
+ * Pagefind search. The index is built after `astro build` (npm run build runs
+ * `pagefind --site dist`), so this page only works on a built site, not in `astro dev`.
+ */
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+---
+<Base title="Search" description="Search every post on Musings of My Today." nav="search">
+  <link slot="head" rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  <PageHead eyebrow="// search" title="Search the posts" />
+  <main class="wrap art-grid no-toc">
+    <div class="search-box" id="search"></div>
+    <noscript><p>Search needs JavaScript. The <a href="/archive/">archive</a> lists every post.</p></noscript>
+  </main>
+  <script is:inline src="/pagefind/pagefind-ui.js"></script>
+  <script is:inline>
+    window.addEventListener('DOMContentLoaded', function () {
+      if (!window.PagefindUI) {
+        document.getElementById('search').innerHTML = '<p class="meta">The search index is built with the site. Run <code>npm run build</code>, then <code>npm run preview</code>.</p>';
+        return;
+      }
+      var q = new URLSearchParams(location.search).get('q');
+      var ui = new PagefindUI({ element: '#search', showSubResults: true, showImages: false, resetStyles: false });
+      if (q) ui.triggerSearch(q);
+    });
+  </script>
+</Base>

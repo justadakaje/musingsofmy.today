@@ -1,0 +1,20 @@
+---
+import type { Post } from '../lib/posts';
+import { fmtDate, postPath, readMinutes } from '../lib/posts';
+import { sectionById, SHOWS } from '../site';
+
+interface Props {
+  post: Post;
+}
+const { post } = Astro.props;
+const s = sectionById(post.data.section);
+const pod = post.data.podcast;
+const badge = pod ? (pod.episode ? `${SHOWS[pod.show].short} ${pod.episode}` : SHOWS[pod.show].name) : null;
+const blurb = post.data.description.length > 150 ? post.data.description.slice(0, 147).replace(/\s+\S*$/, '') + '…' : post.data.description;
+---
+<a class="row" href={postPath(post)}>
+  <span class="d">{fmtDate(post.data.date)}</span>
+  <span class={`l ${s.tone}`}>{s.label}</span>
+  <span class="t">{post.data.title}{badge && <span class="ep">{badge}</span>}{blurb && <small>{blurb}</small>}</span>
+  <span class="r">{readMinutes(post.body)} min</span>
+</a>

@@ -1,0 +1,1119 @@
+{
+ "generated": "2026-11-04T06:54:47.079Z",
+ "posts": [
+  {
+   "id": 2234,
+   "type": "post",
+   "path": "/2026/09/24/ai-confidently-wrong-wow-addon-verification/",
+   "folder": "2026-09-24-ai-confidently-wrong-wow-addon-verification",
+   "title": "Confidently Wrong: Four AI Errors a Beta Game Client Caught in Four Hours",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 1744,
+   "section": "engineering",
+   "podcast": "runtime-reality",
+   "images": 2,
+   "media": 2,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1,
+    "youtube": 3
+   }
+  },
+  {
+   "id": 2235,
+   "type": "post",
+   "path": "/2026/09/24/wow-forever-api-surface-build-69913/",
+   "folder": "2026-09-24-wow-forever-api-surface-build-69913",
+   "title": "Absent from the Docs, Present in the Client: Mapping WoW Forever’s Real API Surface",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 1463,
+   "section": "engineering",
+   "podcast": "runtime-reality",
+   "images": 2,
+   "media": 2,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1,
+    "youtube": 2
+   }
+  },
+  {
+   "id": 2194,
+   "type": "post",
+   "path": "/2026/09/10/ai-sandbox-containment-hugging-face-artifactory-breach/",
+   "folder": "2026-09-10-ai-sandbox-containment-hugging-face-artifactory-breach",
+   "title": "The Illusion of Containment: Engineering Lessons from the 2026 AI Sandbox Breaches",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 890,
+   "section": "engineering",
+   "podcast": "runtime-reality",
+   "images": 3,
+   "media": 3,
+   "remoteImages": 0,
+   "missingAlt": 3,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1,
+    "youtube": 1
+   }
+  },
+  {
+   "id": 2166,
+   "type": "post",
+   "path": "/2026/08/05/ai-podcast-publishing-pipeline/",
+   "folder": "2026-08-05-ai-podcast-publishing-pipeline",
+   "title": "From Prompt to Published: The Architecture of an AI Podcast Pipeline",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 659,
+   "section": "engineering",
+   "podcast": "runtime-reality",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1,
+    "apple_podcasts": 1
+   }
+  },
+  {
+   "id": 2134,
+   "type": "post",
+   "path": "/2026/07/19/middle-east-total-war-2026/",
+   "folder": "2026-07-19-middle-east-total-war-2026",
+   "title": "Beyond the Headlines: 5 Surprising Realities of the 2026 US-Iran War",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 1857,
+   "section": "history-politics",
+   "podcast": "chronos-archive",
+   "images": 5,
+   "media": 5,
+   "remoteImages": 0,
+   "missingAlt": 5,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1,
+    "youtube": 1
+   }
+  },
+  {
+   "id": 2026,
+   "type": "post",
+   "path": "/2026/05/10/caribbean-aquatic-motorway-dna-migrations/",
+   "folder": "2026-05-10-caribbean-aquatic-motorway-dna-migrations",
+   "title": "Beyond Bloodlines: How Ancient DNA is Rewriting the Caribbean—and Fueling Modern Culture Wars",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 788,
+   "section": "history-politics",
+   "podcast": "chronos-archive",
+   "images": 4,
+   "media": 4,
+   "remoteImages": 0,
+   "missingAlt": 4,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1,
+    "apple_podcasts": 1
+   }
+  },
+  {
+   "id": 2018,
+   "type": "post",
+   "path": "/2026/05/09/the-porcelain-collision-afghan-war-logistics/",
+   "folder": "2026-05-09-the-porcelain-collision-afghan-war-logistics",
+   "title": "The Porcelain Collision: When Ancient Traditions Met Modern Military Logistics",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 1537,
+   "section": "history-politics",
+   "podcast": "chronos-archive",
+   "images": 3,
+   "media": 3,
+   "remoteImages": 0,
+   "missingAlt": 3,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1,
+    "apple_podcasts": 1
+   }
+  },
+  {
+   "id": 2004,
+   "type": "post",
+   "path": "/2026/05/03/all-life-on-earth-comes-from-one-single-ancestor/",
+   "folder": "2026-05-03-all-life-on-earth-comes-from-one-single-ancestor",
+   "title": "The 4.2-Billion-Year-Old Ancestor: The Dawn of the Viral Wars",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 423,
+   "section": "science-nature",
+   "podcast": "chronos-archive",
+   "images": 3,
+   "media": 3,
+   "remoteImages": 0,
+   "missingAlt": 3,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1,
+    "apple_podcasts": 1
+   }
+  },
+  {
+   "id": 1986,
+   "type": "post",
+   "path": "/2026/04/26/deep-research-to-podcast-in-an-hour/",
+   "folder": "2026-04-26-deep-research-to-podcast-in-an-hour",
+   "title": "Deep Research to Podcast: The Complete 2026 AI Workflow",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 649,
+   "section": "engineering",
+   "podcast": "chronos-archive",
+   "images": 11,
+   "media": 11,
+   "remoteImages": 0,
+   "missingAlt": 11,
+   "galleries": 1,
+   "embeds": {
+    "youtube": 1,
+    "spotify": 1,
+    "apple_podcasts": 1
+   }
+  },
+  {
+   "id": 1971,
+   "type": "post",
+   "path": "/2026/04/26/impossible-architecture-camacho-triple-maduro/",
+   "folder": "2026-04-26-impossible-architecture-camacho-triple-maduro",
+   "title": "The Eighty-Fourth Iteration: How Camacho Defied Thermodynamics to Craft the Impossible Maduro",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 1170,
+   "section": "field-notes",
+   "podcast": "chronos-archive",
+   "images": 3,
+   "media": 3,
+   "remoteImages": 0,
+   "missingAlt": 3,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1,
+    "apple_podcasts": 1
+   }
+  },
+  {
+   "id": 1965,
+   "type": "post",
+   "path": "/2026/04/25/terraforming-chamber-04-26-system-migration/",
+   "folder": "2026-04-25-terraforming-chamber-04-26-system-migration",
+   "title": "Terraforming Chamber 04.26: System Migration",
+   "notes": [
+    "VideoPress video sgG02vXJ downloaded (it would stop playing once the WordPress plan ends)"
+   ],
+   "warnings": [],
+   "words_wp": 179,
+   "section": "signal",
+   "images": 3,
+   "media": 5,
+   "remoteImages": 0,
+   "missingAlt": 3,
+   "galleries": 0,
+   "embeds": {
+    "videopress": 1
+   }
+  },
+  {
+   "id": 1938,
+   "type": "post",
+   "path": "/2026/04/11/the-source-code-of-atrocity-how-ai-psychosis-hid-the-truth-behind-the-minab-school-strike/",
+   "folder": "2026-04-11-the-source-code-of-atrocity-how-ai-psychosis-hid-the-truth-behind-the-minab-school-strike",
+   "title": "The Source Code of Atrocity: How “AI Psychosis” Hid the Truth Behind the Minab School Strike",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 510,
+   "section": "history-politics",
+   "images": 3,
+   "media": 3,
+   "remoteImages": 0,
+   "missingAlt": 3,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 1896,
+   "type": "post",
+   "path": "/2026/03/27/new-podcast-launch-welcome-to-the-architecture-archive-plus-a-little-feed-housekeeping/",
+   "folder": "2026-03-27-new-podcast-launch-welcome-to-the-architecture-archive-plus-a-little-feed-housekeeping",
+   "title": "New Podcast Launch: Welcome to The Architecture Archive (Plus a Little Feed Housekeeping)",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 353,
+   "section": "engineering",
+   "podcast": "chronos-archive",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1
+   }
+  },
+  {
+   "id": 1812,
+   "type": "post",
+   "path": "/2026/02/20/viral-fiction-vs-thermodynamic-fact-the-truth-about-ai-data-center-cooling/",
+   "folder": "2026-02-20-viral-fiction-vs-thermodynamic-fact-the-truth-about-ai-data-center-cooling",
+   "title": "Viral Fiction vs. Thermodynamic Fact: The Truth About AI Data Center Cooling",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 538,
+   "section": "engineering",
+   "images": 3,
+   "media": 3,
+   "remoteImages": 0,
+   "missingAlt": 3,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1
+   }
+  },
+  {
+   "id": 1797,
+   "type": "post",
+   "path": "/2026/02/16/unmasking-fresh-start-union-the-fake-loan-scam-bombarding-your-phone/",
+   "folder": "2026-02-16-unmasking-fresh-start-union-the-fake-loan-scam-bombarding-your-phone",
+   "title": "Unmasking “Fresh Start Union”: The Fake Loan Scam Bombarding Your Phone",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 599,
+   "section": "history-politics",
+   "images": 6,
+   "media": 6,
+   "remoteImages": 0,
+   "missingAlt": 6,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1,
+    "youtube": 1
+   }
+  },
+  {
+   "id": 1783,
+   "type": "post",
+   "path": "/2026/02/16/from-ticket-taking-to-platform-building-why-we-are-pivoting-to-product-mode/",
+   "folder": "2026-02-16-from-ticket-taking-to-platform-building-why-we-are-pivoting-to-product-mode",
+   "title": "From Ticket-Taking to Platform-Building: Why We Are Pivoting to Product Mode",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 564,
+   "section": "engineering",
+   "images": 3,
+   "media": 3,
+   "remoteImages": 0,
+   "missingAlt": 3,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 1773,
+   "type": "post",
+   "path": "/2026/02/14/the-0-00-crime-why-sober-drivers-are-going-to-jail-and-how-to-protect-yourself/",
+   "folder": "2026-02-14-the-0-00-crime-why-sober-drivers-are-going-to-jail-and-how-to-protect-yourself",
+   "title": "The 0.00% Crime: Why Sober Drivers Are Going to Jail (And How to Protect Yourself)",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 717,
+   "section": "history-politics",
+   "images": 3,
+   "media": 3,
+   "remoteImages": 0,
+   "missingAlt": 3,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 2,
+    "apple_podcasts": 2
+   }
+  },
+  {
+   "id": 1755,
+   "type": "post",
+   "path": "/2026/02/12/software-mageddon-why-wall-street-just-deleted-1-trillion-from-saas-and-how-to-survive/",
+   "folder": "2026-02-12-software-mageddon-why-wall-street-just-deleted-1-trillion-from-saas-and-how-to-survive",
+   "title": "Software-mageddon: Why Wall Street Just Deleted $1 Trillion from SaaS (And How to Survive)",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 276,
+   "section": "engineering",
+   "images": 4,
+   "media": 4,
+   "remoteImages": 0,
+   "missingAlt": 4,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1
+   }
+  },
+  {
+   "id": 1734,
+   "type": "post",
+   "path": "/2026/02/08/hammer-anvil-and-the-20000-year-old-border/",
+   "folder": "2026-02-08-hammer-anvil-and-the-20000-year-old-border",
+   "title": "Hammer, Anvil, and the 20,000-Year-Old Border",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 570,
+   "section": "history-politics",
+   "images": 6,
+   "media": 7,
+   "remoteImages": 0,
+   "missingAlt": 6,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1
+   }
+  },
+  {
+   "id": 1702,
+   "type": "post",
+   "path": "/2026/01/29/the-architecture-of-a-feast-deconstructing-pixel-grips-crows-feast/",
+   "folder": "2026-01-29-the-architecture-of-a-feast-deconstructing-pixel-grips-crows-feast",
+   "title": "The Architecture of a Feast: Deconstructing Pixel Grip’s “Crows Feast”",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 549,
+   "section": "signal",
+   "images": 3,
+   "media": 3,
+   "remoteImages": 0,
+   "missingAlt": 3,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1,
+    "youtube": 1
+   }
+  },
+  {
+   "id": 1668,
+   "type": "post",
+   "path": "/2026/01/06/the-epistemic-sovereign-a-comprehensive-analysis-of-the-white-house-january-6th-portal-and-the-legal-architecture-of-executive-revisionism/",
+   "folder": "2026-01-06-the-epistemic-sovereign-a-comprehensive-analysis-of-the-white-house-january-6th-portal-and-the-legal-architecture-of-executive-revisionism",
+   "title": "The White House January 6 Webpage: A Factual Review and Contextual Analysis",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 865,
+   "section": "history-politics",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 1556,
+   "type": "post",
+   "path": "/2025/11/30/turbinetwilight/",
+   "folder": "2025-11-30-turbinetwilight",
+   "title": "Turbine Twilight: The Electrocessnas of November 12025",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 313,
+   "section": "signal",
+   "images": 1,
+   "media": 1,
+   "remoteImages": 0,
+   "missingAlt": 1,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1,
+    "apple_music": 1,
+    "youtube": 1
+   }
+  },
+  {
+   "id": 1510,
+   "type": "post",
+   "path": "/2025/11/09/a-heritage-forged-in-timber-an-analysis-of-parke-county-indiana-the-covered-bridge-capital-of-the-world/",
+   "folder": "2025-11-09-a-heritage-forged-in-timber-an-analysis-of-parke-county-indiana-the-covered-bridge-capital-of-the-world",
+   "title": "A Heritage Forged in Timber: An Analysis of Parke County, Indiana, “The Covered Bridge Capital of the World”",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 2970,
+   "section": "engineering",
+   "images": 2,
+   "media": 2,
+   "remoteImages": 0,
+   "missingAlt": 2,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 1499,
+   "type": "post",
+   "path": "/2025/11/03/from-dragon-compendium-to-mythic-circuitry/",
+   "folder": "2025-11-03-from-dragon-compendium-to-mythic-circuitry",
+   "title": "Reforged in Fire: Turning the ‘Dragon Compendium’ into ‘Mythic Circuitry’ (2025 Update)",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 632,
+   "section": "signal",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {
+    "youtube": 1
+   }
+  },
+  {
+   "id": 1492,
+   "type": "post",
+   "path": "/2025/11/01/october-ascent-a-journey-through-propeller-synths-and-bass-turbulence/",
+   "folder": "2025-11-01-october-ascent-a-journey-through-propeller-synths-and-bass-turbulence",
+   "title": "October Ascent: A Journey Through Propeller Synths and Bass Turbulence",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 436,
+   "section": "signal",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 1449,
+   "type": "post",
+   "path": "/2025/10/04/the-ghost-in-the-machine-finding-reality-between-the-pings/",
+   "folder": "2025-10-04-the-ghost-in-the-machine-finding-reality-between-the-pings",
+   "title": "The Ghost in the Machine: Finding Reality Between the Pings",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 963,
+   "section": "field-notes",
+   "images": 4,
+   "media": 4,
+   "remoteImages": 0,
+   "missingAlt": 4,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 1445,
+   "type": "post",
+   "path": "/2025/10/01/the-war-for-digital-truth-elon-musk-wikipedia-and-the-ai-powered-future-of-knowledge/",
+   "folder": "2025-10-01-the-war-for-digital-truth-elon-musk-wikipedia-and-the-ai-powered-future-of-knowledge",
+   "title": "The War for Digital Truth: Elon Musk, Wikipedia, and the AI-Powered Future of Knowledge",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 3917,
+   "section": "history-politics",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 1443,
+   "type": "post",
+   "path": "/2025/09/30/september-2025-industrial-pulse/",
+   "folder": "2025-09-30-september-2025-industrial-pulse",
+   "title": "September 2025: Industrial Pulse",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 288,
+   "section": "signal",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1,
+    "apple_music": 1,
+    "youtube": 1
+   }
+  },
+  {
+   "id": 1393,
+   "type": "post",
+   "path": "/2025/08/31/mini-motorways-creative-mode-first-look/",
+   "folder": "2025-08-31-mini-motorways-creative-mode-first-look",
+   "title": "Unlocking Endless Possibilities: My First Look at the New Mini Motorways Creative Mode",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 635,
+   "section": "engineering",
+   "images": 1,
+   "media": 1,
+   "remoteImages": 0,
+   "missingAlt": 1,
+   "galleries": 0,
+   "embeds": {
+    "youtube": 1
+   }
+  },
+  {
+   "id": 1375,
+   "type": "post",
+   "path": "/2025/08/27/sonic-convergences-the-august-playlist-where-rock-meets-electronic/",
+   "folder": "2025-08-27-sonic-convergences-the-august-playlist-where-rock-meets-electronic",
+   "title": "Sonic Convergences: The August Playlist Where Rock Meets Electronic",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 408,
+   "section": "signal",
+   "images": 1,
+   "media": 1,
+   "remoteImages": 0,
+   "missingAlt": 1,
+   "galleries": 0,
+   "embeds": {
+    "youtube": 1
+   }
+  },
+  {
+   "id": 1291,
+   "type": "post",
+   "path": "/2025/08/05/the-enduring-legacy-a-deep-dive-into-the-pre-contact-and-historical-journey-of-the-pueblo-people-and-their-inter-societal-relations/",
+   "folder": "2025-08-05-the-enduring-legacy-a-deep-dive-into-the-pre-contact-and-historical-journey-of-the-pueblo-people-and-their-inter-societal-relations",
+   "title": "The Enduring Legacy: A Deep Dive into the Pre-Contact and Historical Journey of the Pueblo People and Their Inter-Societal Relations",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 8800,
+   "section": "history-politics",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 1189,
+   "type": "post",
+   "path": "/2025/08/05/experience-the-sound-of-late-summer-mid-summer-static/",
+   "folder": "2025-08-05-experience-the-sound-of-late-summer-mid-summer-static",
+   "title": "Experience the Sound of Mid Summer Static",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 434,
+   "section": "signal",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1,
+    "youtube": 1
+   }
+  },
+  {
+   "id": 1159,
+   "type": "post",
+   "path": "/2025/07/10/comparative-analysis-of-daily-greens-powders-for-optimal-nutrition/",
+   "folder": "2025-07-10-comparative-analysis-of-daily-greens-powders-for-optimal-nutrition",
+   "title": "Comparative Analysis of Daily Greens Powders for Optimal Nutrition",
+   "notes": [
+    "h1 inside the post demoted to h2 (the title is the page h1)"
+   ],
+   "warnings": [],
+   "words_wp": 2010,
+   "section": "field-notes",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 1088,
+   "type": "post",
+   "path": "/2025/05/03/from-cardinal-to-pope/",
+   "folder": "2025-05-03-from-cardinal-to-pope",
+   "title": "From cardinal to Pope",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 206,
+   "section": "science-nature",
+   "images": 10,
+   "media": 10,
+   "remoteImages": 0,
+   "missingAlt": 10,
+   "galleries": 1,
+   "embeds": {
+    "youtube": 3
+   }
+  },
+  {
+   "id": 1080,
+   "type": "post",
+   "path": "/2025/05/02/y2k38-risks-solutions-and-real-world-implications/",
+   "folder": "2025-05-02-y2k38-risks-solutions-and-real-world-implications",
+   "title": "Y2K38: Risks, Solutions, and Real-World Implications",
+   "notes": [
+    "transcoded epochalypse-now_-unpacking-the-looming-year-2038-time-bomb__.wav → epochalypse-now_-unpacking-the-looming-year-2038-time-bomb__.mp3 (WAV was over Cloudflare's 25 MiB file limit)",
+    "section engineering: Y2K38 is a software-time bug; WordPress tied History and Technology"
+   ],
+   "warnings": [],
+   "words_wp": 8712,
+   "section": "engineering",
+   "images": 0,
+   "media": 1,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 1071,
+   "type": "post",
+   "path": "/2025/04/23/a-sea-of-red-discovering-the-texas-paintbrush/",
+   "folder": "2025-04-23-a-sea-of-red-discovering-the-texas-paintbrush",
+   "title": "A Sea of Red: Discovering the Texas Paintbrush",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 233,
+   "section": "science-nature",
+   "images": 6,
+   "media": 6,
+   "remoteImages": 0,
+   "missingAlt": 6,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1
+   }
+  },
+  {
+   "id": 1053,
+   "type": "post",
+   "path": "/2025/04/20/the-intertwined-essence-of-existence/",
+   "folder": "2025-04-20-the-intertwined-essence-of-existence",
+   "title": "The Intertwined Essence of Existence",
+   "notes": [
+    "h1 inside the post demoted to h2 (the title is the page h1)"
+   ],
+   "warnings": [],
+   "words_wp": 4036,
+   "section": "signal",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 2
+   }
+  },
+  {
+   "id": 811,
+   "type": "post",
+   "path": "/2024/04/28/echoes-of-affinity/",
+   "folder": "2024-04-28-echoes-of-affinity",
+   "title": "Echoes of Affinity",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 981,
+   "section": "signal",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1,
+    "youtube": 1
+   }
+  },
+  {
+   "id": 698,
+   "type": "post",
+   "path": "/2024/02/17/februfuzzz/",
+   "folder": "2024-02-17-februfuzzz",
+   "title": "FebruFuzzz",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 35,
+   "section": "signal",
+   "images": 1,
+   "media": 1,
+   "remoteImages": 0,
+   "missingAlt": 1,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1,
+    "youtube": 1
+   }
+  },
+  {
+   "id": 523,
+   "type": "post",
+   "path": "/2023/05/22/playlist-may-12023/",
+   "folder": "2023-05-22-playlist-may-12023",
+   "title": "Playlist: May 12023",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 93,
+   "section": "signal",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1
+   }
+  },
+  {
+   "id": 490,
+   "type": "post",
+   "path": "/2023/04/23/exploring-the-veal-springs-branch-trail-and-an-elm-fork-trail-hawk-encounter-on-earth-day-2023/",
+   "folder": "2023-04-23-exploring-the-veal-springs-branch-trail-and-an-elm-fork-trail-hawk-encounter-on-earth-day-2023",
+   "title": "Exploring the Veal Springs Branch trail and an Elm Fork Trail hawk encounter on Earth Day 2023",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 0,
+   "section": "science-nature",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {
+    "youtube": 1
+   }
+  },
+  {
+   "id": 390,
+   "type": "post",
+   "path": "/2021/11/19/390/",
+   "folder": "2021-11-19-390",
+   "title": "Partial Lunar Eclipse – Nov 19, 2021",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 133,
+   "section": "science-nature",
+   "images": 9,
+   "media": 9,
+   "remoteImages": 0,
+   "missingAlt": 9,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 370,
+   "type": "post",
+   "path": "/2021/10/20/branding-sharepoint-the-new-normal/",
+   "folder": "2021-10-20-branding-sharepoint-the-new-normal",
+   "title": "Branding SharePoint: The New Normal",
+   "notes": [
+    "WordPress.com reblog: quotes another blog’s post, with a link to it",
+    "section engineering: SharePoint branding post, filed under Nature on WordPress"
+   ],
+   "warnings": [],
+   "words_wp": 112,
+   "section": "engineering",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 320,
+   "type": "post",
+   "path": "/2021/05/03/interpreting-chevelles-piistol-star-gravity-heals/",
+   "folder": "2021-05-03-interpreting-chevelles-piistol-star-gravity-heals",
+   "title": "Interpreting Chevelle’s “Piistol Star (Gravity Heals)”",
+   "notes": [
+    "section signal: Chevelle lyric analysis, filed under Nature on WordPress"
+   ],
+   "warnings": [
+    "embed without a component, rendered as a link card: https://read.amazon.com/kp/card?preview=inline&linkCode=kpd&ref_=k4w_oembed_2YFXJ4scAdjwW6&asin=B08QRRYD6M&tag=kpembed-20"
+   ],
+   "words_wp": 605,
+   "section": "signal",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {
+    "other": 1,
+    "youtube": 1,
+    "spotify": 1,
+    "apple_music": 1
+   }
+  },
+  {
+   "id": 301,
+   "type": "post",
+   "path": "/2021/05/02/persisting-petrichor-and-a-millipede/",
+   "folder": "2021-05-02-persisting-petrichor-and-a-millipede",
+   "title": "Persisting Petrichor and a Millipede",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 550,
+   "section": "signal",
+   "images": 2,
+   "media": 2,
+   "remoteImages": 0,
+   "missingAlt": 2,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1
+   }
+  },
+  {
+   "id": 299,
+   "type": "post",
+   "path": "/2021/05/01/introducing-custom-registration-pages-for-microsoft-teams-meetings/",
+   "folder": "2021-05-01-introducing-custom-registration-pages-for-microsoft-teams-meetings",
+   "title": "Introducing custom registration pages for Microsoft Teams meetings",
+   "notes": [
+    "WordPress.com reblog: quotes another blog’s post, with a link to it",
+    "section engineering: Microsoft registration-pages post, filed under Nature on WordPress"
+   ],
+   "warnings": [],
+   "words_wp": 188,
+   "section": "engineering",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 207,
+   "type": "post",
+   "path": "/2020/12/04/my-2020-spotify-wrapped/",
+   "folder": "2020-12-04-my-2020-spotify-wrapped",
+   "title": "My Spotify 2020 Wrapped",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 20,
+   "section": "signal",
+   "images": 10,
+   "media": 10,
+   "remoteImages": 0,
+   "missingAlt": 10,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1
+   }
+  },
+  {
+   "id": 175,
+   "type": "post",
+   "path": "/2020/11/21/road-trippin-for-thanksgiving/",
+   "folder": "2020-11-21-road-trippin-for-thanksgiving",
+   "title": "Road-trippin’ for Thanksgiving",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 153,
+   "section": "science-nature",
+   "images": 1,
+   "media": 1,
+   "remoteImages": 0,
+   "missingAlt": 1,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 165,
+   "type": "post",
+   "path": "/2020/11/20/for-the-bees/",
+   "folder": "2020-11-20-for-the-bees",
+   "title": "These are for the bees",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 38,
+   "section": "science-nature",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {
+    "youtube": 1
+   }
+  },
+  {
+   "id": 143,
+   "type": "post",
+   "path": "/2020/11/14/mid-november-hickory-creek-hike/",
+   "folder": "2020-11-14-mid-november-hickory-creek-hike",
+   "title": "Mid-November Hickory Creek Hike",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 208,
+   "section": "science-nature",
+   "images": 3,
+   "media": 3,
+   "remoteImages": 0,
+   "missingAlt": 3,
+   "galleries": 0,
+   "embeds": {
+    "youtube": 1
+   }
+  },
+  {
+   "id": 139,
+   "type": "post",
+   "path": "/2020/11/12/nov-3-2020-election-most-secure-ever/",
+   "folder": "2020-11-12-nov-3-2020-election-most-secure-ever",
+   "title": "Nov. 3 2020 Election Most Secure Ever",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 31,
+   "section": "history-politics",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 128,
+   "type": "post",
+   "path": "/2020/11/01/panteones-por-mi-familia/",
+   "folder": "2020-11-01-panteones-por-mi-familia",
+   "title": "Sorta kinda calaveras literarias for 2020",
+   "notes": [
+    "cover block flattened to image + text"
+   ],
+   "warnings": [],
+   "words_wp": 265,
+   "section": "field-notes",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 81,
+   "type": "post",
+   "path": "/2020/11/01/qubits-electronic-music-playlist/",
+   "folder": "2020-11-01-qubits-electronic-music-playlist",
+   "title": "qubits – an electronic music playlist, inspired by quantum information",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 0,
+   "section": "signal",
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {
+    "spotify": 1
+   }
+  },
+  {
+   "id": 64,
+   "type": "post",
+   "path": "/2020/05/01/night-sky-observations-for-5-1-2020-0700-utc/",
+   "folder": "2020-05-01-night-sky-observations-for-5-1-2020-0700-utc",
+   "title": "My Night Sky Observations for 5/1/2020 01:00AM CDT",
+   "notes": [
+    "image split out of a paragraph"
+   ],
+   "warnings": [],
+   "words_wp": 402,
+   "section": "science-nature",
+   "images": 8,
+   "media": 8,
+   "remoteImages": 0,
+   "missingAlt": 8,
+   "galleries": 0,
+   "embeds": {
+    "youtube": 1
+   }
+  },
+  {
+   "id": 13,
+   "type": "post",
+   "path": "/2020/02/01/rediscovering-the-music/",
+   "folder": "2020-02-01-rediscovering-the-music",
+   "title": "Rediscovering the music",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 313,
+   "section": "signal",
+   "images": 41,
+   "media": 41,
+   "remoteImages": 0,
+   "missingAlt": 41,
+   "galleries": 1,
+   "embeds": {}
+  }
+ ],
+ "pages": [
+  {
+   "id": 149,
+   "type": "page",
+   "path": "/about/",
+   "folder": "about",
+   "title": "About",
+   "notes": [],
+   "warnings": [],
+   "words_wp": 150,
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {}
+  },
+  {
+   "id": 2,
+   "type": "page",
+   "path": "/contact/",
+   "folder": "contact",
+   "title": "Contact",
+   "notes": [],
+   "warnings": [
+    "WordPress served an empty Contact page (the Jetpack form is not in the API); wrote a placeholder for you to replace"
+   ],
+   "words_wp": 0,
+   "images": 0,
+   "media": 0,
+   "remoteImages": 0,
+   "missingAlt": 0,
+   "galleries": 0,
+   "embeds": {}
+  }
+ ],
+ "tagSlugOverrides": {},
+ "skipped": [
+  {
+   "id": 236,
+   "title": "Portfolio",
+   "reason": "never-published draft page; still the theme’s lorem-ipsum template"
+  }
+ ],
+ "ffmpeg": true
+}

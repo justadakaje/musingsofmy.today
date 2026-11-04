@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import PodcastCard from '../components/PodcastCard.astro';
+import PostRow from '../components/PostRow.astro';
+import { getPosts } from '../lib/posts';
+import { SHOW_IDS, SHOWS } from '../site';
+
+const posts = await getPosts();
+---
+<Base title="Podcasts" description="Runtime Reality and The Chronos Archive, and the blog posts that go with their episodes." nav="podcasts">
+  <PageHead
+    eyebrow="// podcasts"
+    title="Two shows"
+    lede="The episodes live on Apple Podcasts and Spotify. These are the posts written alongside them, with sources and show notes."
+  />
+  <main class="wrap">
+    <div class="cards two" style="margin-top:40px">
+      {SHOW_IDS.map((id) => <PodcastCard show={id} latest={posts.find((p) => p.data.podcast?.show === id)} />)}
+    </div>
+    {SHOW_IDS.map((id) => {
+      const eps = posts.filter((p) => p.data.podcast?.show === id);
+      return (
+        <section>
+          <div class="sec"><h2>// {SHOWS[id].name.toLowerCase()} · {eps.length} on the blog</h2><span class="rule"></span></div>
+          <div class="log">{eps.map((p) => <PostRow post={p} />)}</div>
+        </section>
+      );
+    })}
+  </main>
+</Base>
