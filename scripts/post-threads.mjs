@@ -50,6 +50,8 @@ async function main() {
 
   const args = process.argv.slice(2);
   const isDryRun = args.includes('--dry-run');
+  const replyToArg = args.find((a) => a.startsWith('--reply-to='));
+  const initialReplyTo = replyToArg ? replyToArg.split('=')[1] : null;
   const fileArg = args.find((a) => !a.startsWith('--'));
 
   if (!fileArg) {
@@ -105,7 +107,7 @@ async function main() {
 
   console.log('🚀 Connecting to Threads API...\n');
 
-  let previousPostId = null;
+  let previousPostId = initialReplyTo;
   const publishedIds = [];
 
   for (let i = 0; i < rawPosts.length; i++) {
