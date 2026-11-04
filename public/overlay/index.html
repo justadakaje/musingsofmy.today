@@ -66,6 +66,30 @@
       justify-content: space-between;
       padding: 0 16px;
       z-index: 100;
+      overflow: hidden;
+    }
+
+    /* Glass Shimmer & Ambient Border Sweep */
+    .top-bar::after, .bottom-hud::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -120%;
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent 0%, rgba(34, 211, 238, 0.03) 20%, rgba(103, 232, 249, 0.2) 50%, rgba(34, 211, 238, 0.03) 80%, transparent 100%);
+      transform: skewX(-25deg);
+      pointer-events: none;
+      animation: shimmer 12s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .bottom-hud::after {
+      animation-delay: 6s;
+    }
+
+    @keyframes shimmer {
+      0%, 75% { left: -120%; }
+      90%, 100% { left: 160%; }
     }
 
     .brand-section {
@@ -179,7 +203,7 @@
     .links-section {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       font-family: var(--font-mono);
       font-size: 12px;
       color: var(--text-muted);
@@ -188,11 +212,35 @@
     .links-section .item {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     .links-section .item span {
       color: var(--accent);
+    }
+
+    /* Live Digital Clock */
+    .hud-clock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(34, 211, 238, 0.08);
+      border: 1px solid var(--border);
+      padding: 3px 9px;
+      border-radius: var(--radius-sm);
+      color: var(--accent-bright);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .clock-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--success);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--success);
     }
 
     /* Bottom Info Card / Now Playing / Addon Card */
@@ -216,7 +264,7 @@
       overflow: hidden;
     }
 
-    /* Camera Frame Accent Border */
+    /* Camera Frame Accent Border & Sci-Fi Tech Brackets */
     .cam-frame {
       position: absolute;
       left: 20px;
@@ -228,6 +276,103 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 12px rgba(34, 211, 238, 0.12);
       pointer-events: none;
       z-index: 99;
+    }
+
+    .cam-bracket {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-color: var(--accent-bright);
+      border-style: solid;
+      pointer-events: none;
+      filter: drop-shadow(0 0 4px var(--accent));
+    }
+
+    .cam-bracket-tl {
+      top: -2px;
+      left: -2px;
+      border-width: 2px 0 0 2px;
+      border-top-left-radius: 6px;
+    }
+
+    .cam-bracket-tr {
+      top: -2px;
+      right: -2px;
+      border-width: 2px 2px 0 0;
+      border-top-right-radius: 6px;
+    }
+
+    .cam-bracket-bl {
+      bottom: -2px;
+      left: -2px;
+      border-width: 0 0 2px 2px;
+      border-bottom-left-radius: 6px;
+    }
+
+    .cam-bracket-br {
+      bottom: -2px;
+      right: -2px;
+      border-width: 0 2px 2px 0;
+      border-bottom-right-radius: 6px;
+    }
+
+    .cam-tag {
+      position: absolute;
+      bottom: 8px;
+      right: 10px;
+      font-family: var(--font-mono);
+      font-size: 8.5px;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+      color: rgba(34, 211, 238, 0.8);
+      background: rgba(5, 12, 18, 0.85);
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(34, 211, 238, 0.25);
+      pointer-events: none;
+    }
+
+    /* Center Split Cyber Seam & Framing Notches */
+    .split-line {
+      position: absolute;
+      left: 960px;
+      top: 62px;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(180deg,
+        rgba(34, 211, 238, 0.45) 0%,
+        rgba(34, 211, 238, 0.15) 60px,
+        rgba(34, 211, 238, 0.05) 50%,
+        rgba(34, 211, 238, 0.15) calc(100% - 60px),
+        rgba(34, 211, 238, 0.45) 100%
+      );
+      box-shadow: 0 0 8px rgba(34, 211, 238, 0.15);
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    .split-notch-top {
+      position: absolute;
+      left: 955px;
+      top: 62px;
+      width: 11px;
+      height: 2px;
+      background: var(--accent-bright);
+      box-shadow: 0 0 8px var(--accent);
+      pointer-events: none;
+      z-index: 51;
+    }
+
+    .split-notch-bottom {
+      position: absolute;
+      left: 955px;
+      bottom: 0px;
+      width: 11px;
+      height: 2px;
+      background: var(--accent-bright);
+      box-shadow: 0 0 8px var(--accent);
+      pointer-events: none;
+      z-index: 51;
     }
 
     .hud-icon {
@@ -244,6 +389,12 @@
       font-family: var(--font-mono);
       font-weight: 700;
       font-size: 13px;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    }
+
+    .hud-icon.fading {
+      transform: scale(0.85);
+      opacity: 0.3;
     }
 
     .hud-content {
@@ -252,6 +403,12 @@
       gap: 2px;
       min-width: 0;
       overflow: hidden;
+      transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hud-content.fading {
+      opacity: 0;
+      transform: translateY(5px);
     }
 
     .hud-title {
@@ -357,11 +514,26 @@
       <div class="item"><span>web</span> musingsofmy.today</div>
       <div class="item"><span>twitch</span> kenhenchan</div>
       <div class="item"><span>threads</span> @kjhenseler</div>
+      <div class="hud-clock">
+        <span class="clock-dot"></span>
+        <span id="live-clock">--:--:--</span>
+      </div>
     </div>
   </header>
 
-  <!-- Camera Frame Accent -->
-  <div class="cam-frame"></div>
+  <!-- Center Split Cyber Seam & Framing Notches -->
+  <div class="split-line"></div>
+  <div class="split-notch-top"></div>
+  <div class="split-notch-bottom"></div>
+
+  <!-- Camera Frame Accent & Sci-Fi Tech Brackets -->
+  <div class="cam-frame">
+    <div class="cam-bracket cam-bracket-tl"></div>
+    <div class="cam-bracket cam-bracket-tr"></div>
+    <div class="cam-bracket cam-bracket-bl"></div>
+    <div class="cam-bracket cam-bracket-br"></div>
+    <div class="cam-tag">BRIO 4K · 60FPS</div>
+  </div>
 
   <!-- Bottom Addon Ticker -->
   <aside class="bottom-hud">
@@ -373,7 +545,20 @@
   </aside>
 
   <script>
-    // Smooth ticker rotation for bottom HUD
+    // Live Digital Clock
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', {
+        hour12: false,
+        timeZoneName: 'short'
+      });
+      const clockEl = document.getElementById('live-clock');
+      if (clockEl) clockEl.textContent = timeStr;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Smooth Kinetic Ticker Rotation with micro-fade transition
     const tickerItems = [
       { tag: "GF", title: "GoldFinder v0.2.0 · Live on CurseForge", desc: "Built for WoW: Forever (1.60.1.70707) · Net Profit" },
       { tag: "AGY", title: "AgyOrch + AgyBuild Harness", desc: "Autonomous AI Pair Programming & DevSecOps" },
@@ -381,20 +566,29 @@
     ];
 
     let currentIdx = 0;
-    const hudTag = document.querySelector(".hud-icon");
+    const hudIcon = document.querySelector(".hud-icon");
+    const hudContent = document.querySelector(".hud-content");
     const hudTitle = document.querySelector(".hud-title");
     const hudDesc = document.querySelector(".hud-desc");
 
     setInterval(() => {
-      currentIdx = (currentIdx + 1) % tickerItems.length;
-      const item = tickerItems[currentIdx];
-      if (item.tag === "AGY") {
-        hudTag.innerHTML = '<svg style="width: 20px; height: 17px; display: block; filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.4));"><use href="#agy-logo-icon"></use></svg>';
-      } else {
-        hudTag.textContent = item.tag;
-      }
-      hudTitle.textContent = item.title;
-      hudDesc.textContent = item.desc;
+      hudIcon.classList.add("fading");
+      hudContent.classList.add("fading");
+
+      setTimeout(() => {
+        currentIdx = (currentIdx + 1) % tickerItems.length;
+        const item = tickerItems[currentIdx];
+        if (item.tag === "AGY") {
+          hudIcon.innerHTML = '<svg style="width: 20px; height: 17px; display: block; filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.5));"><use href="#agy-logo-icon"></use></svg>';
+        } else {
+          hudIcon.textContent = item.tag;
+        }
+        hudTitle.textContent = item.title;
+        hudDesc.textContent = item.desc;
+
+        hudIcon.classList.remove("fading");
+        hudContent.classList.remove("fading");
+      }, 320);
     }, 12000);
   </script>
 
