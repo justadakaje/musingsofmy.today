@@ -67,8 +67,9 @@ Validation (`scripts/`), all against `dist/` unless given `--base=<deployed URL>
 
 The site runs on **Cloudflare Workers static assets** (`wrangler.jsonc`), which is what Cloudflare
 now recommends for new static sites instead of Pages: same free plan, same `_redirects` and
-`_headers` files, no Worker code. Current production URL, until the custom domain is attached:
-https://musingsofmy-today.musingsofmy-today.workers.dev
+`_headers` files, no Worker code. Production is **https://musingsofmy.today** (a Workers custom
+domain; DNS is on Cloudflare since 2026-11-04, see `docs/dns-cutover.md`). `www` 301s to the apex.
+https://musingsofmy-today.musingsofmy-today.workers.dev serves the same build with `noindex`.
 
 GitHub Actions (`.github/workflows/ci.yml`) builds, validates, and then deploys: `main` to
 production, pull requests to a preview URL (`pr-<number>-musingsofmy-today.<account>.workers.dev`).

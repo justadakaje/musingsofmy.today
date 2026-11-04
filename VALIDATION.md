@@ -1,6 +1,6 @@
 # Validation report
 
-Generated 2026-11-04 07:13 UTC from commit `07f0ea3` by `scripts/validate.mjs`.
+Generated 2026-11-04 07:57 UTC from commit `83a3cc0` by `scripts/validate.mjs`.
 Baselines are what WordPress.com served on 2026-11-04 (frozen in `data/wpcom/`).
 
 ## Checks
@@ -8,7 +8,7 @@ Baselines are what WordPress.com served on 2026-11-04 (frozen in `data/wpcom/`).
 | Check (MIGRATION.md "Validation before cut-over") | Result |
 | --- | --- |
 | 1. Every URL in WordPress's `sitemap.xml` resolves on the build | ✅ 58/58 (dist/ (frozen sitemap)) |
-| 1b. …and over HTTP on the deployment, posts with no redirect | ✅ 58/58 (https://musingsofmy-today.musingsofmy-today.workers.dev) |
+| 1b. …and over HTTP on the deployment, posts with no redirect | ✅ 58/58 (https://musingsofmy.today) |
 | 2. Word count per post within ±2% of WordPress | ✅ 57/57 |
 | 3. Internal links, images and #anchors resolve | ✅ 11499/11499 across 473 pages |
 | 3b. External links (lychee) | CI only: see the `links` job in GitHub Actions. Informational, doesn't block a deploy |

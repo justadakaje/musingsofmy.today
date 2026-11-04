@@ -75,7 +75,10 @@ export async function run({ w3c = null } = {}) {
       const validity = /<m:validity>(true|false)<\/m:validity>/.exec(body)?.[1];
       const errors = /<m:errorcount>(\d+)<\/m:errorcount>/.exec(body)?.[1];
       const warnings = /<m:warningcount>(\d+)<\/m:warningcount>/.exec(body)?.[1];
-      add('W3C Feed Validator: valid', validity === 'true', `${errors ?? '?'} errors, ${warnings ?? '?'} warnings${types.length ? `: ${types.join(', ')}` : ''} (${w3c})`);
+      // SelfDoesntMatchLocation is our own doing: the cache-busting ?v= makes the fetched URL differ
+      // from the feed's atom:link self.
+      const real = types.filter((t) => t !== 'SelfDoesntMatchLocation');
+      add('W3C Feed Validator: valid', validity === 'true', `${errors ?? '?'} errors, ${real.length} warnings${real.length ? `: ${real.join(', ')}` : ''} (${w3c}; SelfDoesntMatchLocation ignored, caused by the cache-busting query)`);
     } catch (e) {
       add('W3C Feed Validator reachable', false, e.message);
     }

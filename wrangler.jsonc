@@ -12,7 +12,10 @@
     // Unknown URLs get dist/404.html with a real 404 status.
     "not_found_handling": "404-page"
   },
-  // <name>.<account>.workers.dev stays on as the preview until the custom domain is attached.
+  // The real domain. www is a proxied CNAME with a Page Rule that 301s to the apex
+  // (see docs/dns-cutover.md), so it needs no route here.
+  "routes": [{ "pattern": "musingsofmy.today", "custom_domain": true }],
+  // <name>.<account>.workers.dev stays on (noindex) for previews and checks.
   "workers_dev": true,
   // Per-version and per-branch preview URLs (wrangler versions upload --preview-alias …).
   "preview_urls": true
