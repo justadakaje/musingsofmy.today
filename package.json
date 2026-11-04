@@ -15,6 +15,7 @@
     "validate:words": "node scripts/check-wordcount.mjs",
     "validate:rss": "node scripts/check-rss.mjs",
     "validate:links": "node scripts/check-internal-links.mjs",
+    "post:threads": "node scripts/post-threads.mjs",
     "deploy": "wrangler deploy",
     "deploy:preview": "wrangler versions upload --preview-alias preview"
   },
