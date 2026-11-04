@@ -26,6 +26,7 @@ DNSSEC: off (no DS record at the registry), so nothing to disable before the swi
 | `@` | Worker custom domain | `musingsofmy-today` | yes | created by `wrangler deploy` (routes in wrangler.jsonc) |
 | `www` | Worker custom domain | `musingsofmy-today` | yes | 301 to the apex via a Redirect Rule |
 | `@` | TXT | `v=spf1 mx ~all` | — | unchanged |
+| `@` | TXT | `google-site-verification=GjrTWRREwCOFBmrW-I77zhuV-UCgQQif8C8WvsV-YF8` | — | Google Search Console Domain verification |
 | `deanne` | CNAME | e29686a81c87ef58.vercel-dns-017.com | **DNS only** | proxying would break Vercel's certificate |
 | `_acme-challenge` | TXT | (both values above) | — | kept; harmless |
 
@@ -45,6 +46,8 @@ produce certificate errors) and `_domainconnect` (would point services at WordPr
 | 07:55 | Bridge A records deleted and the apex attached to the Worker (`wrangler triggers deploy`); about 4 s without an A record |
 | 07:56 | `www` CNAME proxied; the Page Rule now 301s it to the apex |
 | 07:58 | `validate.mjs --base=https://musingsofmy.today`: 58/58 sitemap URLs, 57/57 word counts, 17/17 RSS (W3C valid), 11,499 internal links |
+| ~15:05 | Cloudflare API token + Account ID secrets added to GitHub Actions; automated CI/CD pipeline verified |
+| ~15:10 | Google Search Console Domain property verified via DNS TXT record; sitemap.xml submitted |
 
 Old addresses keep working: `musingsofmytoday.wordpress.com/<path>` and `wp.me/…` shortlinks 301 to
 `musingsofmy.today/<path>` because WordPress.com still has the domain mapped as primary. That stops
