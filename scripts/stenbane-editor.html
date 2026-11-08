@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Stenbane Series Live In-Line Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-panel: #161b22;
+      --bg-hover: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #d29922;
+      --accent-bright: #e3b341;
+      --green: #3fb950;
+      --red: #f85149;
+      --blue: #58a6ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    header {
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      z-index: 10;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .logo {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--accent-bright);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .tabs {
+      display: flex;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px;
+      gap: 2px;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      font-size: 0.84rem;
+      font-weight: 500;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .tab-btn:hover {
+      color: var(--text);
+      background: var(--bg-hover);
+    }
+    .tab-btn.active {
+      color: #fff;
+      background: #238636;
+      font-weight: 600;
+    }
+    .header-center {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .view-toggles {
+      display: flex;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px;
+    }
+    .view-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 5px 11px;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .view-btn.active {
+      background: var(--bg-panel);
+      color: var(--text);
+      font-weight: 600;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .status-badge {
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+    .status-dot.unsaved {
+      background: var(--accent);
+    }
+    .btn {
+      background: var(--bg-hover);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn:hover {
+      background: var(--border);
+    }
+    .btn-primary {
+      background: #238636;
+      border-color: rgba(240,246,252,0.1);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #2ea043;
+    }
+    .btn-preview {
+      color: var(--blue);
+      border-color: rgba(88,166,255,0.3);
+    }
+    .btn-preview:hover {
+      background: rgba(88,166,255,0.1);
+    }
+
+    #errorBanner {
+      display: none;
+      background: rgba(248,81,73,0.15);
+      border-bottom: 1px solid var(--red);
+      color: #ff7b72;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      position: relative;
+    }
+    .editor-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      background: #0d1117;
+      min-width: 0;
+    }
+    .editor-toolbar {
+      padding: 6px 16px;
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+    #editor {
+      flex: 1;
+      width: 100%;
+      background: transparent;
+      color: var(--text);
+      border: none;
+      resize: none;
+      outline: none;
+      padding: 20px 24px;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      tab-size: 2;
+      overflow-y: auto;
+    }
+    .preview-pane {
+      flex: 1;
+      background: #0f141c;
+      overflow-y: auto;
+      padding: 40px 48px;
+      min-width: 0;
+    }
+    .preview-content {
+      max-width: 740px;
+      margin: 0 auto;
+      line-height: 1.75;
+      font-size: 1.05rem;
+      color: #e6edf3;
+    }
+    .preview-content h1 { font-size: 2rem; margin-bottom: 1rem; color: #fff; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+    .preview-content h2 { font-size: 1.5rem; margin: 2rem 0 1rem; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.3rem; }
+    .preview-content h3 { font-size: 1.25rem; margin: 1.5rem 0 0.8rem; color: var(--accent-bright); }
+    .preview-content p { margin-bottom: 1.25rem; }
+    .preview-content hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+    .preview-content blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 8px 16px;
+      margin: 1.25rem 0;
+      color: #c9d1d9;
+      background: rgba(210,153,34,0.06);
+      border-radius: 0 4px 4px 0;
+    }
+    .preview-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      display: block;
+      margin: 1.5rem auto;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    }
+    .preview-content figure {
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .preview-content figcaption {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-style: italic;
+    }
+    .preview-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+    }
+    .preview-content th, .preview-content td {
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      text-align: left;
+    }
+    .preview-content th { background: var(--bg-panel); color: #fff; }
+    .preview-content td { background: rgba(255,255,255,0.02); }
+
+    /* Single view modes */
+    body.mode-editor-only .preview-pane { display: none; }
+    body.mode-editor-only .editor-pane { border-right: none; }
+    body.mode-preview-only .editor-pane { display: none; }
+    body.mode-preview-only .preview-pane { flex: 1; }
+  </style>
+</head>
+<body class="mode-split">
+  <div id="errorBanner"></div>
+  <header>
+    <div class="header-left">
+      <div class="logo">
+        <span>⚔️</span> Stenbane Editor
+      </div>
+      <div class="tabs" id="tabs"></div>
+    </div>
+
+    <div class="header-center">
+      <div class="view-toggles">
+        <button class="view-btn active" data-mode="split" onclick="setViewMode('split')">Split View</button>
+        <button class="view-btn" data-mode="preview-only" onclick="setViewMode('preview-only')">Reader Mode</button>
+        <button class="view-btn" data-mode="editor-only" onclick="setViewMode('editor-only')">Editor Only</button>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="status-badge">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Saved</span>
+      </div>
+      <button class="btn btn-primary" onclick="saveCurrentPost()">
+        💾 Save <span style="opacity:0.7; font-size:0.75rem;">(Ctrl+S)</span>
+      </button>
+      <a class="btn btn-preview" id="astroLink" href="http://localhost:4321/" target="_blank">
+        ↗ View on Astro (4321)
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <div class="editor-pane">
+      <div class="editor-toolbar">
+        <span id="editorStats">0 words • 0 characters</span>
+        <span>Press Ctrl+S to save directly to disk</span>
+      </div>
+      <textarea id="editor" spellcheck="true" placeholder="Loading post..."></textarea>
+    </div>
+    <div class="preview-pane">
+      <div class="preview-content" id="preview"></div>
+    </div>
+  </main>
+
+  <script>
+    window.onerror = function(msg, url, line) {
+      const b = document.getElementById('errorBanner');
+      if (b) {
+        b.style.display = 'block';
+        b.textContent = 'Script error: ' + msg + ' (line ' + line + ')';
+      }
+    };
+
+    const initialData = window.__INITIAL_DATA__ || {};
+    const parts = initialData.parts || [];
+    const postsCache = initialData.posts || {};
+    let currentPart = null;
+    let originalContent = '';
+    let isDirty = false;
+
+    // Built-in zero-dependency Markdown parser
+    function parseMarkdown(md) {
+      if (!md) return '';
+      let html = md
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      // Allow safe pre-rendered HTML tags
+      html = html.replace(/&lt;(\/?(figure|figcaption|img|div|span|table|thead|tbody|tr|th|td|a)[^&]*)&gt;/gi, '<$1>');
+
+      const lines = html.split('\n');
+      let inTable = false;
+      let tableRows = [];
+      let out = [];
+
+      function flushTable() {
+        if (!inTable) return;
+        let tHtml = '<table>';
+        tableRows.forEach((r, idx) => {
+          const cells = r.split('|').map(c => c.trim()).filter((c, i, a) => i > 0 && i < a.length - 1);
+          if (cells.length === 0) return;
+          if (cells[0].match(/^-+$/)) return;
+          const tag = idx === 0 ? 'th' : 'td';
+          tHtml += '<tr>' + cells.map(c => '<' + tag + '>' + inlineFormat(c) + '</' + tag + '>').join('') + '</tr>';
+        });
+        tHtml += '</table>';
+        out.push(tHtml);
+        inTable = false;
+        tableRows = [];
+      }
+
+      for (let line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
+          inTable = true;
+          tableRows.push(trimmed);
+          continue;
+        } else if (inTable) {
+          flushTable();
+        }
+
+        if (trimmed.startsWith('### ')) {
+          out.push('<h3>' + inlineFormat(trimmed.slice(4)) + '</h3>');
+        } else if (trimmed.startsWith('## ')) {
+          out.push('<h2>' + inlineFormat(trimmed.slice(3)) + '</h2>');
+        } else if (trimmed.startsWith('# ')) {
+          out.push('<h1>' + inlineFormat(trimmed.slice(2)) + '</h1>');
+        } else if (trimmed === '---') {
+          out.push('<hr>');
+        } else if (trimmed.startsWith('&gt; ')) {
+          out.push('<blockquote>' + inlineFormat(trimmed.slice(5)) + '</blockquote>');
+        } else if (trimmed.startsWith('- ')) {
+          out.push('<p style="margin-left: 1.5rem; margin-bottom: 0.5rem;">• ' + inlineFormat(trimmed.slice(2)) + '</p>');
+        } else if (trimmed.length > 0) {
+          out.push('<p>' + inlineFormat(trimmed) + '</p>');
+        }
+      }
+      if (inTable) flushTable();
+
+      return out.join('\n');
+    }
+
+    function inlineFormat(text) {
+      return text
+        .replace(/\*\*\*([^*]+)\*\*\*/g, '<strong><em>$1</em></strong>')
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color:var(--blue);" target="_blank">$1</a>')
+        .replace(/`([^`]+)`/g, '<code style="background:rgba(255,255,255,0.08); padding:2px 5px; border-radius:4px;">$1</code>');
+    }
+
+    function init() {
+      renderTabs();
+      if (parts.length > 0) {
+        loadPart(parts[0].id);
+      }
+    }
+
+    function renderTabs() {
+      const tabsEl = document.getElementById('tabs');
+      tabsEl.innerHTML = '';
+      parts.forEach(p => {
+        const btn = document.createElement('button');
+        btn.className = 'tab-btn' + (currentPart && currentPart.id === p.id ? ' active' : '');
+        btn.textContent = p.title.split(':')[0]; // e.g. "Part 1"
+        btn.title = p.title;
+        btn.onclick = () => {
+          if (isDirty && !confirm('You have unsaved changes in this part. Switch anyway?')) {
+            return;
+          }
+          loadPart(p.id);
+        };
+        tabsEl.appendChild(btn);
+      });
+    }
+
+    function loadPart(id) {
+      currentPart = parts.find(p => p.id === id);
+      renderTabs();
+      document.getElementById('astroLink').href = 'http://localhost:4321' + currentPart.url;
+
+      originalContent = postsCache[id] || '';
+      const editor = document.getElementById('editor');
+      editor.value = originalContent;
+      markSaved();
+      updatePreview();
+      updateStats();
+    }
+
+    function setViewMode(mode) {
+      document.body.className = 'mode-' + mode;
+      document.querySelectorAll('.view-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.mode === mode);
+      });
+    }
+
+    const editorEl = document.getElementById('editor');
+    editorEl.addEventListener('input', () => {
+      if (editorEl.value !== originalContent) {
+        markUnsaved();
+      } else {
+        markSaved();
+      }
+      updatePreview();
+      updateStats();
+    });
+
+    editorEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const start = editorEl.selectionStart;
+        const end = editorEl.selectionEnd;
+        editorEl.value = editorEl.value.substring(0, start) + '  ' + editorEl.value.substring(end);
+        editorEl.selectionStart = editorEl.selectionEnd = start + 2;
+        editorEl.dispatchEvent(new Event('input'));
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        saveCurrentPost();
+      }
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        saveCurrentPost();
+      }
+    });
+
+    function markUnsaved() {
+      isDirty = true;
+      document.getElementById('statusDot').className = 'status-dot unsaved';
+      document.getElementById('statusText').textContent = 'Unsaved changes';
+    }
+
+    function markSaved() {
+      isDirty = false;
+      document.getElementById('statusDot').className = 'status-dot';
+      document.getElementById('statusText').textContent = 'Saved to disk';
+    }
+
+    async function saveCurrentPost() {
+      if (!currentPart) return;
+      const content = editorEl.value;
+      const statusText = document.getElementById('statusText');
+      statusText.textContent = 'Saving...';
+      try {
+        const res = await fetch('/api/post/' + currentPart.id, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content })
+        });
+        const data = await res.json();
+        if (data.success) {
+          originalContent = content;
+          postsCache[currentPart.id] = content;
+          markSaved();
+        } else {
+          alert('Save failed: ' + (data.error || 'Unknown error'));
+        }
+      } catch (err) {
+        alert('Network error saving: ' + err.message);
+      }
+    }
+
+    function updateStats() {
+      const text = editorEl.value;
+      const chars = text.length;
+      const words = (text.match(/\b\w+\b/g) || []).length;
+      document.getElementById('editorStats').textContent = words.toLocaleString() + ' words • ' + chars.toLocaleString() + ' characters';
+    }
+
+    function updatePreview() {
+      if (!currentPart) return;
+      let raw = editorEl.value;
+
+      raw = raw.replace(/^---[\s\S]*?---\s*/, '');
+      raw = raw.replace(/^import .*$/gm, '');
+
+      const imgBase = '/images/' + currentPart.dir + '/';
+
+      raw = raw.replace(/<Figure\s+src={([a-zA-Z0-9]+)}\s+alt="([^"]*)">([\s\S]*?)<\/Figure>/g, (m, varName, alt, caption) => {
+        const importMatch = editorEl.value.match(new RegExp('import\\s+' + varName + '\\s+from\\s+[\'"]\\.\\/([^\'"]+)[\'"]'));
+        const fileName = importMatch ? importMatch[1] : 'image.jpg';
+        return '<figure><img src="' + imgBase + fileName + '" alt="' + alt + '"><figcaption>' + caption.trim() + '</figcaption></figure>';
+      });
+
+      raw = raw.replace(/<Gallery[\s\S]*?\/>/g, (m) => {
+        return '<div style="background:rgba(210,153,34,0.1); border:1px dashed var(--accent); padding:16px; border-radius:6px; margin:20px 0; text-align:center; color:var(--accent-bright); font-size:0.9rem;">[ 🖼️ Nine-Character Character Gallery — rendered in Astro output ]</div>';
+      });
+
+      const previewEl = document.getElementById('preview');
+      previewEl.innerHTML = parseMarkdown(raw);
+    }
+
+    init();
+  </script>
+</body>
+</html>

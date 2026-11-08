@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "c1b84830-f340-4360-ac58-c743f1278058",
+  "status": "current",
+  "command": "deliver",
+  "type": "workflow",
+  "input": "D:\\Code\\GitHub\\musingsofmy.today\\.archify\\workflow-dual-harness-timeline-20261105-050600\\candidate.json",
+  "output": "D:\\Code\\GitHub\\musingsofmy.today\\.archify\\workflow-dual-harness-timeline-20261105-050600\\dual-harness-timeline.html",
+  "specification": {
+    "sha256": "e16daf74c07f141c6a6547d3a2af08a9e0c9736f27aef08f1375ef265c89146c",
+    "bytes": 6535
+  },
+  "artifact": {
+    "sha256": "f8349aa2a50fa59ba0fdd73e882e96d48d9df7b3394ef42a098b2f1ce21cd516",
+    "bytes": 773329
+  }
+}

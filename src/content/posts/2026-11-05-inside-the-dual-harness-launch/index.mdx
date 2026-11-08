@@ -1,0 +1,317 @@
+---
+title: "Inside the Dual-Harness Launch: Autonomous AI Pair Programming, WoW: Forever Hardening, and Edge Cyber-Overlays"
+date: "2026-11-05T05:30:00-05:00"
+section: engineering
+categories: ["AI", "Gaming", "Technology"]
+tags: ["AI coding", "Antigravity", "World of Warcraft", "WoW Forever", "addon development", "pair programming", "Lua", "Cloudflare Workers", "Spotify Web API", "Archify", "software engineering", "AST", "system design"]
+description: "A technical tear-down of our dual-harness launch session: running twin autonomous AI agents across Windows host and WSL sandbox, surviving live WoW: Forever client triage, hardening GoldFinder, and building edge cyber-glass overlays."
+cover:
+  src: "./cover.png"
+  alt: "GoldFinder Auction House Inset Tab with Tier Highlights and Watchlist Stars"
+---
+
+import coverImg from './cover.png';
+import addonListImg from './addon-list.png';
+import addonListBeforeImg from './addon-list-before.png';
+import chatAlertMegaSnipeImg from './chat-alert-megasnipe.png';
+import chatAlertImg from './chat-alert.png';
+import itemHoverImg from './item-hover.png';
+
+**Executive Summary:** In a marathon launch session for *World of Warcraft: Forever* (build 70707/1.60.1), we ran a dual-harness autonomous AI pair programming architecture. One agent (**AgyOrch**) governed the Windows host, OBS broadcast surfaces, Edge workers, Spotify Web API OAuth, and Git convergence. The second agent (**AgyBuild**) lived inside an isolated WSL Ubuntu sandbox, compiling AST linters, parsing TOC manifests, and writing production Lua/XML. Across four live stream triage incidents, three core sprint issues, and a broadcast overlay overhaul, this session provided a stress test for multi-agent co-development. Here is the complete post-stream teardown.
+
+---
+
+## The Accomplishments Timeline (Interactive Archify Explainer)
+
+Explore the full workflow of today's launch below. Trace the flow from initial Twitch and Meta Threads broadcast hooks, through the core filter sprint, into live auction house incident triage, and finally to Cloudflare edge deployment and master convergence.
+
+<iframe
+  src="/archify/dual-harness-timeline.html"
+  width="100%"
+  height="680"
+  style="border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px; margin: 1.5rem 0; background: #0c0f17; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"
+  title="Dual-Harness Launch Day Engineering & Broadcast Timeline"
+></iframe>
+
+<p style="font-size: 0.85rem; opacity: 0.75; text-align: center; margin-top: -0.75rem; margin-bottom: 2rem;">
+  <em>Tip: Click interactive nodes or toggle dark/light themes directly inside the embedded canvas, or <a href="/archify/dual-harness-timeline.html" target="_blank" rel="noopener noreferrer">open the full standalone explainer</a>.</em>
+</p>
+
+---
+
+## Dual Executive Summaries: The Engine Room & The Bridge
+
+Operating two independent AI agent harnesses in parallel requires sharp division of authority. One agent cannot review its own pull requests without drift; an orchestrator must verify system health while the builder focuses on syntactic correctness.
+
+### 1. AgyBuild's Engineering Summary (The Engine Room)
+
+> **Scope:** WoW: Forever 1.60.1 · GoldFinder AddOn · Core Filter Engine & Client Hardening  
+> **Environment:** WSL Ubuntu 24.04 LTS · Lua 5.1 AST Parsers · Git Branch `master`
+
+- **Issue #30 Delivered (Minimum Profit Floor):** Implemented `/gf minprofit <amount>` command parser and evaluation filter, allowing goblins to suppress clutter under 1g, 5g, or 50g thresholds. Merged cleanly in [PR #31](https://github.com/justadakaje/wow-addons/pull/31).
+- **Issue #25 Delivered (Visual Tier Badges):** Implemented auction row highlights with Epic Purple `[SNIPE]` (deals with >= 500g profit or >= 70% discount), Rare Blue `[GREAT]`, and Good Value tinting, backed by sound alerts and chat frame notifications. Merged in [PR #32](https://github.com/justadakaje/wow-addons/pull/32).
+- **Issue #12 Delivered (Category Filters & Watchlist):** Built native category pill sub-tabs (`All`, `Herbs`, `Mining`, `Cloth`, `Leather`, `Watchlist`) and per-row persistent star bookmarking. Merged in commit `9afa582`.
+- **Lexical Scope Hardening:** Forward-declared `ItemName` at line 112 of `Tab.lua` to eliminate a nil lexical scope exception on row star clicks.
+- **Automated Verification:** 27/27 Lua files validated through clean AST parsing (`check-lua.js`), 5/5 TOC manifests validated for zero missing references (`check-toc.js`), and live character symlinks mirrored across client test trees.
+
+### 2. AgyOrch's Systems & Broadcast Summary (The Bridge)
+
+> **Scope:** Stream Production · Cloudflare Workers Edge · Spotify Web API PKCE · Blizzard Client Integration  
+> **Environment:** Windows 11 Host · Node.js 22 · PowerShell 7 · OBS Studio 31
+
+- **Blizzard AddOn List Categorization:** Diagnosed orphan addon placement in WoW Build 70707 character select. Upgraded `GoldFinder.toc` to `## Category: Auctions`, `ForeverProbe.toc` & `AddonSmokeTest.toc` to `## Category: Development Tools`, and `AdventurerPlates.toc` to `## Category: Unit Frames`. Addons now collapse neatly into native Blizzard category trees.
+- **Cyber-Glass Dynamic HUD with Smart Elasticity:** Engineered an Obsidian/Neon Cyber-Glass stream overlay in `public/overlay/index.html`. Implemented Option 1: a Side-by-Side Dual-Dock that dynamically transitions between a 204px split-dock (project status ticker + Spotify track player) and an expanded 420px single-dock when music is paused.
+- **Spotify Micro-Daemon:** Built `scripts/spotify-daemon.mjs` running locally on port 8889. Conforms strictly to Spotify's Web API guidelines: Authorization Code grant with PKCE, automated token refresh via 1Password vault creds, and exponential backoff retry algorithms on HTTP 429 rate limits.
+- **One-Click Stream Tooling:** Generated `start-spotify-hud.bat` and `stop-spotify-hud.bat` in `scripts/` to provide seamless background daemon management during broadcasts.
+- **Edge Deployment:** Deployed updated overlay assets to Cloudflare Workers edge (live at `https://musingsofmy.today/overlay/`, Version ID `33137d63`).
+- **Asset Pipeline:** Captured and cataloged 6 high-resolution in-game production screenshots in `addons/GoldFinder/assets/`, updating GitHub READMEs and CurseForge release documentation.
+
+---
+
+## Sprint Delivery Matrix
+
+| Seq | Issue | Feature Scope | Target Deliverable | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **01** | **#30** | Min Profit Floor | `/gf minprofit <amount>` parser & evaluation filter | **Merged** ([PR #31](https://github.com/justadakaje/wow-addons/pull/31)) |
+| **02** | **#25** | Visual Tier Badges | Epic `[SNIPE]` & Rare `[GREAT]` row badges + backdrop tints | **Merged** ([PR #32](https://github.com/justadakaje/wow-addons/pull/32)) |
+| **03** | **#12** | Category Filters | Inset pill sub-tabs, star buttons, category routing | **Merged** (Commit `9afa582`) |
+| **04** | **#14** | Direct Quick-Buy | Shift-Click commodity purchase confirmation | **Queued** (Next Sprint) |
+| **05** | **#17** | Undercut Detection | Live competitor price comparison for player auctions | **Backlog** |
+
+---
+
+## Live Stream Incidents: The 4 Failure Modes Caught in Production
+
+Nothing stress-tests code like playing the game live while writing it. Over the course of the broadcast, four distinct defects occurred on camera. None were theoretical; each required live triage and hotfixing.
+
+```
+       [ Character Select ]                [ Auction House Tab ]
+                │                                    │
+       Incident 1: TOC Clash                Incident 2: UI Button Clash
+       (Client Rejection 16001)             (Red Buttons & Unicode Box)
+                │                                    │
+                ▼                                    ▼
+       Consolidate Manifests                Native Sub-Tabs & Stars
+                │                                    │
+                └───────────────┬────────────────────┘
+                                │
+                                ▼
+                    [ Row Star Bookmark Click ]
+                                │
+                    Incident 3: Lexical Nil Scope
+                    (ItemName() not yet declared)
+                                │
+                                ▼
+                    Forward-Declare at Tab.lua:112
+                                │
+                                ▼
+                    Incident 4: AddOn List Orphan
+                    (Missing ## Category metadata)
+                                │
+                                ▼
+                    ## Category: Auctions
+```
+
+### Incident 1: The Multi-TOC Client Rejection Trap
+
+**Symptom:** In the WoW Forever character select screen, GoldFinder was marked with a red warning: *"Incompatible"*.
+
+**Root Cause:** The repository maintained sibling manifest files: `GoldFinder.toc`, `GoldFinder_Mainline.toc`, and `GoldFinder_Vanilla.toc`. During client launch, the engine prioritizes flavor-suffixed TOCs. `GoldFinder_Mainline.toc` hijacked the Forever client (which reports `WOW_PROJECT_ID == 1`), but its `## Interface` declared `110007, 110100`—completely omitting the Forever build's `16001` interface ID.
+
+**Resolution:** We deleted the fragile sibling manifests and consolidated all targeted versions into a single authoritative `GoldFinder.toc`:
+
+```toc
+## Interface: 16001, 120100, 120105, 120107, 110007, 110100, 110200, 20506, 11506, 11507, 11508, 11509, 50400, 50408, 50504
+## Title: GoldFinder
+## Notes: Snipes underpriced commodity deals and flips from the Auction House.
+## Author: Kenneth Henseler
+## Version: 1.1.0
+## SavedVariables: GoldFinderDB
+## Category: Auctions
+## Category-enUS: Auctions
+```
+
+### Incident 2: UI Aesthetics—From Clashing Red to Blizzard Harmony
+
+**Symptom:** The initial Category filter bar used standard `UIPanelButtonTemplate` buttons with red backgrounds. Against the Auction House frame, the red styling clashed aggressively with Blizzard's parchment and dark bronze palette. Furthermore, the bookmark star `★` rendered as an empty unicode square `[]` because the default game font lacks that glyph.
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
+  <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 6px; padding: 1rem;">
+    <h4 style="margin: 0 0 0.5rem 0; color: #ef4444;">Before: Red Button Clash</h4>
+    <ul style="font-size: 0.85rem; margin: 0; padding-left: 1.2rem;">
+      <li>Red dialog buttons clashing with AH sub-tabs</li>
+      <li>Broken unicode glyphs: <code>[]</code> instead of stars</li>
+      <li>Awkward row height and padding misalignments</li>
+    </ul>
+  </div>
+  <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 6px; padding: 1rem;">
+    <h4 style="margin: 0 0 0.5rem 0; color: #10b981;">After: Native Bronze Sub-Tabs</h4>
+    <ul style="font-size: 0.85rem; margin: 0; padding-left: 1.2rem;">
+      <li>Dark bronze inset tabs matching native <code>[ Auctions ]</code></li>
+      <li>Gold bottom active indicator bar on selected tab</li>
+      <li>Native <code>Interface\Common\ReputationStar</code> textures</li>
+    </ul>
+  </div>
+</div>
+
+**Resolution:** We discarded `UIPanelButtonTemplate` and created custom inset sub-tabs backed by dark bronze slices, topped with gold highlights for the active tab. For the star bookmark button, we hooked into native client textures:
+
+```lua
+-- Native Blizzard reputation star texture (yellow when tracked, grey when inactive)
+local star = row.star:CreateTexture(nil, "ARTWORK")
+star:SetTexture("Interface\\Common\\ReputationStar")
+star:SetTexCoord(0, 0.5, 0, 0.5) -- Active star slice
+```
+
+### Incident 3: The Lexical Scope Trap in Lua Closures
+
+**Symptom:** Clicking a row star to add Copper Ore or Peacebloom to the Watchlist crashed the UI with:
+`attempt to call global 'ItemName' (a nil value) at GoldFinder/Tab.lua:168`.
+
+**Root Cause:** Lexical scoping order. In Lua, declaring a function later in a file does not hoist it. When `MakeRow()` was executed inside the UI setup loop, it captured `ItemName()` within its `OnClick` closure. Because `ItemName` had not yet been encountered, Lua looked it up in `_G["ItemName"]`, which was unassigned and evaluated to `nil`:
+
+```lua
+-- BUGGY EXECUTION ORDER:
+local function MakeRow(parent, index)
+    row.star:SetScript("OnClick", function()
+        local name = ItemName(deal) -- FAILS: ItemName is nil!
+        ToggleWatchlist(name)
+    end)
+end
+
+-- ... 200 lines later ...
+local function ItemName(deal)
+    return deal.name or "Unknown Item"
+end
+```
+
+**Resolution:** Forward-declare the variable at the top of the file before any row factory functions are defined:
+
+```lua
+-- Line 112 in Tab.lua: Top-level closure forward declaration
+local ItemName
+
+-- ... now MakeRow captures the upvalue ...
+local function MakeRow(parent, index)
+    row.star:SetScript("OnClick", function()
+        local name = ItemName(deal) -- SUCCESS: resolves to upvalue
+        ToggleWatchlist(name)
+    end)
+end
+
+-- Assign implementation
+ItemName = function(deal)
+    return deal and deal.name or "Unknown Item"
+end
+```
+
+### Incident 4: Blizzard AddOn List Categorization in Build 70707
+
+**Symptom:** In WoW Forever build 70707, Blizzard redesigned the in-game AddOn List window with collapsible category groups (`Auctions`, `Bags & Inventory`, `Combat`, `Development Tools`, `Equipment`, `Professions`). All of our addons (`GoldFinder`, `ForeverProbe`, `AddonSmokeTest`, `AdventurerPlates`) appeared lumped at the very bottom beneath all categories as ungrouped root orphans.
+
+<div style="margin: 1.25rem 0;">
+  <img src={addonListBeforeImg.src} alt="Addons orphaned at bottom of AddOn list before categorization" style="border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); max-width: 480px; width: 100%;" />
+  <p style="font-size: 0.8rem; opacity: 0.7; margin-top: 0.4rem;">
+    <em>Before: Addons orphaned at root level beneath Professions due to missing TOC category metadata.</em>
+  </p>
+</div>
+
+**Root Cause:** Blizzard's addon manager parses the `## Category:` and `## Category-enUS:` fields in the `.toc` manifest. Without them, the addon defaults to `uncategorized`.
+
+**Resolution:** We added appropriate category metadata across every addon in our suite:
+
+```toc
+## GoldFinder.toc
+## Category: Auctions
+## Category-enUS: Auctions
+
+## ForeverProbe.toc & AddonSmokeTest.toc
+## Category: Development Tools
+## Category-enUS: Development Tools
+
+## AdventurerPlates.toc
+## Category: Unit Frames
+## Category-enUS: Unit Frames
+```
+
+Once reloaded, `GoldFinder` grouped neatly directly under `Auctionator` and `Journalator` in the native `Auctions` tree!
+
+---
+
+## Production In-Game Evidence
+
+Here is GoldFinder running live inside a UC Auction House on my character Jakob Mortikus, with active profit scanning, visual tier badging, and full category filtering:
+
+<div style="margin: 2rem 0;">
+  <img src={coverImg.src} alt="GoldFinder Auction House Tab" style="border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); width: 100%;" />
+  <p style="font-size: 0.85rem; opacity: 0.7; text-align: center; margin-top: 0.5rem;">
+    <em>Figure 1: GoldFinder live in the Undercity (UC) Auction House on Jakob Mortikus. Note the bronze category sub-tabs (Herbs, Mining, Watchlist), star buttons, and colored discount percentages.</em>
+  </p>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 2rem 0;">
+  <div>
+    <img src={chatAlertMegaSnipeImg.src} alt="Mega Snipe Chat Alert" style="border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); width: 100%;" />
+    <p style="font-size: 0.8rem; opacity: 0.7; text-align: center; margin-top: 0.5rem;">
+      <em>Figure 2: Mega-Snipe alert trigger (Epic purple callout with sound trigger).</em>
+    </p>
+  </div>
+  <div>
+    <img src={addonListImg.src} alt="Blizzard AddOn List Categorization" style="border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); width: 100%;" />
+    <p style="font-size: 0.8rem; opacity: 0.7; text-align: center; margin-top: 0.5rem;">
+      <em>Figure 3: After — GoldFinder nested neatly under the native Auctions category tree with tooltip.</em>
+    </p>
+  </div>
+</div>
+
+---
+
+## Edge Broadcast Architecture: The Spotify Cyber-Glass Overlay
+
+A major goal for our broadcast was displaying our currently playing Spotify track on the live stream HUD without cluttering the screen or leaking sensitive API tokens.
+
+```
+┌────────────────────────────────────────────────────────┐
+│                   Spotify Web API                      │
+└───────────────────────────┬────────────────────────────┘
+                            │ OAuth 2.0 PKCE
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│       Local Micro-Daemon (scripts/spotify-daemon.mjs)  │
+│  - Port 8889 REST (/now-playing)                       │
+│  - 429 Exponential Backoff + Token Auto-Refresh        │
+└───────────────────────────┬────────────────────────────┘
+                            │ Polled every 3s
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│       Cyber-Glass Overlay (public/overlay/index.html)   │
+│  - Side-by-Side Dual-Dock with Smart Elasticity        │
+│  - 204px Project Ticker + 204px Track EQ               │
+│  - Auto-collapses to 420px when audio pauses           │
+│  - Deployed on Cloudflare Workers Edge                 │
+└────────────────────────────────────────────────────────┘
+```
+
+### Complying with Spotify Developer Guidelines
+
+When integrating the Spotify API, strict compliance is paramount:
+1. **PKCE Flow with Secure Token Refresh:** Client credentials are kept off public repos; tokens are stored in local configuration (`~/.gemini/config/spotify_credentials.json`) and backed by 1Password.
+2. **Minimal Scopes:** We only request `user-read-currently-playing` and `user-read-playback-state`.
+3. **Exponential Backoff:** The daemon checks the `Retry-After` header when HTTP 429 errors occur, avoiding tight request loops.
+4. **Smart Elasticity:** In `public/overlay/index.html`, when Spotify is active, the container splits smoothly into dual 204px panes: the left pane renders continuous project commit activity, and the right pane displays album art, track/artist title, and an animated audio equalizer. If the track is paused, the music dock fades out and the project ticker smoothly expands to fill the full 420px bar.
+
+To keep daemon operations frictionless, we created 1-click batch launchers:
+- `start-spotify-hud.bat`: Starts the background Node.js daemon silently with hidden window styling.
+- `stop-spotify-hud.bat`: Finds and terminates any active `spotify-daemon` process gracefully.
+
+---
+
+## What We Learned About Multi-Agent Pair Programming
+
+Running two specialized AI agents simultaneously—one driving deep compiler logic while the other drives system architecture and live edge integration—revealed several key principles:
+
+1. **Context Isolation Prevents Hallucination:** Keeping AgyBuild isolated in WSL with Lua-specific linters and zero broadcast noise allowed it to catch subtle lexical scoping bugs that a broad-context agent would have skimmed past.
+2. **The Orchestrator Needs Verification Power:** AgyOrch's ability to run AST checks, inspect build outputs, and test HTTP endpoints before committing ensured that every PR merged cleanly into master.
+3. **The Game Client is the Ultimate Arbiter:** Linters can pass and ASTs can be pristine, but only launching the real client reveals when a Blizzard TOC interface is rejected or when a font lacks unicode glyphs. Rapid live feedback loops make or break addon development.
+
+All changes are live in master at commit `9afa582` in [wow-addons](https://github.com/justadakaje/wow-addons) and deployed on [musingsofmy.today](https://musingsofmy.today).
