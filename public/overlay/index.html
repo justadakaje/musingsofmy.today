@@ -30,6 +30,7 @@
       --font-display: 'Montserrat', system-ui, sans-serif;
       --font-body: 'Inter', system-ui, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
+      --seam-pos: 1207px;
     }
 
     * {
@@ -468,7 +469,7 @@
     /* Center Split Cyber Seam & Framing Notches */
     .split-line {
       position: absolute;
-      left: 960px;
+      left: var(--seam-pos, 1207px);
       top: 62px;
       bottom: 0;
       width: 1px;
@@ -482,11 +483,12 @@
       box-shadow: 0 0 8px rgba(34, 211, 238, 0.15);
       pointer-events: none;
       z-index: 50;
+      transition: left 0.3s ease;
     }
 
     .split-notch-top {
       position: absolute;
-      left: 955px;
+      left: calc(var(--seam-pos, 1207px) - 5px);
       top: 62px;
       width: 11px;
       height: 2px;
@@ -494,11 +496,12 @@
       box-shadow: 0 0 8px var(--accent);
       pointer-events: none;
       z-index: 51;
+      transition: left 0.3s ease;
     }
 
     .split-notch-bottom {
       position: absolute;
-      left: 955px;
+      left: calc(var(--seam-pos, 1207px) - 5px);
       bottom: 0px;
       width: 11px;
       height: 2px;
@@ -506,6 +509,7 @@
       box-shadow: 0 0 8px var(--accent);
       pointer-events: none;
       z-index: 51;
+      transition: left 0.3s ease;
     }
 
     .hud-icon {
@@ -701,6 +705,20 @@
   </div>
 
   <script>
+    // Seam Positioning: Defaults to 1207px for WoW: Forever (1207px) + Antigravity (713px) split.
+    // Supports dynamic tuning via URL query param: e.g. ?seam=1207 or ?split=half / ?split=50
+    const urlParams = new URLSearchParams(window.location.search);
+    const seamParam = urlParams.get('seam');
+    const splitParam = urlParams.get('split');
+    if (seamParam) {
+      const pos = seamParam.endsWith('px') ? seamParam : `${seamParam}px`;
+      document.documentElement.style.setProperty('--seam-pos', pos);
+    } else if (splitParam === 'half' || splitParam === '50' || splitParam === 'center') {
+      document.documentElement.style.setProperty('--seam-pos', '960px');
+    } else {
+      document.documentElement.style.setProperty('--seam-pos', '1207px');
+    }
+
     // Live Digital Clock
     function updateClock() {
       const now = new Date();
