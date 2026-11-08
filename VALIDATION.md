@@ -1,6 +1,6 @@
 # Validation report
 
-Generated 2026-11-08 05:56 UTC from commit `df527ea` by `scripts/validate.mjs`.
+Generated 2026-11-08 06:09 UTC from commit `82e2050` by `scripts/validate.mjs`.
 Baselines are what WordPress.com served on 2026-11-04 (frozen in `data/wpcom/`).
 
 ## Checks
