@@ -1,6 +1,6 @@
 # Validation report
 
-Generated 2026-11-08 06:09 UTC from commit `82e2050` by `scripts/validate.mjs`.
+Generated 2026-11-09 01:49 UTC from commit `05ccc2f` by `scripts/validate.mjs`.
 Baselines are what WordPress.com served on 2026-11-04 (frozen in `data/wpcom/`).
 
 ## Checks
@@ -9,7 +9,7 @@ Baselines are what WordPress.com served on 2026-11-04 (frozen in `data/wpcom/`).
 | --- | --- |
 | 1. Every URL in WordPress's `sitemap.xml` resolves on the build | ✅ 58/58 (dist/ (frozen sitemap)) |
 | 2. Word count per post within ±2% of WordPress | ✅ 57/57 |
-| 3. Internal links, images and #anchors resolve | ✅ 11789/11789 across 486 pages |
+| 3. Internal links, images and #anchors resolve | ✅ 11790/11790 across 486 pages |
 | 3b. External links (lychee) | CI only: see the `links` job in GitHub Actions. Informational, doesn't block a deploy |
 | 4. RSS 2.0 structure, GUIDs kept, `/feed/` redirects | ✅ 16/16 (W3C validator runs only with --base) |
 | 5. Side-by-side screenshots of five posts | Not automated. Done by eye on the preview |
