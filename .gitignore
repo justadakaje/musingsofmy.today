@@ -14,3 +14,9 @@ Thumbs.db
 *subscribers*.csv
 *subscribers*.json
 data/private/
+
+# Local-only operational docs, handoffs, social copy, and tool receipts
+docs/
+.archify/
+scripts/post-*.mjs
+scripts/stenbane-editor.*
