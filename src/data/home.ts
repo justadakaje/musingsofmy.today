@@ -3,34 +3,34 @@
  * Update `now` when the work changes; `updated` is shown under it, so keep it honest.
  */
 export const NOW = {
-  updated: '2026-11-08',
+  updated: '2026-11-24',
   rows: [
-    { k: 'streaming', v: 'twitch.tv/kenhenchan · LIVE NOW! 🔴', href: 'https://www.twitch.tv/kenhenchan' },
-    { k: 'building', v: 'BiSFinder: Best-in-Slot BoE Arbitrage & Scarcity Radar (#55)' },
+    { k: 'streaming', v: 'twitch.tv/kenhenchan · off for Thanksgiving week', href: 'https://www.twitch.tv/kenhenchan' },
+    { k: 'building', v: 'daw-agent-skills: Audio DSP forensics for DAW copilots (#2)' },
     // `latest ep` is filled in from the newest post with a podcast episode.
-    { k: 'focus', v: 'GoldFinder v1.0.0 Production Gold Master & BiSFinder Kickoff' },
+    { k: 'focus', v: 'DAW Agent Skills, skyalerts.space & Thanksgiving break' },
   ],
 };
 
 /** The featured post (folder name) and the little terminal beside it. */
 export const FEATURED = {
-  id: '2026-11-07-goldfinder-v1-production-gold-master',
+  id: '2026-11-19-velvet-static',
   term: [
-    { kind: 'prompt', text: 'goldfinder --verify-release-v1.0.0' },
-    { kind: 'x', text: 'CopyToClipboard()', note: '— protected sandbox call' },
-    { kind: 'x', text: 'FrameUtil secret alpha', note: '— Chomp filter taint' },
-    { kind: 'x', text: 'right-justified values', note: '— coin icon border overflow' },
-    { kind: 'ok', text: 'HUD Edit Mode profiles & relative anchoring' },
-    { kind: 'ok', text: 'published to CurseForge #1715781' },
+    { kind: 'prompt', text: 'velvet-static --sequence v2 --mixed' },
+    { kind: 'x', text: '3 AI draft outliers', note: '— cut darksynth & EBM' },
+    { kind: 'x', text: '6 web BPM mismatches', note: '— fixed vs Spotify grid' },
+    { kind: 'ok', text: '+8 neuro-bass additions (35 tracks, 5 acts)' },
+    { kind: 'ok', text: '14 Camelot seams · Act III ≤ 5 BPM' },
+    { kind: 'ok', text: 'shipped via phone PKCE + SongShift' },
   ],
 };
 
 export const PROJECTS = [
   {
-    status: { cls: 'ship', label: 'shipped · v1.0.0' },
+    status: { cls: 'ship', label: 'shipped · v2.0.1' },
     name: 'GoldFinder',
     blurb: 'An auction house tab that finds crafting materials listed well below their usual price, with net profit after the AH cut.',
-    facts: ['v1.0.0 live on CurseForge', 'P&L ledger, snipe mode, HUD profiles', 'MIT · open source'],
+    facts: ['v2.0.1 live on CurseForge', 'P&L ledger, Smart Buy parity, HUD profiles', 'MIT · open source'],
     links: [
       { label: 'curseforge', href: 'https://www.curseforge.com/wow/addons/goldfinder' },
       { label: 'source', href: 'https://github.com/justadakaje/wow-addons' },
@@ -49,7 +49,7 @@ export const PROJECTS = [
     status: { cls: 'live', label: 'live' },
     name: 'Sky Alerts',
     blurb: 'Astronomy alerts from ALeRCE (ZTF + Rubin/LSST), with a weekly plain-English digest.',
-    facts: ['Next.js · Neon Postgres · Vercel', 'public dashboard', 'sky.henseler.app'],
-    links: [{ label: 'open dashboard', href: 'https://sky.henseler.app' }],
+    facts: ['Flutter Web · Firestore · Firebase', 'public dashboard + audio brief', 'skyalerts.space'],
+    links: [{ label: 'open dashboard', href: 'https://skyalerts.space' }],
   },
 ];
