@@ -5,7 +5,7 @@
  * - `PROJECTS` (`GoldFinder` release tag/facts) is synced from GitHub Releases via `npm run sync:projects` (scripts/sync-projects.mjs).
  */
 export const NOW = {
-  updated: '2026-11-24',
+  updated: '2026-11-25',
   rows: [
     { k: 'streaming', v: 'twitch.tv/kenhenchan · off for Thanksgiving week', href: 'https://www.twitch.tv/kenhenchan' },
     { k: 'building', v: 'daw-agent-skills: Audio DSP forensics for DAW copilots (#2)' },
