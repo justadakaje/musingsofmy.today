@@ -14,6 +14,10 @@ export const SITE = {
   timezone: 'America/Chicago',
   /** Reading speed used for "N min read" (same as the mockup). */
   wordsPerMinute: 230,
+  /** Optional Cloudflare Web Analytics beacon token (leave empty to omit). */
+  cloudflareAnalyticsToken: '',
+  /** Optional Cloudflare Turnstile public site key for /subscribe/ (leave empty until Turnstile widget is created). */
+  publicTurnstileSiteKey: '',
 } as const;
 
 export const SECTION_IDS = ['engineering', 'history-politics', 'science-nature', 'signal', 'field-notes'] as const;
@@ -120,6 +124,7 @@ export interface Show {
   appleId: string;
   apple: string;
   spotify: string;
+  rss: string;
   tone: 'rr' | 'ca';
 }
 
@@ -133,6 +138,7 @@ export const SHOWS: Record<ShowId, Show> = {
     appleId: 'id1887004265',
     apple: 'https://podcasts.apple.com/us/podcast/runtime-reality/id1887004265',
     spotify: 'https://open.spotify.com/show/7dApwSu5skMv03dZHTZEIK',
+    rss: '/podcasts/runtime-reality/rss.xml',
     tone: 'rr',
   },
   'chronos-archive': {
@@ -144,15 +150,22 @@ export const SHOWS: Record<ShowId, Show> = {
     appleId: 'id1831231439',
     apple: 'https://podcasts.apple.com/us/podcast/the-chronos-archive/id1831231439',
     spotify: 'https://open.spotify.com/show/5ZkuVRGr2KvzQQA2iBwg2k',
+    rss: '/podcasts/chronos-archive/rss.xml',
     tone: 'ca',
   },
 };
+
+export const DISCORD_GUILD = {
+  id: '723592473527713853',
+  invite: 'https://discord.gg/AkmBGKPVFQ',
+} as const;
 
 export const SOCIAL = [
   { label: 'github · justadakaje', href: 'https://github.com/justadakaje' },
   { label: 'twitch · kenhenchan', href: 'https://www.twitch.tv/kenhenchan' },
   { label: 'youtube · @KenHenChan', href: 'https://www.youtube.com/@KenHenChan' },
   { label: 'threads · @kjhenseler', href: 'https://www.threads.com/@kjhenseler' },
+  { label: 'discord · OrganizedChaos', href: 'https://discord.gg/AkmBGKPVFQ' },
   { label: 'linkedin · kennethhenseler', href: 'https://www.linkedin.com/in/kennethhenseler' },
 ];
 
@@ -170,7 +183,7 @@ export const SUPPORT = [
  */
 export const GISCUS = {
   repo: 'justadakaje/musingsofmy.today',
-  repoId: '',
-  category: 'Comments',
-  categoryId: '',
+  repoId: 'R_kgDOViUs9Q',
+  category: 'Announcements',
+  categoryId: 'DIC_kwDOViUs9c4DL7iY',
 };

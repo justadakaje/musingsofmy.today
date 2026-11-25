@@ -1,6 +1,8 @@
 /**
- * Hand-edited bits of the front page. Everything else on it comes from the posts.
- * Update `now` when the work changes; `updated` is shown under it, so keep it honest.
+ * Hand-edited / CLI-synced data for the front page and /llms.txt.
+ * - `NOW` is updated via `npm run now -- --streaming "..." --building "..." --focus "..."` (scripts/update-now.mjs).
+ * - `FEATURED` is the fallback featured post & terminal panel when no post has `featured: true` in frontmatter.
+ * - `PROJECTS` (`GoldFinder` release tag/facts) is synced from GitHub Releases via `npm run sync:projects` (scripts/sync-projects.mjs).
  */
 export const NOW = {
   updated: '2026-11-24',
@@ -12,7 +14,7 @@ export const NOW = {
   ],
 };
 
-/** The featured post (folder name) and the little terminal beside it. */
+/** Fallback featured post (folder name) and terminal lines if no post sets `featured: true`. */
 export const FEATURED = {
   id: '2026-11-19-velvet-static',
   term: [

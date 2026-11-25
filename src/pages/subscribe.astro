@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
+import SubscribeBox from '../components/SubscribeBox.astro';
 import { SHOWS, SHOW_IDS } from '../site';
 ---
 <Base title="Subscribe" description="Follow Musings of My Today by RSS, email or podcast.">
@@ -13,10 +14,11 @@ import { SHOWS, SHOW_IDS } from '../site';
         <code>/feed/</code>, redirects there, so existing feed readers keep working without a change.
       </p>
       <h2 id="email">Email</h2>
+      <p id="subscribe-status-banner" class="sub-status" role="status" hidden></p>
       <p>
-        If you subscribed by email on the old WordPress site, you're still on the list: it is moving to a new sender with the site.
-        New sign-ups open once that move is finished. Until then, RSS gets every post the moment it's published.
+        Get new posts delivered by email. Uses double opt-in and one-click unsubscribe — no tracking pixels, no spam.
       </p>
+      <SubscribeBox idPrefix="page-sub" headingId="email" />
       <h2 id="podcasts">Podcasts</h2>
       <ul>
         {SHOW_IDS.map((id) => (
@@ -26,3 +28,38 @@ import { SHOWS, SHOW_IDS } from '../site';
     </div>
   </main>
 </Base>
+
+<script>
+  const statusBanner = document.getElementById('subscribe-status-banner');
+  if (statusBanner) {
+    const status = new URLSearchParams(window.location.search).get('status');
+    const messages: Record<string, { state: string; text: string }> = {
+      'check-inbox': {
+        state: 'ok',
+        text: "If that address isn't subscribed yet, check your inbox for a confirmation link.",
+      },
+      confirmed: {
+        state: 'ok',
+        text: 'Subscription confirmed. Welcome aboard!',
+      },
+      unsubscribed: {
+        state: 'ok',
+        text: 'You have been unsubscribed from email updates.',
+      },
+      expired: {
+        state: 'err',
+        text: 'That confirmation or unsubscribe link is invalid or has expired. Please try again below.',
+      },
+      unconfigured: {
+        state: 'warn',
+        text: 'Email sign-ups are being finalized. Try RSS in the meantime.',
+      },
+    };
+    const match = status ? messages[status] : undefined;
+    if (match) {
+      statusBanner.dataset.state = match.state;
+      statusBanner.textContent = match.text;
+      statusBanner.hidden = false;
+    }
+  }
+</script>

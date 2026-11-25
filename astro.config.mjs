@@ -59,6 +59,8 @@ function cloudflareRedirects() {
             '  Permissions-Policy: interest-cohort=()',
             '/_astro/*',
             '  Cache-Control: public, max-age=31536000, immutable',
+            '/_discord-threads.json',
+            '  X-Robots-Tag: noindex',
             '# workers.dev and preview URLs must not compete with the real domain in search results.',
             '# (Placeholders stop at dots, so this matches <worker>.<sub> and <preview>-<worker>.<sub>.)',
             'https://:worker.:subdomain.workers.dev/*',
@@ -66,6 +68,30 @@ function cloudflareRedirects() {
             '',
           ].join('\n'),
         );
+
+        // Emit build-time allowlist mapping published post IDs -> Discord thread IDs so
+        // /api/discord/thread/:postId never accepts arbitrary Discord channel/thread IDs.
+        const postsRoot = new URL('./src/content/posts/', import.meta.url);
+        /** @type {Record<string, string>} */
+        const threadMap = {};
+        try {
+          const entries = await fs.readdir(postsRoot, { withFileTypes: true });
+          for (const ent of entries) {
+            if (!ent.isDirectory()) continue;
+            for (const ext of ['mdx', 'md']) {
+              try {
+                const raw = await fs.readFile(new URL(`${ent.name}/index.${ext}`, postsRoot), 'utf8');
+                const fm = /^---\r?\n([\s\S]*?)\r?\n---/.exec(raw)?.[1];
+                if (!fm || /^draft:\s*true\b/m.test(fm)) break;
+                const tid = /^discord_thread:\s*["']?(\d{17,20})["']?/m.exec(fm)?.[1];
+                if (tid) threadMap[ent.name] = tid;
+                break;
+              } catch {}
+            }
+          }
+        } catch {}
+        await fs.writeFile(new URL('_discord-threads.json', dir), JSON.stringify(threadMap, null, 2) + '\n');
+
         console.log(`cloudflare-redirects: wrote ${lines.filter((l) => !l.startsWith('#')).length} rules to ${fileURLToPath(new URL('_redirects', dir))}`);
       },
     },

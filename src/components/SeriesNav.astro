@@ -1,0 +1,35 @@
+---
+/**
+ * Multi-part series navigation card rendered above a post's body.
+ * Highlights the active part with aria-current="page".
+ */
+import { postPath, type Post } from '../lib/posts';
+
+interface Props {
+  seriesTitle: string;
+  parts: Post[];
+  currentId: string;
+}
+
+const { seriesTitle, parts, currentId } = Astro.props;
+const currentIndex = parts.findIndex((p) => p.id === currentId);
+const currentPart =
+  parts[currentIndex]?.data.series?.part ?? (currentIndex >= 0 ? currentIndex + 1 : 1);
+---
+<nav class="series-nav clip" aria-label={`Series: ${seriesTitle}`}>
+  <div class="series-head">
+    // series · part {currentPart} of {parts.length} — {seriesTitle}
+  </div>
+  <ol class="series-list">
+    {parts.map((p) => {
+      const isCurrent = p.id === currentId;
+      return (
+        <li class={isCurrent ? 'is-current' : undefined}>
+          <a href={postPath(p)} aria-current={isCurrent ? 'page' : undefined}>
+            {p.data.title}
+          </a>
+        </li>
+      );
+    })}
+  </ol>
+</nav>

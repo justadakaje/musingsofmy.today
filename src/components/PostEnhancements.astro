@@ -1,0 +1,168 @@
+---
+/**
+ * Article reading QoL enhancements:
+ * - Wraps .prose pre blocks in .copyable with Invoker Commands copy buttons + accessible status bubble
+ * - Handles --copy commands via capture-phase CommandEvent (with click fallback only when unsupported)
+ * - Adds subtle anchor links to .prose h2[id], h3[id] headings
+ */
+---
+<script>
+  interface CommandEvt extends Event {
+    command: string;
+    source: Element | null;
+  }
+
+  function enhanceArticle() {
+    const proseBlocks = document.querySelectorAll('.prose pre');
+    proseBlocks.forEach((pre, i) => {
+      if (pre.closest('.copyable')) return;
+
+      const target = pre.querySelector('code') ?? pre;
+      if (!target.id) {
+        let candidate = `code-snippet-${i}`;
+        let suffix = 1;
+        while (document.getElementById(candidate)) {
+          candidate = `code-snippet-${i}-${suffix++}`;
+        }
+        target.id = candidate;
+      }
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'copyable';
+      pre.parentNode?.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+
+      const copyWrap = document.createElement('span');
+      copyWrap.className = 'copy';
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'copy-button';
+      button.setAttribute('command', '--copy');
+      button.setAttribute('commandfor', target.id);
+      button.setAttribute('aria-label', `Copy code block ${i + 1}`);
+
+      const icon = document.createElement('span');
+      icon.className = 'icon';
+      icon.setAttribute('aria-hidden', 'true');
+      icon.textContent = '⧉';
+
+      const sr = document.createElement('span');
+      sr.className = 'sr-only';
+      sr.textContent = 'Copy';
+
+      const tip = document.createElement('span');
+      tip.className = 'tip';
+      tip.setAttribute('role', 'status');
+
+      button.append(icon, sr);
+      copyWrap.append(button, tip);
+      wrapper.appendChild(copyWrap);
+    });
+
+    const headings = document.querySelectorAll('.prose h2[id], .prose h3[id]');
+    headings.forEach((h) => {
+      if (h.querySelector('.heading-anchor')) return;
+      const headingText = h.textContent?.trim() ?? h.id;
+      const anchor = document.createElement('a');
+      anchor.className = 'heading-anchor';
+      anchor.href = `#${h.id}`;
+      anchor.setAttribute('aria-label', `Link to section: ${headingText}`);
+      anchor.textContent = '#';
+      h.appendChild(anchor);
+    });
+  }
+
+  const timers = new WeakMap<Element, ReturnType<typeof setTimeout>>();
+  let lastMessage = '';
+
+  function report(button: Element, ok: boolean) {
+    const tip = button.nextElementSibling;
+    const icon = button.querySelector('.icon');
+    if (button instanceof HTMLElement && icon && !button.dataset.origIcon) {
+      button.dataset.origIcon = icon.textContent ?? '⧉';
+    }
+    const origIcon = button instanceof HTMLElement ? (button.dataset.origIcon ?? '⧉') : '⧉';
+
+    clearTimeout(timers.get(button));
+    button.removeAttribute('data-copied');
+    button.removeAttribute('data-failed');
+
+    let message = ok ? 'Copied' : 'Copy failed';
+    if (message === lastMessage) message += '\u00A0';
+    lastMessage = message;
+
+    if (tip) tip.textContent = '';
+    if (button instanceof HTMLElement) void button.offsetWidth;
+
+    button.setAttribute(ok ? 'data-copied' : 'data-failed', '');
+    if (icon) icon.textContent = ok ? '✓' : '✗';
+    requestAnimationFrame(() => {
+      if (tip) tip.textContent = message;
+    });
+
+    timers.set(
+      button,
+      setTimeout(() => {
+        button.removeAttribute('data-copied');
+        button.removeAttribute('data-failed');
+        if (icon) icon.textContent = origIcon;
+        if (tip) tip.textContent = '';
+      }, 2000),
+    );
+  }
+
+  async function copy(button: Element, target: Element) {
+    const text =
+      target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement
+        ? target.value
+        : (target instanceof HTMLElement ? target.innerText : target.textContent ?? '').trim();
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      report(button, true);
+    } catch {
+      report(button, false);
+    }
+  }
+
+  if (!document.documentElement.dataset.copyCommandBound) {
+    document.documentElement.dataset.copyCommandBound = '1';
+
+    document.addEventListener(
+      'command',
+      (event) => {
+        const ce = event as CommandEvt;
+        if (
+          typeof ce.command === 'string' &&
+          ce.command.startsWith('--copy') &&
+          ce.source instanceof Element &&
+          ce.target instanceof Element
+        ) {
+          void copy(ce.source, ce.target);
+        }
+      },
+      true,
+    );
+
+    if (!('CommandEvent' in window)) {
+      document.addEventListener('click', (event) => {
+        if (event.defaultPrevented) return;
+        const targetEl = event.target;
+        if (!(targetEl instanceof Element)) return;
+        const button = targetEl.closest('button[command^="--copy"]');
+        if (!button) return;
+        const targetId = button.getAttribute('commandfor');
+        if (!targetId) return;
+        const target = document.getElementById(targetId);
+        if (target) void copy(button, target);
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', enhanceArticle, { once: true });
+  } else {
+    enhanceArticle();
+  }
+</script>

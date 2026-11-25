@@ -70,9 +70,31 @@ const posts = defineCollection({
             apple: z.url().optional(),
             spotify: z.url().optional(),
             youtube: z.url().optional(),
+            transcript: z.string().optional(),
           })
           .strict()
           .optional(),
+        featured: z.boolean().default(false),
+        terminal: z
+          .array(
+            z
+              .object({
+                kind: z.enum(['prompt', 'ok', 'x']),
+                text: z.string(),
+                note: z.string().optional(),
+              })
+              .strict(),
+          )
+          .optional(),
+        series: z
+          .object({
+            id: z.string().regex(/^[a-z0-9][a-z0-9-]*$/),
+            title: z.string().min(1),
+            part: z.number().int().positive(),
+          })
+          .strict()
+          .optional(),
+        discord_thread: z.string().regex(/^\d{17,20}$/).optional(),
         draft: z.boolean().default(false),
         legacy: legacy.optional(),
       })

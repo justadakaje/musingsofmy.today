@@ -22,7 +22,7 @@ const posts = await getPosts();
       const eps = posts.filter((p) => p.data.podcast?.show === id);
       return (
         <section>
-          <div class="sec"><h2>// {SHOWS[id].name.toLowerCase()} · {eps.length} on the blog</h2><span class="rule"></span></div>
+          <div class="sec"><h2>// {SHOWS[id].name.toLowerCase()} · {eps.length} on the blog</h2><span class="rule"></span><a href={SHOWS[id].rss}>rss feed →</a></div>
           <div class="log">{eps.map((p) => <PostRow post={p} />)}</div>
         </section>
       );

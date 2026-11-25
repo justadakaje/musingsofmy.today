@@ -23,8 +23,26 @@ interface Props {
   published?: Date;
   noindex?: boolean;
   nav?: 'writing' | 'podcasts' | 'about' | 'search' | null;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
-const { title, description = SITE.description, image = '/social.png', type = 'website', published, noindex = false, nav = null } = Astro.props;
+const { title, description = SITE.description, image = '/social.png', type = 'website', published, noindex = false, nav = null, jsonLd } = Astro.props;
+const defaultLd: Record<string, unknown>[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE.title,
+    url: SITE.url,
+    description: SITE.description,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: SITE.author,
+    url: SITE.url,
+    sameAs: SOCIAL.map((s) => s.href),
+  },
+];
+const ld = jsonLd ?? defaultLd;
 const fullTitle = title ? `${title} · ${SITE.title}` : `${SITE.title} · ${SITE.description}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
@@ -63,6 +81,14 @@ const links = [
     <meta name="twitter:card" content="summary_large_image" />
     {published && <meta property="article:published_time" content={published.toISOString()} />}
     <meta name="author" content={SITE.author} />
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+    {SITE.cloudflareAnalyticsToken && (
+      <script
+        defer
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon={JSON.stringify({ token: SITE.cloudflareAnalyticsToken })}
+      />
+    )}
     <slot name="head" />
   </head>
   <body>
@@ -78,9 +104,36 @@ const links = [
         </nav>
         <span class="spacer"></span>
         <a class="btn ghost clip" href="/rss.xml">rss</a>
+        <button
+          type="button"
+          class="btn ghost clip nav-menu-btn"
+          id="drawer-open"
+          aria-label="Menu"
+          aria-expanded="false"
+          aria-controls="mobile-nav-drawer"
+        ><span aria-hidden="true">≡</span> menu</button>
         <a class="btn clip" href="/subscribe/">subscribe →</a>
       </div>
     </header>
+    <dialog class="nav-drawer" id="mobile-nav-drawer" aria-label="Site navigation">
+      <div class="nav-drawer-scroller">
+        <nav class="nav-drawer-sheet" aria-label="Mobile">
+          <div class="nav-drawer-head">
+            <span class="mono">// menu</span>
+            <button type="button" class="btn ghost clip" id="drawer-close" aria-label="Close menu" autofocus>✕ close</button>
+          </div>
+          <ul class="nav-drawer-links">
+            {links.map((l) => (
+              <li><a href={l.href} aria-current={nav === l.id ? 'page' : undefined}>{l.label}</a></li>
+            ))}
+          </ul>
+          <div class="nav-drawer-actions">
+            <a class="btn ghost clip" href="/rss.xml">rss</a>
+            <a class="btn clip" href="/subscribe/">subscribe →</a>
+          </div>
+        </nav>
+      </div>
+    </dialog>
     <div class="main" id="content">
       <slot />
     </div>
@@ -107,5 +160,85 @@ const links = [
         </div>
       </div>
     </footer>
+    <script>
+      const drawer = document.getElementById('mobile-nav-drawer') as HTMLDialogElement | null;
+      const openBtn = document.getElementById('drawer-open') as HTMLButtonElement | null;
+      const closeBtn = document.getElementById('drawer-close') as HTMLButtonElement | null;
+      const scroller = drawer?.querySelector('.nav-drawer-scroller') as HTMLElement | null;
+      const sheet = drawer?.querySelector('.nav-drawer-sheet') as HTMLElement | null;
+
+      if (drawer && openBtn && closeBtn && scroller && sheet) {
+        async function openDrawer() {
+          drawer!.showModal();
+          if (!CSS.supports('scroll-initial-target', 'nearest')) {
+            scroller!.scrollTo({ left: scroller!.offsetWidth, behavior: 'instant' as ScrollBehavior });
+            await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+          }
+          scroller!.scrollTo({ left: 0, behavior: 'auto' });
+        }
+
+        function closeDrawer() {
+          scroller!.scrollTo({ left: scroller!.offsetWidth, behavior: 'auto' });
+        }
+
+        function onDrawerOpened() {
+          openBtn!.setAttribute('aria-expanded', 'true');
+        }
+
+        function onDrawerClosed() {
+          if (drawer!.open) drawer!.close();
+          openBtn!.setAttribute('aria-expanded', 'false');
+        }
+
+        if (!CSS.supports('animation-timeline: scroll()')) {
+          scroller.addEventListener(
+            'scroll',
+            () => {
+              const width = sheet.offsetWidth || 1;
+              const ratio = Math.max(0, Math.min(1, 1 - scroller.scrollLeft / width));
+              drawer.style.setProperty('--drawer-backdrop', String(ratio));
+            },
+            { passive: true },
+          );
+        }
+
+        const visibleThreshold = 1 / Math.max(1, window.innerWidth);
+        const observer = new IntersectionObserver(
+          (entries) => {
+            const entry = entries.at(-1);
+            if (!entry) return;
+            if (entry.intersectionRatio < visibleThreshold) onDrawerClosed();
+            if (entry.intersectionRatio === 1) onDrawerOpened();
+          },
+          { root: drawer, threshold: [visibleThreshold, 1] },
+        );
+        observer.observe(sheet);
+
+        openBtn.addEventListener('click', () => {
+          void openDrawer();
+        });
+        closeBtn.addEventListener('click', closeDrawer);
+
+        drawer.addEventListener('click', (event) => {
+          if (event.target instanceof Node && !sheet.contains(event.target)) {
+            closeDrawer();
+          }
+        });
+
+        drawer.addEventListener('cancel', (event) => {
+          if (event.cancelable) {
+            event.preventDefault();
+            closeDrawer();
+          }
+        });
+
+        sheet.addEventListener('click', (event) => {
+          const target = event.target;
+          if (target instanceof Element && target.closest('a[href]')) {
+            closeDrawer();
+          }
+        });
+      }
+    </script>
   </body>
 </html>
