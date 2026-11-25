@@ -97,7 +97,7 @@ legacyIds[2] = '/contact/';
     <div class="cards two">{SHOW_IDS.map((id) => <PodcastCard show={id} latest={latestByShow[id]} />)}</div>
 
     <div class="sec" id="projects"><h2>// projects</h2><span class="rule"></span><a href="https://github.com/justadakaje">github.com/justadakaje →</a></div>
-    <div class="cards three">
+    <div class={`cards ${PROJECTS.length % 2 === 0 ? 'two' : 'three'}`}>
       {PROJECTS.map((pr) => (
         <div class="card clip">
           <span class={`status ${pr.status.cls}`}>{pr.status.label}</span>

@@ -29,29 +29,39 @@ export const FEATURED = {
 
 export const PROJECTS = [
   {
-    status: { cls: 'ship', label: 'shipped · v2.0.1' },
+    status: { cls: 'ship', label: 'shipped · v2.0.3' },
     name: 'GoldFinder',
-    blurb: 'An auction house tab that finds crafting materials listed well below their usual price, with net profit after the AH cut.',
-    facts: ['v2.0.1 live on CurseForge', 'P&L ledger, Smart Buy parity, HUD profiles', 'MIT · open source'],
+    blurb: 'Multi-client auction house deal & crafting arbitrage scanner with net profit after the AH cut, Disenchant EV, and Goblin Ledger P&L.',
+    facts: ['v2.0.3 live on CurseForge', 'Forever, Retail, Classic Era & MoP', 'Goblin Ledger P&L, 30d charts & BiS bridge'],
     links: [
       { label: 'curseforge', href: 'https://www.curseforge.com/wow/addons/goldfinder' },
       { label: 'source', href: 'https://github.com/justadakaje/wow-addons' },
     ],
   },
   {
-    status: { cls: 'test', label: 'in use' },
-    name: 'wow-api MCP',
-    blurb: "Answers WoW: Forever API questions from the live client's API index, not from memory or the wiki.",
-    facts: ['required on every addon in the repo', "catches APIs that don't exist", 'TypeScript · open source'],
-    links: [
-      { label: 'source', href: 'https://github.com/justadakaje/wow-addons/tree/master/mcp' },
-    ],
+    status: { cls: 'live', label: 'live' },
+    name: 'Sky Alerts',
+    blurb: 'Real-time astronomy alerts from the ALeRCE broker (ZTF + Vera C. Rubin/LSST), paired with sky cutouts, observing forecasts, and a weekly plain-English digest.',
+    facts: ['ALeRCE ZTF + Rubin/LSST broker stream', 'sky cutouts, observing forecast & audio brief', 'weekly Resend digest · skyalerts.space'],
+    links: [{ label: 'open dashboard', href: 'https://skyalerts.space' }],
   },
   {
     status: { cls: 'live', label: 'live' },
-    name: 'Sky Alerts',
-    blurb: 'Astronomy alerts from ALeRCE (ZTF + Rubin/LSST), with a weekly plain-English digest.',
-    facts: ['Flutter Web · Firestore · Firebase', 'public dashboard + audio brief', 'skyalerts.space'],
-    links: [{ label: 'open dashboard', href: 'https://skyalerts.space' }],
+    name: 'KenHen.Win',
+    blurb: 'Local-first Warcraft alt roster poster and chroma-key portrait studio with Battle.net sync, green-screen cutter, and high-DPI canvas exports.',
+    facts: ['Vite + TypeScript on Cloudflare Workers', 'zero-upload IndexedDB + RGBA chroma-key', 'companion /khr addon · Forever, Retail & Classic'],
+    links: [
+      { label: 'open studio', href: 'https://kenhen.win' },
+      { label: 'companion addon', href: 'https://github.com/justadakaje/wow-addons/tree/master/addons/KenHenRoster' },
+    ],
+  },
+  {
+    status: { cls: 'test', label: 'in use' },
+    name: 'wow-api MCP',
+    blurb: "Answers WoW: Forever API questions from ForeverProbe's live client captures instead of LLM memory or retail wikis.",
+    facts: ['ForeverProbe v0.7.0 · live client index', 'required gate across GoldFinder & BiSGearFinder', 'TypeScript MCP · MIT open source'],
+    links: [
+      { label: 'source', href: 'https://github.com/justadakaje/wow-addons/tree/master/mcp' },
+    ],
   },
 ];

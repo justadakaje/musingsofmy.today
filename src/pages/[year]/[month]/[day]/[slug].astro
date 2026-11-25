@@ -50,9 +50,11 @@ const top = Math.min(...headings.map((h) => h.depth).filter((x) => x >= 2), 6);
 const toc = headings.filter((h) => h.depth === top);
 const showToc = toc.length >= 2;
 
-const og = d.cover ? (await getImage({ src: d.cover.src, width: 1200, format: 'jpg' })).src : undefined;
+const og = d.cover
+  ? (await getImage({ src: d.cover.src, width: 1200, format: 'jpg' })).src
+  : `/og/${post.id}.png`;
 const canonicalUrl = new URL(postPath(post), Astro.site ?? SITE.url).toString();
-const ogAbsolute = new URL(og ?? '/social.png', Astro.site ?? SITE.url).toString();
+const ogAbsolute = new URL(og, Astro.site ?? SITE.url).toString();
 
 const inSeries = seriesParts.length > 1;
 const seriesIndex = inSeries ? seriesParts.findIndex((p) => p.id === post.id) : -1;
