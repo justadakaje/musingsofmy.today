@@ -3,7 +3,7 @@
  * Update `now` when the work changes; `updated` is shown under it, so keep it honest.
  */
 export const NOW = {
-  updated: '2026-11-24',
+  updated: '2026-11-25',
   rows: [
     { k: 'streaming', v: 'twitch.tv/kenhenchan · off for Thanksgiving week', href: 'https://www.twitch.tv/kenhenchan' },
     { k: 'building', v: 'daw-agent-skills: Audio DSP forensics for DAW copilots (#2)' },

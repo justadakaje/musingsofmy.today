@@ -7,15 +7,17 @@ interface Props {
   id?: string;
   playlist?: string;
   title?: string;
+  short?: boolean;
 }
-const { id, playlist, title = playlist ? 'YouTube playlist' : 'YouTube video' } = Astro.props;
+const { id, playlist, title = playlist ? 'YouTube playlist' : 'YouTube video', short = false } = Astro.props;
 if (!id && !playlist) throw new Error('<YouTube> needs an id or a playlist');
 const src = playlist
   ? `https://www.youtube-nocookie.com/embed/videoseries?list=${playlist}`
   : `https://www.youtube-nocookie.com/embed/${id}`;
+const frameClass = short ? 'embed-frame ratio-short' : 'embed-frame ratio-video';
 ---
 <figure class="embed">
-  <div class="embed-frame ratio-video" data-wc-ignore>
+  <div class={frameClass} data-wc-ignore>
     <iframe
       src={src}
       title={title}

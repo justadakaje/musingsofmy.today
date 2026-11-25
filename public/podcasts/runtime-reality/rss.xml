@@ -13,7 +13,7 @@
 Created, Curated and Hosted by Kenneth Henseler.]]></description>
     <link>https://musingsofmy.today</link>
     <generator>control-room/publish-r2</generator>
-    <lastBuildDate>Sat, 14 Nov 2026 14:54:37 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 25 Nov 2026 11:30:14 GMT</lastBuildDate>
     <atom:link href="https://musingsofmy.today/podcasts/runtime-reality/rss.xml" rel="self" type="application/rss+xml"/>
     <author><![CDATA[Kenneth Henseler]]></author>
     <copyright><![CDATA[Kenneth Henseler]]></copyright>
@@ -31,6 +31,74 @@ Created, Curated and Hosted by Kenneth Henseler.</itunes:summary>
     <itunes:category text="Technology"/>
     <itunes:image href="https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_nologo/45616145/45616145-1774842229145-4874d381703ca.jpg"/>
     <podcast:locked owner="Podcast+ArchitectArchive@henseler.email">no</podcast:locked>
+    <item>
+      <title><![CDATA[S26.E1125 – Get Used to It? Part 1: The Router in El Dorado]]></title>
+      <description><![CDATA[<p>Six major U.S. outages hit in six days (Nov 12–17, 2026): Microsoft 365, the FAA's nationwide ground stop, JPMorgan Chase and the Zelle/Plaid rails, United Airlines, Apple, and the NSA's classified <code>NSANet</code>. Officials ruled out a cyberattack every time. Then came the explanation: <em>"Tell them to relax... these are individual events"</em> and <em>"when they upgrade, bad things happen."</em> When Meta Chief AI Officer Alexandr Wang published <em>"Superintelligence is Arriving"</em> on Nov 22, feeds merged the two into one message: get used to things breaking.</p><p>In Part 1 of a two-part <strong>Runtime Reality</strong> Deep Dive, we test that claim against the post-mortems:</p><ul><li><strong>FAA Nationwide Ground Stop (Nov 13):</strong> Lab recreation by the FAA, FBI, Juniper, and Cisco traced the blackout (3:54–8:15 p.m. EST; 10,000+ delays, 4,000+ cancellations) to an overlooked setting on a new Juniper router in El Dorado, Arkansas that flooded L3Harris's FTI network at ~1,000 connection attempts every 4–5 seconds, destabilizing 17 of 22 ARTCCs. Unions say a 2025 policy removed over-the-shoulder FAA oversight of contractor maintenance.</li><li><strong>Microsoft 365 (<code>EX1550543</code> / <code>MO1550821</code>, Nov 12–14):</strong> Affecting 430 million users—a latent July 2026 Windows Server lock-contention defect missed because test labs ran smaller hardware than production, freezing &gt;80% of gateways.</li><li><strong>Banking, Airlines &amp; Defense (Nov 16–17):</strong> JPMorgan Chase's on-premise hardware fault rippled across peer banks through Zelle and Plaid; United paused mainline departures; NSA declared "code yellow" at Fort Meade after a routine PHP patch failed recovery; Apple tripped on an internal software update.</li></ul><p>We also read Wang's essay closely: it never mentions outages or patch cycles, and it calls inevitability thinking "lazy." We close with seven questions for the Dec 2 Senate Commerce hearing, where Transportation Secretary Sean Duffy and FAA Administrator Bryan Bedford testify before Congress weighs a $50 billion modernization ask.</p><p><strong>Chapters (33:13 Deep Dive)</strong></p><ul><li><strong>00:00</strong> Cold Open: 8:21 PM ET Airspace Freeze (875 Airborne, 2,883+ Grounded)</li><li><strong>03:07</strong> Six Outages in Six Days (Nov 12–17) &amp; The "Patchpocalypse" Trap</li><li><strong>06:18</strong> Inside L3Harris's FTI Network &amp; Legacy 1980s TDM Buffers</li><li><strong>08:18</strong> The Router in El Dorado, Arkansas (~1,000 Requests/4–5s, 17 of 22 ARTCCs)</li><li><strong>11:17</strong> Fault Domains, The $875M SMART Rollout &amp; Bryan Bedford's Sept 15 Warning</li><li><strong>16:55</strong> Microsoft 365 (<code>EX1550543</code>): Lower-Core Labs &amp; Retry-Loop Paralysis (430M Users)</li><li><strong>22:47</strong> Counterparty Contagion: JPMorgan Chase, Zelle, Plaid, United &amp; NSANet "Code Yellow"</li><li><strong>25:48</strong> "Get Used to It" vs. What Alexandr Wang Actually Wrote</li><li><strong>29:00</strong> Accountability &amp; The $50 Billion Ask Ahead of December 2</li><li><strong>30:17</strong> Honesty Audit: Five Undisclosed Production Artifacts</li><li><strong>32:00</strong> Closing Directive: Demand the Change Log (Part 2 After Dec 2)</li></ul><p><strong>Full Part 1 RCA &amp; Schematics:</strong> <a href="https://musingsofmy.today/2026/11/25/get-used-to-it-part-1/">musingsofmy.today/2026/11/25/get-used-to-it-part-1/</a><br><strong>Companion Essay (The Patchpocalypse &amp; Great Tech Cascade):</strong> <a href="https://musingsofmy.today/2026/11/25/the-patchpocalypse-and-the-great-tech-cascade/">musingsofmy.today/2026/11/25/the-patchpocalypse-and-the-great-tech-cascade/</a></p><p><em>Created, Curated, Researched, and Produced by Kenneth Henseler using Claude Code, Google Antigravity, and Gemini Notebook.</em></p>]]></description>
+      <link>https://musingsofmy.today/2026/11/25/get-used-to-it-part-1/</link>
+      <guid isPermaLink="false">165ebf8b-34c4-4430-a119-32e464946c75</guid>
+      <dc:creator><![CDATA[Kenneth Henseler]]></dc:creator>
+      <pubDate>Wed, 25 Nov 2026 10:08:12 GMT</pubDate>
+      <enclosure url="https://op3.dev/e/media.musingsofmy.today/runtime-reality/audio/rr-001-faa-ground-stop-rca.m4a" length="24304037" type="audio/mp4"/>
+      <itunes:summary>Six major U.S. outages hit in six days (Nov 12–17, 2026): Microsoft 365, the FAA&apos;s nationwide ground stop, JPMorgan Chase and the Zelle/Plaid rails, United Airlines, Apple, and the NSA&apos;s classified NSANet. Officials ruled out a cyberattack every time. Then came the explanation: &quot;Tell them to relax... these are individual events&quot; and &quot;when they upgrade, bad things happen.&quot; When Meta Chief AI Officer Alexandr Wang published &quot;Superintelligence is Arriving&quot; on Nov 22, feeds merged the two into one message: get used to things breaking.
+
+In Part 1 of a two-part Runtime Reality Deep Dive, we test that claim against the post-mortems:
+
+- FAA Nationwide Ground Stop (Nov 13): Lab recreation by the FAA, FBI, Juniper, and Cisco traced the blackout (3:54–8:15 p.m. EST; 10,000+ delays, 4,000+ cancellations) to an overlooked setting on a new Juniper router in El Dorado, Arkansas that flooded L3Harris&apos;s FTI network at ~1,000 connection attempts every 4–5 seconds, destabilizing 17 of 22 ARTCCs. Unions say a 2025 policy removed over-the-shoulder FAA oversight of contractor maintenance.
+
+- Microsoft 365 (EX1550543 / MO1550821, Nov 12–14): Affecting 430 million users—a latent July 2026 Windows Server lock-contention defect missed because test labs ran smaller hardware than production, freezing &gt;80% of gateways.
+
+- Banking, Airlines &amp; Defense (Nov 16–17): JPMorgan Chase&apos;s on-premise hardware fault rippled across peer banks through Zelle and Plaid; United paused mainline departures; NSA declared &quot;code yellow&quot; at Fort Meade after a routine PHP patch failed recovery; Apple tripped on an internal software update.
+
+We also read Wang&apos;s essay closely: it never mentions outages or patch cycles, and it calls inevitability thinking &quot;lazy.&quot; We close with seven questions for the Dec 2 Senate Commerce hearing, where Transportation Secretary Sean Duffy and FAA Administrator Bryan Bedford testify before Congress weighs a $50 billion modernization ask.
+
+Chapters (33:13 Deep Dive)
+
+- 00:00 Cold Open: 8:21 PM ET Airspace Freeze (875 Airborne, 2,883+ Grounded)
+
+- 03:07 Six Outages in Six Days (Nov 12–17) &amp; The &quot;Patchpocalypse&quot; Trap
+
+- 06:18 Inside L3Harris&apos;s FTI Network &amp; Legacy 1980s TDM Buffers
+
+- 08:18 The Router in El Dorado, Arkansas (~1,000 Requests/4–5s, 17 of 22 ARTCCs)
+
+- 11:17 Fault Domains, The $875M SMART Rollout &amp; Bryan Bedford&apos;s Sept 15 Warning
+
+- 16:55 Microsoft 365 (EX1550543): Lower-Core Labs &amp; Retry-Loop Paralysis (430M Users)
+
+- 22:47 Counterparty Contagion: JPMorgan Chase, Zelle, Plaid, United &amp; NSANet &quot;Code Yellow&quot;
+
+- 25:48 &quot;Get Used to It&quot; vs. What Alexandr Wang Actually Wrote
+
+- 29:00 Accountability &amp; The $50 Billion Ask Ahead of December 2
+
+- 30:17 Honesty Audit: Five Undisclosed Production Artifacts
+
+- 32:00 Closing Directive: Demand the Change Log (Part 2 After Dec 2)
+
+Full Part 1 RCA &amp; Schematics: musingsofmy.today/2026/11/25/get-used-to-it-part-1/Companion Essay (The Patchpocalypse &amp; Great Tech Cascade): musingsofmy.today/2026/11/25/the-patchpocalypse-and-the-great-tech-cascade/
+
+Created, Curated, Researched, and Produced by Kenneth Henseler using Claude Code, Google Antigravity, and Gemini Notebook.</itunes:summary>
+      <itunes:explicit>false</itunes:explicit>
+      <itunes:duration>00:33:14</itunes:duration>
+      <itunes:image href="https://media.musingsofmy.today/runtime-reality/images/rr-001-faa-ground-stop-rca-cover.jpg"/>
+      <itunes:season>2026</itunes:season>
+      <itunes:episode>1125</itunes:episode>
+      <itunes:episodeType>full</itunes:episodeType>
+      <podcast:transcript url="https://musingsofmy.today/podcasts/runtime-reality/transcripts/rr-001-faa-ground-stop-rca.txt" type="text/plain"/>
+      <psc:chapters version="1.2">
+        <psc:chapter start="00:00:00" title="Cold Open: 8:21 PM ET Airspace Freeze (875 Airborne, 2,883+ Grounded)"/>
+        <psc:chapter start="00:03:07" title="Six Outages in Six Days (Nov 12–17) &amp; The &quot;Patchpocalypse&quot; Trap"/>
+        <psc:chapter start="00:06:18" title="Inside L3Harris&apos;s FTI Network &amp; Legacy 1980s TDM Buffers"/>
+        <psc:chapter start="00:08:18" title="The Router in El Dorado, Arkansas (~1,000 Requests/4–5s, 17 of 22 ARTCCs)"/>
+        <psc:chapter start="00:11:17" title="Fault Domains, The $875M SMART Rollout &amp; Bryan Bedford&apos;s Sept 15 Warning"/>
+        <psc:chapter start="00:16:55" title="Microsoft 365 (EX1550543): Lower-Core Labs &amp; Retry-Loop Paralysis (430M Users)"/>
+        <psc:chapter start="00:22:47" title="Counterparty Contagion: JPMorgan Chase, Zelle, Plaid, United &amp; NSANet &quot;Code Yellow&quot;"/>
+        <psc:chapter start="00:25:48" title="&quot;Get Used to It&quot; vs. What Alexandr Wang Actually Wrote"/>
+        <psc:chapter start="00:29:00" title="Accountability &amp; The $50 Billion Ask Ahead of December 2"/>
+        <psc:chapter start="00:30:17" title="Honesty Audit: Five Undisclosed Production Artifacts"/>
+        <psc:chapter start="00:32:00" title="Closing Directive: Demand the Change Log (Part 2 After Dec 2)"/>
+      </psc:chapters>
+    </item>
     <item>
       <title><![CDATA[S26.E0924 – An AI Said the Function Didn't Exist. It Did. Four Errors in Four Hours.]]></title>
       <description><![CDATA[<p>Claude Opus 5 made four confident, plausible, completely wrong claims during a single development session. None were caught by better reasoning. Each was caught by reading a primary source at the moment the answer felt already known.</p><p>The client was World of Warcraft: Forever, build 69913 — a beta where most legacy Lua APIs have been removed and the survivors were kept inconsistently. The training data describes a game that no longer exists.</p><p><strong>Error 1 — An API documented as absent.</strong> The project's own notes recorded "zero occurrences in this client's surface" as established fact. A three-line type() check found it immediately. Two independent sources of truth were blind in different ways: the API index covers the C API, and a runtime global walk sees functions and C_ namespaces. A Lua table inside a plain global falls through both.</p><p><strong>Error 2 — A migration that would have destroyed what it was upgrading.</strong> Wiping stored data on a schema mismatch reads as reasonable defensive coding. The capability probe had just written its results into that table.</p><p><strong>Error 3 — The textbook-correct answer that broke every message.</strong> ASCII 31, the unit separator, is the character the standard provides for exactly this purpose. The transport library rejects the range it sits in and throws on every send.</p><p><strong>Error 4 — A rescue plan that had it backwards.</strong> Two saved files, and the one visible on screen was empty on disk. SavedVariables flush at reload or logout, so the file lags memory by one reload.</p><p><strong>The pattern.</strong> Not one was caught by reasoning — every error was arrived at by sound reasoning from its inputs. Not by general caution either; being careful is a disposition, it does not tell you which file to open.</p><p><strong>Measured in this episode:</strong> build 69913 · ASCII 31 · CBOR 386 bytes, Deflate 293, Base64 392 — encoded output larger than the input, paying for a chunk boundary rather than for compression · two chunks at 240 · race ID 96 · C_Housing.GetMaxHouseLevel, documented and present at runtime as one of 63 functions, and still access-violating the client.</p><p><strong>Honest caveat:</strong> roughly a third of the addon's fields were never exercised. Sharing has never been tested with a second player; guild and title display have never rendered real data. An episode about verification that overstated its own completeness would be self-refuting.</p><p><strong>Chapters</strong><br>00:00 You record it as established fact<br>02:44 The thesis: plausible is not verified<br>04:01 The client: build 69913, and what it broke<br>07:49 Error 1 — two sources of truth, both blind<br>13:20 Error 2 — the migration that ate its own evidence<br>25:22 Error 3 — ASCII 31, the textbook answer that failed<br>30:04 The crash model: why pcall cannot save you<br>34:07 Error 4 — the rescue plan that had it backwards<br>39:08 What this means for AI-assisted engineering<br>44:13 What was never verified</p><p><strong>Links</strong><br>Source, tooling and commit history — <a href="https://github.com/justadakaje/wow-addons" target="_blank" rel="ugc noopener noreferrer">github.com/justadakaje/wow-addons</a><br>Measured findings for build 69913 — <a href="https://github.com/justadakaje/wow-addons/blob/master/docs/facts-build-69913.md" target="_blank" rel="ugc noopener noreferrer">docs/facts-build-69913.md</a><br>Unedited session, Part 1 — <a href="https://youtu.be/guSsG1I_XX0" target="_blank" rel="ugc noopener noreferrer">youtu.be/guSsG1I_XX0</a><br>Unedited session, Part 2 — <a href="https://youtu.be/lAFS9JJeLPA" target="_blank" rel="ugc noopener noreferrer">youtu.be/lAFS9JJeLPA</a>THE 31-MINUTE CUT — <a href="https://youtu.be/_RP-CQRNKKg" target="_blank" rel="noopener noreferer">youtu.be/_RP-CQRNKKg</a></p><p><br></p><p>Tool used: Claude Code, Opus 5. The "wow-api" MCP server verified API calls against a custom index — correctness, not speed.</p>]]></description>
