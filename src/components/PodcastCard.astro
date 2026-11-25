@@ -21,6 +21,6 @@ const latestTitle = latest ? (latest.data.podcast?.title ?? latest.data.title) :
       {s.blurb}
       {latest && <> Latest on the blog: <a href={postPath(latest)}>{latestTitle}</a>.</>}
     </p>
-    <div class="links"><a href={s.apple}>apple podcasts</a><a href={s.spotify}>spotify</a></div>
+    <div class="links"><a href={s.apple}>apple podcasts</a><a href={s.spotify}>spotify</a><a href={s.rss}>rss feed</a></div>
   </div>
 </div>

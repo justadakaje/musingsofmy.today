@@ -1,0 +1,278 @@
+---
+import { SITE } from '../site';
+
+interface Props {
+  idPrefix?: string;
+  headingId?: string;
+}
+
+const { idPrefix = 'sub', headingId } = Astro.props;
+const emailId = `${idPrefix}-email`;
+const hintId = `${idPrefix}-hint`;
+const errorId = `${idPrefix}-error`;
+const hpId = `${idPrefix}-hp`;
+const turnstileKey = SITE.publicTurnstileSiteKey;
+---
+
+<div class="sub-box clip">
+  <form
+    class="sub-form"
+    action="/api/subscribe"
+    method="POST"
+    aria-labelledby={headingId}
+  >
+    <div class="sub-field">
+      <label for={emailId}>Email address <span aria-hidden="true">*</span></label>
+      <span id={hintId} class="sub-hint">Format: you@example.com · Double opt-in, unsubscribe anytime.</span>
+      <input
+        type="email"
+        id={emailId}
+        name="email"
+        required
+        autocomplete="email"
+        autocorrect="off"
+        autocapitalize="none"
+        spellcheck="false"
+        enterkeyhint="send"
+        aria-invalid="false"
+        aria-describedby={hintId}
+        data-error={errorId}
+      />
+      <div id={errorId} class="sub-error">
+        <span role="img" aria-label="Error">✗</span> Enter an email address in the format you@example.com.
+      </div>
+    </div>
+
+    <div class="visually-hidden" aria-hidden="true">
+      <label for={hpId}>Company website</label>
+      <input
+        type="text"
+        id={hpId}
+        name="company_website"
+        tabindex="-1"
+        autocomplete="off"
+      />
+    </div>
+
+    {turnstileKey && (
+      <div class="cf-turnstile" data-sitekey={turnstileKey} data-theme="dark"></div>
+    )}
+
+    <button type="submit" class="btn clip">Subscribe →</button>
+    <p class="sub-status" role="status" aria-live="polite"></p>
+  </form>
+</div>
+
+{turnstileKey && (
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+)}
+
+<script>
+  const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const supportsUserInvalid = typeof CSS !== 'undefined' && CSS.supports('selector(:user-invalid)');
+
+  const linkError = (el: HTMLElement, shown: boolean) => {
+    const errorId = el.dataset.error;
+    if (!errorId) return;
+    const ids = (el.getAttribute('aria-describedby') || '')
+      .split(/\s+/)
+      .filter((id) => id && id !== errorId);
+    if (shown) ids.push(errorId);
+    if (ids.length) el.setAttribute('aria-describedby', ids.join(' '));
+    else el.removeAttribute('aria-describedby');
+  };
+
+  let announcer = document.getElementById('sub-live-announcer');
+  if (!announcer) {
+    announcer = document.createElement('div');
+    announcer.id = 'sub-live-announcer';
+    announcer.setAttribute('aria-live', 'polite');
+    announcer.classList.add('visually-hidden');
+    document.body.append(announcer);
+  }
+
+  let announceTimer: ReturnType<typeof setTimeout> | undefined;
+  let announcedField: Element | undefined;
+
+  const spokenText = (node: HTMLElement): string => {
+    const copy = node.cloneNode(true) as HTMLElement;
+    copy.querySelectorAll('[aria-hidden="true"]').forEach((n) => n.remove());
+    copy.querySelectorAll('[role="img"][aria-label]').forEach((n) => {
+      n.replaceWith(`${n.getAttribute('aria-label')}: `);
+    });
+    return (copy.textContent || '').replace(/\s+/g, ' ').trim();
+  };
+
+  const announceError = (el: HTMLInputElement) => {
+    const errorId = el.dataset.error;
+    const errorEl = errorId ? document.getElementById(errorId) : null;
+    if (!errorEl) return;
+    const label = el.labels?.[0] ? `${spokenText(el.labels[0])}: ` : '';
+    clearTimeout(announceTimer);
+    announcer!.textContent = '';
+    announcedField = el;
+    announceTimer = setTimeout(() => {
+      announcer!.textContent = label + spokenText(errorEl);
+    }, 500);
+  };
+
+  const syncCustomEmailValidity = (el: HTMLInputElement) => {
+    el.setCustomValidity('');
+    const trimmed = el.value.trim();
+    if (
+      trimmed.length > 0 &&
+      !el.validity.typeMismatch &&
+      (!EMAIL_PATTERN.test(trimmed) || trimmed.length > 254 || /[\r\n]/.test(el.value))
+    ) {
+      el.setCustomValidity('Enter an email address in the format you@example.com.');
+    }
+  };
+
+  const dirtyState = new WeakMap<HTMLInputElement, { hasInteracted: boolean; hasBlurred: boolean }>();
+  const flagged = new WeakSet<HTMLInputElement>();
+  const announced = new WeakSet<HTMLInputElement>();
+
+  const isFieldUserInvalid = (el: HTMLInputElement): boolean => {
+    if (supportsUserInvalid) return el.matches(':user-invalid');
+    const state = dirtyState.get(el);
+    return Boolean(state?.hasInteracted && state?.hasBlurred && !el.validity.valid);
+  };
+
+  const syncFieldState = (el: HTMLInputElement, announce = false) => {
+    syncCustomEmailValidity(el);
+
+    if (!supportsUserInvalid) {
+      const state = dirtyState.get(el);
+      const showFallback = Boolean(state?.hasInteracted && state?.hasBlurred);
+      if (showFallback) {
+        const valid = el.validity.valid;
+        el.classList.toggle('user-invalid-fallback', !valid);
+        el.classList.toggle('user-valid-fallback', valid);
+      } else {
+        el.classList.remove('user-invalid-fallback', 'user-valid-fallback');
+      }
+    }
+
+    const invalid = isFieldUserInvalid(el);
+    if (invalid) {
+      if (announce && !announced.has(el)) {
+        announceError(el);
+        announced.add(el);
+      }
+      el.setAttribute('aria-invalid', 'true');
+      linkError(el, true);
+      flagged.add(el);
+    } else if (flagged.has(el) || el.getAttribute('aria-invalid') !== 'true') {
+      el.setAttribute('aria-invalid', 'false');
+      linkError(el, false);
+      flagged.delete(el);
+      announced.delete(el);
+      if (announcedField === el) {
+        clearTimeout(announceTimer);
+        announcer!.textContent = '';
+      }
+    }
+  };
+
+  document.querySelectorAll<HTMLFormElement>('.sub-form').forEach((form) => {
+    const emailInput = form.querySelector<HTMLInputElement>('input[name="email"]');
+    const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const statusEl = form.querySelector<HTMLElement>('.sub-status');
+    if (!emailInput || !submitBtn || !statusEl) return;
+
+    emailInput.setAttribute('aria-invalid', 'false');
+
+    emailInput.addEventListener('input', () => {
+      const state = dirtyState.get(emailInput) || { hasInteracted: false, hasBlurred: false };
+      state.hasInteracted = true;
+      dirtyState.set(emailInput, state);
+      syncFieldState(emailInput, false);
+    });
+
+    emailInput.addEventListener('blur', () => {
+      const state = dirtyState.get(emailInput) || { hasInteracted: false, hasBlurred: false };
+      state.hasBlurred = true;
+      dirtyState.set(emailInput, state);
+      syncFieldState(emailInput, true);
+    });
+
+    emailInput.addEventListener('invalid', () => {
+      dirtyState.set(emailInput, { hasInteracted: true, hasBlurred: true });
+      announced.add(emailInput);
+      syncFieldState(emailInput, false);
+    });
+
+    form.addEventListener('reset', () => {
+      dirtyState.delete(emailInput);
+      setTimeout(() => {
+        emailInput.setCustomValidity('');
+        emailInput.classList.remove('user-invalid-fallback', 'user-valid-fallback');
+        syncFieldState(emailInput, false);
+      });
+    });
+
+    form.addEventListener('submit', async (e) => {
+      syncCustomEmailValidity(emailInput);
+      if (!form.checkValidity()) {
+        e.preventDefault();
+        dirtyState.set(emailInput, { hasInteracted: true, hasBlurred: true });
+        announced.add(emailInput);
+        syncFieldState(emailInput, false);
+        emailInput.focus();
+        return;
+      }
+
+      e.preventDefault();
+      submitBtn.disabled = true;
+      statusEl.dataset.state = '';
+      statusEl.textContent = 'Sending confirmation link…';
+
+      const formData = new FormData(form);
+      const payload: Record<string, string> = {
+        email: String(formData.get('email') ?? ''),
+        company_website: String(formData.get('company_website') ?? ''),
+      };
+      const turnstile = formData.get('cf-turnstile-response');
+      if (typeof turnstile === 'string' && turnstile.length > 0) {
+        payload['cf-turnstile-response'] = turnstile;
+      }
+
+      try {
+        const res = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+        const data = (await res.json().catch(() => null)) as {
+          ok?: boolean;
+          code?: string;
+          message?: string;
+        } | null;
+
+        if (res.ok && data?.ok) {
+          statusEl.dataset.state = 'ok';
+          statusEl.textContent =
+            data.message ||
+            "If that address isn't subscribed yet, check your inbox for a confirmation link.";
+          form.reset();
+        } else if (res.status === 503 && data?.code === 'unconfigured') {
+          statusEl.dataset.state = 'warn';
+          statusEl.textContent =
+            data.message || 'Email sign-ups are being finalized. Try RSS in the meantime.';
+        } else {
+          statusEl.dataset.state = 'err';
+          statusEl.textContent =
+            data?.message || 'Unable to subscribe right now. Please try again or use RSS.';
+        }
+      } catch {
+        statusEl.dataset.state = 'err';
+        statusEl.textContent = 'Network error. Please try again or use RSS.';
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  });
+</script>

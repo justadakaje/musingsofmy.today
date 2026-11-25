@@ -16,9 +16,27 @@ const on = Boolean(GISCUS.repoId && GISCUS.categoryId);
       data-repo-id={GISCUS.repoId}
       data-category={GISCUS.category}
       data-category-id={GISCUS.categoryId}></div>
+    <p class="note giscus-fallback" hidden>
+      GitHub Discussions comments are connecting — join the discussion on{' '}
+      <a href={`https://github.com/${GISCUS.repo}/discussions`}>GitHub Discussions</a> or in{' '}
+      <a href="https://discord.gg/AkmBGKPVFQ">OrganizedChaos on Discord</a> →
+    </p>
     <script>
       const host = document.querySelector<HTMLElement>('.giscus-host');
+      const fallback = document.querySelector<HTMLElement>('.giscus-fallback');
       if (host) {
+        window.addEventListener('message', (event) => {
+          if (event.origin !== 'https://giscus.app') return;
+          const payload = event.data as { giscus?: { error?: string } } | null;
+          if (
+            payload?.giscus?.error &&
+            /not installed|unauthorized|disabled/i.test(payload.giscus.error) &&
+            fallback
+          ) {
+            host.hidden = true;
+            fallback.hidden = false;
+          }
+        });
         const load = () => {
           const s = document.createElement('script');
           s.src = 'https://giscus.app/client.js';

@@ -20,5 +20,6 @@ const listen = podcast.spotify ?? podcast.apple ?? podcast.youtube ?? show.spoti
     <a href={podcast.apple ?? show.apple}>apple podcasts</a>
     <a href={podcast.spotify ?? show.spotify}>spotify</a>
     {podcast.youtube && <a href={podcast.youtube}>youtube</a>}
+    {podcast.transcript && <a href={podcast.transcript}>transcript</a>}
   </div>
 </div>

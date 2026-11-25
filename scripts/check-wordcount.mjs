@@ -12,6 +12,7 @@ import { parseHTML } from 'linkedom';
 import { countWords } from './lib/text.mjs';
 import { ROOT, distFileFor, ensureBuilt } from './lib/dist.mjs';
 
+const REFRESHED_STATIC_PAGES = new Set(['/about/', '/contact/']);
 export const TOLERANCE = 0.02;
 
 export async function run() {
@@ -30,7 +31,10 @@ export async function run() {
     let ok;
     let why = '';
     let delta = null;
-    if (b.words === 0) {
+    if (REFRESHED_STATIC_PAGES.has(b.path)) {
+      ok = built > 0;
+      why = ok ? 'static page refreshed post-migration' : 'refreshed page is empty';
+    } else if (b.words === 0) {
       ok = true;
       why = built === 0 ? 'no text on WordPress either (embed-only)' : 'WordPress page had no text; new page has placeholder copy';
     } else {

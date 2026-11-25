@@ -8,7 +8,11 @@ import { Image, getImage } from 'astro:assets';
 import Base from '../../../../layouts/Base.astro';
 import EpisodeCard from '../../../../components/EpisodeCard.astro';
 import ArchivedComments from '../../../../components/ArchivedComments.astro';
+import DiscordThread from '../../../../components/DiscordThread.astro';
 import Giscus from '../../../../components/Giscus.astro';
+import SeriesNav from '../../../../components/SeriesNav.astro';
+import PostCta from '../../../../components/PostCta.astro';
+import PostEnhancements from '../../../../components/PostEnhancements.astro';
 import { mdxComponents } from '../../../../components/mdx';
 import { getPosts, postParams, postPath, fmtDate, readMinutes, tagSlug, type Post } from '../../../../lib/posts';
 import { sectionById, SITE } from '../../../../site';
@@ -17,9 +21,14 @@ export async function getStaticPaths() {
   const posts = await getPosts();
   return posts.map((post, i) => {
     postPath(post); // validates folder name vs date; throws with a clear message if they disagree
+    const seriesParts = post.data.series
+      ? posts
+          .filter((p) => p.data.series?.id === post.data.series!.id)
+          .sort((a, b) => a.data.series!.part - b.data.series!.part)
+      : [];
     return {
       params: postParams(post),
-      props: { post, newer: posts[i - 1], older: posts[i + 1] },
+      props: { post, newer: posts[i - 1], older: posts[i + 1], seriesParts },
     };
   });
 }
@@ -28,8 +37,9 @@ interface Props {
   post: Post;
   newer?: Post;
   older?: Post;
+  seriesParts: Post[];
 }
-const { post, newer, older } = Astro.props;
+const { post, newer, older, seriesParts } = Astro.props;
 const { Content, headings } = await render(post);
 const d = post.data;
 const section = sectionById(d.section);
@@ -40,9 +50,42 @@ const top = Math.min(...headings.map((h) => h.depth).filter((x) => x >= 2), 6);
 const toc = headings.filter((h) => h.depth === top);
 const showToc = toc.length >= 2;
 
-const og = d.cover ? (await getImage({ src: d.cover.src, width: 1200, format: 'jpg' })).src : undefined;
+const og = d.cover
+  ? (await getImage({ src: d.cover.src, width: 1200, format: 'jpg' })).src
+  : `/og/${post.id}.png`;
+const canonicalUrl = new URL(postPath(post), Astro.site ?? SITE.url).toString();
+const ogAbsolute = new URL(og, Astro.site ?? SITE.url).toString();
+
+const inSeries = seriesParts.length > 1;
+const seriesIndex = inSeries ? seriesParts.findIndex((p) => p.id === post.id) : -1;
+const prevPost = inSeries ? (seriesIndex > 0 ? seriesParts[seriesIndex - 1] : undefined) : newer;
+const nextPost = inSeries ? (seriesIndex >= 0 && seriesIndex < seriesParts.length - 1 ? seriesParts[seriesIndex + 1] : undefined) : older;
+
+const blogPostingLd: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: d.title,
+  description: d.description,
+  datePublished: d.date.toISOString(),
+  ...(d.updated ? { dateModified: d.updated.toISOString() } : {}),
+  url: canonicalUrl,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
+  image: ogAbsolute,
+  author: {
+    '@type': 'Person',
+    name: SITE.author,
+    url: SITE.url,
+  },
+  publisher: {
+    '@type': 'Person',
+    name: SITE.author,
+    url: SITE.url,
+  },
+  articleSection: section.label,
+  ...(d.tags.length > 0 ? { keywords: d.tags.join(', ') } : {}),
+};
 ---
-<Base title={d.title} description={d.description} type="article" published={d.date} image={og}>
+<Base title={d.title} description={d.description} type="article" published={d.date} image={og} jsonLd={blogPostingLd}>
   <header class="art-head">
     <div class="floor" style="top:84%"></div><div class="horizon" style="top:84%"></div>
     <div class="wrap">
@@ -73,6 +116,9 @@ const og = d.cover ? (await getImage({ src: d.cover.src, width: 1200, format: 'j
           <Image src={d.cover.src} alt={d.cover.alt} widths={[720, 1080, 1440]} sizes="(max-width: 760px) 100vw, 720px" loading="eager" />
         </figure>
       )}
+      {inSeries && d.series && (
+        <SeriesNav seriesTitle={d.series.title} parts={seriesParts} currentId={post.id} />
+      )}
       <div class="prose" data-post-body data-pagefind-body>
         <Content components={mdxComponents} />
       </div>
@@ -82,12 +128,27 @@ const og = d.cover ? (await getImage({ src: d.cover.src, width: 1200, format: 'j
           <div class="tags">{d.tags.map((t) => <a class="tag" href={`/tag/${tagSlug(t)}/`}>{t}</a>)}</div>
         )}
       </div>
-      <ArchivedComments wpcomId={d.legacy?.wpcom_id} />
-      <Giscus />
-      <nav class="pager" aria-label="More posts">
-        {newer && <a class="newer" href={postPath(newer)}><span>← newer</span>{newer.data.title}</a>}
-        {older && <a class="next" href={postPath(older)}><span>older →</span>{older.data.title}</a>}
+      <PostCta title={d.title} url={canonicalUrl} />
+      <div id="comments" class="comments-zone">
+        <ArchivedComments wpcomId={d.legacy?.wpcom_id} />
+        <DiscordThread postId={post.id} threadId={d.discord_thread} />
+        <Giscus />
+      </div>
+      <nav class="pager" aria-label={inSeries ? 'Series navigation' : 'More posts'}>
+        {prevPost && (
+          <a class="newer" href={postPath(prevPost)}>
+            <span>{inSeries ? '← previous part' : '← newer'}</span>
+            {prevPost.data.title}
+          </a>
+        )}
+        {nextPost && (
+          <a class="next" href={postPath(nextPost)}>
+            <span>{inSeries ? 'next part →' : 'older →'}</span>
+            {nextPost.data.title}
+          </a>
+        )}
       </nav>
     </article>
   </main>
+  <PostEnhancements />
 </Base>

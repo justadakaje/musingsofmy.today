@@ -9,7 +9,8 @@ import { SECTIONS, SHOWS, SHOW_IDS, sectionById } from '../site';
 import { NOW, FEATURED, PROJECTS } from '../data/home';
 
 const posts = await getPosts();
-const featured = posts.find((p) => p.id === FEATURED.id) ?? posts[0];
+const featured = posts.find((p) => p.data.featured) ?? posts.find((p) => p.id === FEATURED.id) ?? posts[0];
+const featuredTerm = featured.data.terminal ?? (featured.id === FEATURED.id ? FEATURED.term : undefined);
 const latest = posts.filter((p) => p !== featured).slice(0, 8);
 const counts = Object.fromEntries(SECTIONS.map((s) => [s.id, posts.filter((p) => p.data.section === s.id).length]));
 const latestByShow = Object.fromEntries(SHOW_IDS.map((id) => [id, posts.find((p) => p.data.podcast?.show === id)]));
@@ -67,7 +68,7 @@ legacyIds[2] = '/contact/';
     </nav>
 
     <div class="sec"><h2>// featured</h2><span class="rule"></span></div>
-    <article class="featured clip">
+    <article class={`featured clip${featuredTerm?.length ? '' : ' no-term'}`}>
       <div class="copy">
         <div class="tags">
           <span class="tag">{fs.label}</span>
@@ -78,15 +79,15 @@ legacyIds[2] = '/contact/';
         <div class="meta"><b>{fmtDate(featured.data.date)}</b> · {readMinutes(featured.body)} min read</div>
         <a class="readmore" href={postPath(featured)}>read the post →</a>
       </div>
-      {featured.id === FEATURED.id && (
+      {featuredTerm?.length ? (
         <div class="term" aria-hidden="true">
-          {FEATURED.term.map((l) =>
+          {featuredTerm.map((l) =>
             l.kind === 'prompt' ? <div><span class="prompt">$</span> {l.text}</div>
             : l.kind === 'ok' ? <div><span class="ok">✓</span> {l.text}</div>
-            : <div><span class="x">✗</span> {l.text} <span class="c">{l.note}</span></div>,
+            : <div><span class="x">✗</span> {l.text}{l.note && <> <span class="c">{l.note}</span></>}</div>,
           )}
         </div>
-      )}
+      ) : null}
     </article>
 
     <div class="sec"><h2>// latest</h2><span class="rule"></span><a href="/archive/">all {posts.length} posts →</a></div>
@@ -96,7 +97,7 @@ legacyIds[2] = '/contact/';
     <div class="cards two">{SHOW_IDS.map((id) => <PodcastCard show={id} latest={latestByShow[id]} />)}</div>
 
     <div class="sec" id="projects"><h2>// projects</h2><span class="rule"></span><a href="https://github.com/justadakaje">github.com/justadakaje →</a></div>
-    <div class="cards three">
+    <div class={`cards ${PROJECTS.length % 2 === 0 ? 'two' : 'three'}`}>
       {PROJECTS.map((pr) => (
         <div class="card clip">
           <span class={`status ${pr.status.cls}`}>{pr.status.label}</span>

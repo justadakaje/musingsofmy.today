@@ -1,0 +1,37 @@
+---
+/**
+ * Compact cyber-glass call-to-action bar placed below .post-foot (outside [data-post-body]).
+ */
+interface Props {
+  title: string;
+  url: string;
+}
+
+const { title, url } = Astro.props;
+---
+<aside class="post-cta clip" aria-label={`Share or subscribe after reading ${title}`}>
+  <a class="btn clip" href="/subscribe/#email">subscribe via email →</a>
+  <a class="btn ghost clip" href="/rss.xml">rss</a>
+  <input
+    type="text"
+    readonly
+    class="visually-hidden"
+    id="post-canonical-url"
+    value={url}
+    aria-hidden="true"
+    tabindex="-1"
+  />
+  <span class="copy">
+    <button
+      type="button"
+      class="btn ghost clip copy-button"
+      command="--copy"
+      commandfor="post-canonical-url"
+    >
+      <span class="icon" aria-hidden="true">⧉</span>
+      <span>copy link</span>
+    </button>
+    <span class="tip" role="status"></span>
+  </span>
+  <a class="meta" href="#comments">jump to discussion ↓</a>
+</aside>

@@ -1,0 +1,177 @@
+---
+import { DISCORD_GUILD } from '../site';
+
+interface Props {
+  postId: string;
+  threadId?: string;
+}
+
+const { postId, threadId } = Astro.props;
+const threadUrl = threadId ? `https://discord.com/channels/${DISCORD_GUILD.id}/${threadId}` : '';
+---
+
+{threadId && (
+  <section class="discord-thread clip" aria-label="Discord discussion" data-post-id={postId}>
+    <div class="discord-head">
+      <h2>// organizedchaos · discord</h2>
+      <span class="discord-count"></span>
+    </div>
+    <div class="discord-list" aria-live="polite">
+      <p class="discord-loading">Loading thread preview…</p>
+    </div>
+    <div class="discord-cta">
+      <a class="btn clip" href={threadUrl} rel="noopener noreferrer">
+        Reply in Discord →
+      </a>
+      <a class="btn ghost clip" href={DISCORD_GUILD.invite} rel="noopener noreferrer">
+        Join OrganizedChaos
+      </a>
+    </div>
+  </section>
+)}
+
+<script>
+  interface ThreadReaction {
+    emoji: string;
+    count: number;
+  }
+
+  interface ThreadMessage {
+    authorName: string;
+    initial: string;
+    createdAt: string;
+    text: string;
+    reactions?: ThreadReaction[];
+  }
+
+  interface ThreadResponse {
+    ok?: boolean;
+    code?: string;
+    replyCount?: number;
+    messages?: ThreadMessage[];
+  }
+
+  const dateFmt = new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
+  const formatTimestamp = (iso: string): string => {
+    const d = new Date(iso);
+    return Number.isNaN(d.getTime()) ? '' : dateFmt.format(d);
+  };
+
+  const renderFallback = (listEl: HTMLElement, text: string) => {
+    const p = document.createElement('p');
+    p.className = 'discord-empty';
+    p.textContent = text;
+    listEl.replaceChildren(p);
+  };
+
+  const renderMessages = (listEl: HTMLElement, messages: ThreadMessage[]) => {
+    if (messages.length === 0) {
+      renderFallback(listEl, 'No replies yet — start the conversation in OrganizedChaos.');
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    for (const msg of messages) {
+      const article = document.createElement('article');
+      article.className = 'discord-msg';
+
+      const avatar = document.createElement('div');
+      avatar.className = 'discord-avatar';
+      avatar.setAttribute('aria-hidden', 'true');
+      avatar.textContent = msg.initial || '?';
+
+      const body = document.createElement('div');
+      body.className = 'discord-body';
+
+      const meta = document.createElement('div');
+      meta.className = 'discord-meta';
+
+      const author = document.createElement('span');
+      author.className = 'discord-author';
+      author.textContent = msg.authorName || 'Member';
+      meta.appendChild(author);
+
+      const formattedDate = formatTimestamp(msg.createdAt);
+      if (formattedDate) {
+        const time = document.createElement('time');
+        time.setAttribute('datetime', msg.createdAt);
+        time.textContent = formattedDate;
+        meta.appendChild(time);
+      }
+
+      const textEl = document.createElement('p');
+      textEl.className = 'discord-text';
+      textEl.textContent = msg.text;
+
+      body.appendChild(meta);
+      body.appendChild(textEl);
+
+      if (Array.isArray(msg.reactions) && msg.reactions.length > 0) {
+        const reactionsEl = document.createElement('div');
+        reactionsEl.className = 'discord-reactions';
+        for (const reaction of msg.reactions) {
+          const pill = document.createElement('span');
+          pill.className = 'discord-react';
+          pill.textContent = `${reaction.emoji} ${reaction.count}`;
+          reactionsEl.appendChild(pill);
+        }
+        body.appendChild(reactionsEl);
+      }
+
+      article.appendChild(avatar);
+      article.appendChild(body);
+      fragment.appendChild(article);
+    }
+
+    listEl.replaceChildren(fragment);
+  };
+
+  const loadThread = async (section: HTMLElement) => {
+    const postId = section.dataset.postId;
+    const listEl = section.querySelector<HTMLElement>('.discord-list');
+    const countEl = section.querySelector<HTMLElement>('.discord-count');
+    if (!postId || !listEl) return;
+
+    try {
+      const res = await fetch(`/api/discord/thread/${encodeURIComponent(postId)}`, {
+        headers: { Accept: 'application/json' },
+      });
+      const data = (await res.json().catch(() => null)) as ThreadResponse | null;
+
+      if (!res.ok || !data?.ok || !Array.isArray(data.messages)) {
+        renderFallback(listEl, 'Join OrganizedChaos on Discord to view or reply to this thread.');
+        return;
+      }
+
+      if (countEl && typeof data.replyCount === 'number') {
+        countEl.textContent = `${data.replyCount} ${data.replyCount === 1 ? 'reply' : 'replies'}`;
+      }
+      renderMessages(listEl, data.messages);
+    } catch {
+      renderFallback(listEl, 'Join OrganizedChaos on Discord to view or reply to this thread.');
+    }
+  };
+
+  document.querySelectorAll<HTMLElement>('.discord-thread[data-post-id]').forEach((section) => {
+    if (!('IntersectionObserver' in window)) {
+      void loadThread(section);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          observer.disconnect();
+          void loadThread(section);
+        }
+      },
+      { rootMargin: '400px' },
+    );
+    observer.observe(section);
+  });
+</script>

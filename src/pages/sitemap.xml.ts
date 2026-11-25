@@ -3,7 +3,7 @@
  */
 import { getCollection } from 'astro:content';
 import type { APIContext } from 'astro';
-import { getPosts, postPath, tagSlug } from '../lib/posts';
+import { getPosts, postPath } from '../lib/posts';
 import { SECTIONS, SITE } from '../site';
 
 export async function GET(context: APIContext) {
@@ -14,10 +14,11 @@ export async function GET(context: APIContext) {
     { loc: '/', lastmod: posts[0]?.data.date },
     { loc: '/archive/' },
     { loc: '/podcasts/' },
+    { loc: '/subscribe/' },
     ...pages.map((p) => ({ loc: `/${p.id}/`, lastmod: p.data.updated })),
     ...SECTIONS.map((s) => ({ loc: `/section/${s.id}/` })),
     ...posts.map((p) => ({ loc: postPath(p), lastmod: p.data.updated ?? p.data.date })),
-    ...[...new Set(posts.flatMap((p) => p.data.tags.map(tagSlug)))].filter(Boolean).map((t) => ({ loc: `/tag/${t}/` })),
+    // Tag archives (/tag/<slug>/) are intentionally omitted to avoid thin-archive indexing bloat in Search Console.
   ];
   const body =
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +

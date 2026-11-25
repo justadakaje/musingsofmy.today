@@ -33,6 +33,18 @@ Here is the deep technical log of what broke, why it broke, and how we solved it
 
 ---
 
+## Stream Highlights: Market Inflation & Live Field Testing
+
+Before diving into the codebase diagnostics, catch the 16-minute stream highlight reel documenting the launch economy, crazy copper ore inflation, accidental lodestone panic, and the real-world conditions on `CAMWOWUS1Realm3PvE` that revealed our 100-scan database ceiling:
+
+<YouTube id="GYsgLNuEsJ0" title="WoW Forever: Crazy Market Inflation, The Lodestone Disaster & Guild Founding!" />
+
+<p style="font-size: 0.85rem; opacity: 0.75; text-align: center; margin-top: -0.5rem; margin-bottom: 2rem;">
+  <em>Direct chapter links: <a href="https://youtu.be/GYsgLNuEsJ0?t=5">00:05 Copper Ore Inflation & Crafting Math</a> • <a href="https://youtu.be/GYsgLNuEsJ0?t=95">01:35 Overpriced Mats</a> • <a href="https://youtu.be/GYsgLNuEsJ0?t=190">03:10 Accidental Lodestone Disaster</a> • <a href="https://youtu.be/GYsgLNuEsJ0?t=285">04:45 Server Drop Panic</a> • <a href="https://youtu.be/GYsgLNuEsJ0?t=480">08:00 Plague Death Guild Charter</a> • <a href="https://youtu.be/GYsgLNuEsJ0?t=810">13:30 Sunset View Distance</a></em>
+</p>
+
+---
+
 ## 1. Incident 1: The Dual-Helper Layering Collision
 
 ### The Symptom
@@ -75,7 +87,7 @@ We resolved this across four distinct steps:
    Both `GoldFinderBuyHelperCard` and `GoldFinderSellHelperCard` were granted full mouse dragging capabilities (`EnableMouse(true)`, `SetMovable(true)`, `RegisterForDrag("LeftButton")`), allowing players to reposition helper cards anywhere on their displays.
 
 4. **Font Glyph Hygiene:**
-   All Unicode emojis were stripped and replaced with clean, colorized text tags matching Blizzard's UI aesthetics:
+   Following the pattern established in our [v1.0.0 sort arrow fix](/2026/11/07/goldfinder-v1-production-gold-master/#incident-5-the-missing-unicode-font-glyph-crash--native-sort-arrows-commit-025fdb2-watch-live-at-0255), all Unicode emojis were stripped and replaced with clean, colorized text tags matching Blizzard's UI aesthetics:
    `[Craft Alert]`, `[Competitive]`, `[Do Not Craft]`, and `[Parity Normal]`.
 
 ---
@@ -210,7 +222,7 @@ end
 ```
 To prevent rapid Selling tab clicks from reprocessing cached browse lists, scans with identical fingerprints were dropped.
 
-On a quiet beta realm (`CAMWOWUS1Realm3PvE`) where no other players bought or listed auctions between scans, two full scans 20 minutes apart produced the **exact same row count, item count, price sum, and quantity sum**. Because the check had no timestamp expiry, the second scan was silently discarded as a duplicate!
+On a quiet beta realm (`CAMWOWUS1Realm3PvE`) where no other players bought or listed auctions between scans, two full scans 20 minutes apart produced the **exact same row count, item count, price sum, and quantity sum**. Because the check had no timestamp expiry, the second scan was silently discarded as a duplicate! *(See the [00:05 Copper Ore Inflation stream highlight](https://youtu.be/GYsgLNuEsJ0?t=5) for the surreal, frozen launch economy that triggered this exact behavior).*
 
 ### The Multi-Tiered Fix
 1. **Added `db.lifetimeScans`:**
