@@ -28,7 +28,11 @@ const on = Boolean(GISCUS.repoId && GISCUS.categoryId);
         window.addEventListener('message', (event) => {
           if (event.origin !== 'https://giscus.app') return;
           const payload = event.data as { giscus?: { error?: string } } | null;
-          if (payload?.giscus?.error && fallback) {
+          if (
+            payload?.giscus?.error &&
+            /not installed|unauthorized|disabled/i.test(payload.giscus.error) &&
+            fallback
+          ) {
             host.hidden = true;
             fallback.hidden = false;
           }
