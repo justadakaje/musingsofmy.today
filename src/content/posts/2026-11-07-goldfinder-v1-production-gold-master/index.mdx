@@ -56,6 +56,18 @@ GoldFinder v1.0.0 answers that question with a complete, zero-cooldown passive t
 
 ---
 
+## Watch the Live Release & Triage Session
+
+Watch the 18-minute highlight reel of tonight's release sprint, featuring live dual-harness pair programming with Google Antigravity CLI, real-time client bug triage, and in-game Auction House stress testing:
+
+<YouTube id="jjMRZR3pc5Q" title="Building a WoW Addon with AI! GoldFinder v1.0.0 Dev & Live Testing" />
+
+<p style="font-size: 0.85rem; opacity: 0.75; text-align: center; margin-top: -0.5rem; margin-bottom: 2rem;">
+  <em>Direct chapter links: <a href="https://youtu.be/jjMRZR3pc5Q?t=5">00:05 Profit Formulas</a> • <a href="https://youtu.be/jjMRZR3pc5Q?t=85">01:25 Dual-Harness Sync</a> • <a href="https://youtu.be/jjMRZR3pc5Q?t=175">02:55 Unicode Glyph Bug</a> • <a href="https://youtu.be/jjMRZR3pc5Q?t=275">04:35 Blizzard Options UI</a> • <a href="https://youtu.be/jjMRZR3pc5Q?t=370">06:10 40% Margin Threshold</a> • <a href="https://youtu.be/jjMRZR3pc5Q?t=635">10:35 Options vs Ledger Mutex</a> • <a href="https://youtu.be/jjMRZR3pc5Q?t=855">14:15 Subagent Verification</a></em>
+</p>
+
+---
+
 ## 2. Live In-Game Triage: The Night's Bug Hunt
 
 Reaching production gold master required diagnosing and fixing real runtime edge cases surfaced by live playtesting.
@@ -118,7 +130,7 @@ Here, `Chomp` (the message throttling library used in AdventurerPlates) register
 
 ---
 
-### Incident 3: Blizzard HUD Edit Mode Profile Persistence
+### Incident 3: Blizzard HUD Edit Mode Profile Persistence ([Watch live at 04:35](https://youtu.be/jjMRZR3pc5Q?t=275))
 
 **The Symptom:** Players reported that upon `/reload` or character switching, configuration settings in the GoldFinder Options panel visibly reverted to default states. Furthermore, players wanted bank alts and auction mules to have different spend caps and notification settings than their leveling mains.
 
@@ -162,7 +174,7 @@ We added a top profile management bar to the Options window featuring:
 
 ---
 
-### Incident 4: The 3-Stage Price Helper Geometry Puzzle
+### Incident 4: The 3-Stage Price Helper Geometry Puzzle ([Watch live at 00:05](https://youtu.be/jjMRZR3pc5Q?t=5))
 
 The most visual bug of the night was the **Price Helper popout card** docked to Blizzard's auction house Sell tab. What seemed like a simple fontstring alignment turned into a three-act comedy of FrameXML constraint mechanics:
 
@@ -224,6 +236,41 @@ typVal:SetPoint("LEFT", typLabel, "RIGHT", 8, 0)
 ```
 
 Because all three labels share the exact same 115px width, all three values line up in a perfect vertical column at `x = 139px`. Overlapping the label is mathematically impossible, and because values only span 40–90px, they leave a generous ~90px margin before the right border.
+
+---
+
+### Incident 5: The Missing Unicode Font Glyph Crash & Native Sort Arrows (Commit `025fdb2`) ([Watch live at 02:55](https://youtu.be/jjMRZR3pc5Q?t=175))
+
+**The Symptom:** When clicking table column headers to sort deals by profit or discount margin, the client intermittently crashed or threw string rendering errors, while sort indicator glyphs rendered as blank rectangular missing glyphs (`[]`).
+
+**Root Cause:** The table headers originally relied on raw UTF-8 Unicode arrow characters (`▲`, `▼`, `✓`, `★`) inserted directly into `FontString` text. In *World of Warcraft: Forever* (and across several non-English localized client fonts), these Unicode characters do not exist in the font map atlas. Attempting to render unmapped multibyte UTF-8 sequences corrupted text layout metrics and triggered Lua script halts.
+
+**Resolution:** We eradicated all UTF-8 sort symbols from text strings and transitioned to Blizzard's native texture-based sort indicators (`Interface\Buttons\UI-SortArrow`):
+
+```lua
+-- Native texture sort arrow replaces unstable Unicode glyphs
+if isCurrentSort then
+    header.arrow:SetTexture("Interface\\Buttons\\UI-SortArrow")
+    header.arrow:Show()
+    if sortOrder == "ASC" then
+        header.arrow:SetTexCoord(0, 1, 1, 0) -- Invert arrow for ASC
+    else
+        header.arrow:SetTexCoord(0, 1, 0, 1) -- Normal for DESC
+    end
+else
+    header.arrow:Hide()
+end
+```
+
+By anchoring a native `Texture` sub-element with hardware-accelerated UV coordinate flipping (`SetTexCoord`), sorting indicators became 100% immune to font atlas missing-glyph errors across all game locales.
+
+---
+
+### Incident 6: Options Dialog vs. Ledger Panel Mutex ([Watch live at 10:35](https://youtu.be/jjMRZR3pc5Q?t=635))
+
+**The Symptom:** Opening the Goblin P&L Ledger (`/gf ledger`) while the GoldFinder Options panel was already visible caused frame overlapping, conflicting Escape-key bindings, and obscured controls.
+
+**Resolution:** We implemented an explicit mutual exclusion (`mutex`) lifecycle across both windows. Opening `GoldFinderOptionsFrame` automatically calls `GoldFinderLedgerFrame:Hide()`, and vice versa, preserving clean modal focus and frame stratification.
 
 ---
 

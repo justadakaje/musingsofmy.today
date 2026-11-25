@@ -27,6 +27,7 @@ function cloudflareRedirects() {
           '/category/podcast/ /podcasts/ 301',
           ...SECTIONS.flatMap((s) => s.categories.map((c) => `/category/${c.path}/ /section/${s.id}/ 301`)),
           '/wp-login.php / 302',
+          '/archify/dual-harness-timeline.html /archify/dual-harness-timeline/ 301',
           '/2026/11/30/get-used-to-it-part-1/ /2026/11/25/get-used-to-it-part-1/ 301',
           '/2026/11/28/the-patchpocalypse-and-the-great-tech-cascade/ /2026/11/25/the-patchpocalypse-and-the-great-tech-cascade/ 301',
         ];
