@@ -1,0 +1,101 @@
+---
+title: "Config-as-Code at the Edge: Rebuilding musingsofmy.today on Astro, Cloudflare Workers, and Hardened Email Auth"
+date: "2026-11-26T02:45:00-05:00"
+section: engineering
+categories: ["Technology"]
+tags: ["Cloudflare Workers", "Astro", "GitOps", "Config-as-Code", "Archify", "DMARC", "SPF", "Resend", "Edge Computing", "Security", "Architecture"]
+description: "Why I moved a six-year WordPress archive onto Astro, Cloudflare Workers Static Assets, zero-dependency Web Crypto APIs, air-gapped newsletter dispatch, and p=reject DMARC across five domains."
+featured: true
+terminal:
+  - kind: prompt
+    text: "npm run validate && npx wrangler deploy"
+  - kind: ok
+    text: "urls 58/58 · rss 16/16 · links 17,550/17,550"
+  - kind: ok
+    text: "worker /api/subscribe + turnstile + discord live"
+  - kind: ok
+    text: "dmarc p=reject · spf -all across 5 zones"
+  - kind: x
+    text: "residential ip in mail headers"
+    note: "# air-gapped at edge"
+discord_thread: "1575420435082772561"
+---
+
+Running a personal blog on managed WordPress feels effortless right up until you treat it like production infrastructure. One morning you realize six years of your writing—nearly a third of a million bytes of HTML, RSS feeds, permalinks, and comment history—sits behind an opaque admin panel, PHP plugin surface, and DNS defaults you don't actually version-control.
+
+This month I migrated **`musingsofmy.today`** off WordPress.com onto a Git-backed **Config-as-Code** architecture built with **Astro 7**, **Pagefind**, and **Cloudflare Workers Static Assets**. The goal wasn't chasing static-site purity; it was enforcing the exact same engineering invariants on a personal publication that I expect from any production service: immutable URLs, build-time parity verification, zero plaintext secrets on disk, strict email authentication, and zero-dependency edge APIs.
+
+---
+
+## The Config-as-Code & Cloudflare Edge Blueprint
+
+Explore the interactive system architecture below—from `git commit` through ephemeral CI validation gates (`astro check`, Pagefind indexing, link/RSS validators) down to Cloudflare's global edge routing and preview isolation.
+
+<iframe
+  src="/archify/config-as-code-cloudflare/"
+  width="100%"
+  height="680"
+  style="border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px; margin: 1.5rem 0; background: #0c0f17; box-shadow: 0 8px 32px rgba(0,0,0,0.4);"
+  title="Config-as-Code GitOps and Cloudflare Workers Deployment Architecture"
+></iframe>
+
+<p style="font-size: 0.85rem; opacity: 0.75; text-align: center; margin-top: -0.75rem; margin-bottom: 2rem;">
+  <em>Tip: Click any node in the blueprint to inspect responsibilities and data flow, toggle light/dark themes, or <a href="/archify/config-as-code-cloudflare/" target="_blank" rel="noopener noreferrer">open the full standalone Archify diagram</a>.</em>
+</p>
+
+---
+
+## 1. Repository Source-of-Truth & Permalink Parity Gates
+
+Migrating an established domain means breaking links is unacceptable. Every `/YYYY/MM/DD/slug/` post path, legacy `/category/.../` archive, and WordPress `/feed/` RSS endpoint had to behave identically on day one.
+
+Instead of hand-maintaining Nginx rules or fragile dashboard redirects, [`src/site.ts`](https://github.com/justadakaje/musingsofmy.today/blob/main/src/site.ts) acts as the single source of truth for the five content lanes and two podcasts, while [`astro.config.mjs`](https://github.com/justadakaje/musingsofmy.today/blob/main/astro.config.mjs) synthesizes edge configuration directly into `dist/` during every build:
+
+- **`dist/_redirects`:** Maps `/feed/` and `/*/feed/` (`301`) to `/rss.xml`, collapses dozens of legacy WordPress categories into the five sections, and forwards legacy upload URLs cleanly.
+- **`dist/_headers`:** Sets one-year HSTS (`Strict-Transport-Security: max-age=31536000`), `X-Content-Type-Options: nosniff`, immutable caching on `/_astro/*`, and `X-Robots-Tag: noindex` across `*.workers.dev` preview URLs so staging builds never compete in search results.
+- **`wrangler.jsonc`:** Configures `html_handling: "auto-trailing-slash"` (preserving WordPress trailing slashes), `not_found_handling: "404-page"`, and `run_worker_first: ["/api/*"]` so static pages bypass Worker CPU limits entirely.
+
+No deploy runs until **`.github/workflows/ci.yml`** clears three blocking gates:
+1. **`npx astro check`** verifies strict TypeScript and Zod content schemas (including timezone-offset timestamps so `America/Chicago` permalinks never drift across midnight UTC).
+2. **`npm run build`** compiles Astro pages, runs `satori` + `sharp` to render cyber-glass `1200×630` Open Graph PNG cards for every post without a custom cover, and builds a client-side **Pagefind** search index.
+3. **`node scripts/validate.mjs`** verifies WordPress URL parity, body word-count integrity, W3C RSS 2.0 GUID preservation, and every internal anchor across `dist/` before `lychee` double-checks internal links.
+
+---
+
+## 2. Zero-Dependency Edge APIs (`src/worker/*`)
+
+Static-first shouldn't mean static-only. Readers still need comments, email subscriptions, and live community discussion—without hydrating a database server or bundling heavy npm packages into the Worker runtime.
+
+Every route under `/api/*` shares zero third-party runtime dependencies and runs directly on standard **Web Crypto** and `fetch`:
+
+### Double Opt-In Newsletter & RFC 8058 One-Click Unsubscribe ([`/subscribe/`](/subscribe/))
+- **Stateless HMAC-SHA256 tokens (`src/worker/crypto.ts`):** Confirm links (24h expiry) and unsubscribe links (30–90 day expiry) are signed payloads verified in constant time. There is no subscriber token database to leak or prune.
+- **GET-safe link scanners:** Corporate mail filters pre-fetch links in emails. Because of that, `GET /api/subscribe/confirm` and `GET /api/subscribe/unsubscribe` **never mutate state**—they verify the token signature and render a dark cyber-glass HTML confirmation form that submits via `POST`, alongside full RFC 8058 `List-Unsubscribe-Post: List-Unsubscribe=One-Click` support for mail clients.
+- **Defense in depth:** Strict `Origin` + `Sec-Fetch-Site: same-origin` validation, a hidden honeypot field, Cloudflare **Turnstile** bot verification, and keyed SHA-256 IP rate limiting (never writing raw PII into logs or `Idempotency-Key` headers).
+
+### Air-Gapped Newsletter Dispatch (`POST /api/subscribe/dispatch`)
+- Sending a newsletter from a developer laptop over SMTP exposes a residential IP in mail `Received:` headers. Instead, triggering a post dispatch from a private **`workflow_dispatch`** Action hits Cloudflare's Worker edge over HTTPS, which signs per-recipient unsubscribe tokens and submits batch payloads (`POST https://api.resend.com/emails/batch`) from Cloudflare's network to Resend—with zero home IP ever touching the envelope.
+
+### Allowlisted Discord Thread Mirroring (`GET /api/discord/thread/:postId`)
+- Announcements in **OrganizedChaos** automatically spawn lane-routed discussion threads (`#podcast-discussions`, `#wow-addons`, `#agentic-harness-engineering`, `#tech`).
+- At build time, `astro.config.mjs` extracts valid `discord_thread` IDs from published frontmatter into `/_discord-threads.json`. The Worker refuses any `postId` outside that build-time allowlist, queries Discord REST v10, strips every user snowflake and `@role` mention before JSON serialization, and edge-caches the sanitized replies for 5 minutes.
+
+---
+
+## 3. Locking Down DNS & Email Auth Across Five Domains
+
+Moving mail and publishing to Resend was also the catalyst to audit SPF, DKIM, DMARC, and forwarding across all five domains in the account (`musingsofmy.today`, `henseler.app`, `skyalerts.space`, `henseler.email`, and `kenhen.win`).
+
+Every zone now enforces:
+- **Isolated bounce subdomain (`send.musingsofmy.today`)** with Resend DKIM + SPF records so bulk/transactional reputation stays decoupled from apex mail.
+- **Cloudflare Email Routing** replacing registrar forwarding (`newsletter@musingsofmy.today` and role aliases on `kenhen.win` forwarding cleanly with `drop` catch-alls).
+- **Hard-fail `-all` SPF** instead of permissive softfail `~all` where third-party ESPs are explicit.
+- **`v=DMARC1; p=reject; sp=reject;`** paired with Cloudflare DMARC Management telemetry (`rua=`) so spoofed subdomain or apex senders are rejected at receiving MTAs rather than silently quarantined.
+
+---
+
+## What It Unlocked
+
+The entire site—including the dual-harness Archify timelines like the one in [Inside the Dual-Harness Launch](/2026/11/05/inside-the-dual-harness-launch/), podcast transcripts, custom fonts, OG card rendering, search index, and edge APIs—builds cleanly from one repository in under a minute, previews automatically on isolated `*.workers.dev` URLs per pull request, and publishes through signed secrets managed in **1Password**, **GitHub Actions**, and **Cloudflare Workers**.
+
+That's the whole point of Content-as-Code: the writing lives in Markdown, the routing and headers live beside it in TypeScript, and the deploy gate proves nothing broke before a single reader sees it.

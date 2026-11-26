@@ -6,6 +6,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -19,8 +22,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
@@ -34,7 +37,7 @@ jobs:
       - name: Report
         if: always()
         run: cat validation-ci.md >> "$GITHUB_STEP_SUMMARY" || true
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist
@@ -47,8 +50,8 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/download-artifact@v5
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist
@@ -77,9 +80,9 @@ jobs:
       - name: Check for Cloudflare credentials
         id: creds
         run: echo "ok=${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         if: steps.creds.outputs.ok == 'true'
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v8
         if: steps.creds.outputs.ok == 'true'
         with:
           name: dist

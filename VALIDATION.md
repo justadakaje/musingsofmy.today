@@ -1,6 +1,6 @@
 # Validation report
 
-Generated 2026-11-25 11:49 UTC from commit `0564614` by `scripts/validate.mjs`.
+Generated 2026-11-26 08:04 UTC from commit `680c98a` by `scripts/validate.mjs`.
 Baselines are what WordPress.com served on 2026-11-04 (frozen in `data/wpcom/`).
 
 ## Checks
@@ -9,7 +9,7 @@ Baselines are what WordPress.com served on 2026-11-04 (frozen in `data/wpcom/`).
 | --- | --- |
 | 1. Every URL in WordPress's `sitemap.xml` resolves on the build | ✅ 58/58 (dist/ (frozen sitemap)) |
 | 2. Word count per post within ±2% of WordPress | ✅ 57/57 |
-| 3. Internal links, images and #anchors resolve | ✅ 13289/13289 across 533 pages |
+| 3. Internal links, images and #anchors resolve | ✅ 17550/17550 across 543 pages |
 | 3b. External links (lychee) | CI only: see the `links` job in GitHub Actions. Informational, doesn't block a deploy |
 | 4. RSS 2.0 structure, GUIDs kept, `/feed/` redirects | ✅ 16/16 (W3C validator runs only with --base) |
 | 5. Side-by-side screenshots of five posts | Not automated. Done by eye on the preview |
@@ -136,7 +136,7 @@ No hard failures.
 | [The Illusion of Containment: Engineering Lessons from the 2026 AI Sandbox Breaches](/2026/09/10/ai-sandbox-containment-hugging-face-artifactory-breach/) | 890 | 887 | -0.3% |
 | [Confidently Wrong: Four AI Errors a Beta Game Client Caught in Four Hours](/2026/09/24/ai-confidently-wrong-wow-addon-verification/) | 1744 | 1740 | -0.2% |
 | [Absent from the Docs, Present in the Client: Mapping WoW Forever’s Real API Surface](/2026/09/24/wow-forever-api-surface-build-69913/) | 1463 | 1459 | -0.3% |
-| [About](/about/) | 150 | 150 | +0.0% |
-| [Contact](/contact/) | 0 | 41 | — |
+| [About](/about/) | 150 | 284 | — |
+| [Contact](/contact/) | 0 | 78 | — |
 
 </details>

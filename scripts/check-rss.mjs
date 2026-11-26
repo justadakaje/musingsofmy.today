@@ -12,8 +12,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { XMLParser, XMLValidator } from 'fast-xml-parser';
+import * as fxp from 'fast-xml-parser';
 import { ROOT, DIST, distFileFor, loadRedirects, matchRedirect, ensureBuilt } from './lib/dist.mjs';
+
+const { XMLParser } = fxp;
+const xmlValidator = /** @type {{ validate: (xml: string) => true | { err: unknown } }} */ (
+  /** @type {Record<string, unknown>} */ (fxp)['XMLValidator']
+);
 
 const RFC822 = /^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|[+-]\d{4})$/;
 
@@ -23,7 +28,7 @@ export async function run({ w3c = null } = {}) {
   const add = (name, ok, detail = '') => checks.push({ name, ok: Boolean(ok), detail });
   const xml = fs.readFileSync(path.join(DIST, 'rss.xml'), 'utf8');
 
-  const valid = XMLValidator.validate(xml);
+  const valid = xmlValidator.validate(xml);
   add('well-formed XML', valid === true, valid === true ? '' : JSON.stringify(valid.err));
   const doc = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@' }).parse(xml);
   const rss = doc.rss ?? {};
@@ -78,7 +83,8 @@ export async function run({ w3c = null } = {}) {
       // SelfDoesntMatchLocation is our own doing: the cache-busting ?v= makes the fetched URL differ
       // from the feed's atom:link self.
       const real = types.filter((t) => t !== 'SelfDoesntMatchLocation');
-      add('W3C Feed Validator: valid', validity === 'true', `${errors ?? '?'} errors, ${real.length} warnings${real.length ? `: ${real.join(', ')}` : ''} (${w3c}; SelfDoesntMatchLocation ignored, caused by the cache-busting query)`);
+      const warningSummary = real.length ? real.length : (warnings ?? '0');
+      add('W3C Feed Validator: valid', validity === 'true', `${errors ?? '?'} errors, ${warningSummary} warnings${real.length ? `: ${real.join(', ')}` : ''} (${w3c}; SelfDoesntMatchLocation ignored, caused by the cache-busting query)`);
     } catch (e) {
       add('W3C Feed Validator reachable', false, e.message);
     }

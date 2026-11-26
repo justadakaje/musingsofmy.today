@@ -272,6 +272,9 @@ const turnstileKey = SITE.publicTurnstileSiteKey;
         statusEl.textContent = 'Network error. Please try again or use RSS.';
       } finally {
         submitBtn.disabled = false;
+        const tsWidget = form.querySelector<HTMLElement>('.cf-turnstile');
+        const tsApi = (window as unknown as { turnstile?: { reset: (el: HTMLElement) => void } }).turnstile;
+        if (tsWidget && tsApi) tsApi.reset(tsWidget);
       }
     });
   });

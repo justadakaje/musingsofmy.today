@@ -114,6 +114,16 @@ export async function verifyToken(
   };
 }
 
+/** Constant-time equality verification using HMAC-SHA256 over a fixed domain prefix. */
+export async function verifySharedSecret(provided: string, expected: string): Promise<boolean> {
+  if (!provided || !expected) return false;
+  const domainMsg = encoder.encode('musingsofmy.today:dispatch:v1');
+  const expectedKey = await importHmacKey(expected, 'sign');
+  const expectedTag = new Uint8Array(await crypto.subtle.sign('HMAC', expectedKey, domainMsg));
+  const providedKey = await importHmacKey(provided, 'verify');
+  return crypto.subtle.verify('HMAC', providedKey, expectedTag, domainMsg);
+}
+
 /** Keyed SHA-256 hex digest so rate-limiter buckets and Idempotency-Key headers hold no raw PII. */
 export async function hashKey(value: string, secret: string): Promise<string> {
   const digest = await crypto.subtle.digest('SHA-256', encoder.encode(`${secret}:${value}`));
