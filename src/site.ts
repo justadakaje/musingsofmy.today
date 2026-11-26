@@ -15,9 +15,9 @@ export const SITE = {
   /** Reading speed used for "N min read" (same as the mockup). */
   wordsPerMinute: 230,
   /** Optional Cloudflare Web Analytics beacon token (leave empty to omit). */
-  cloudflareAnalyticsToken: '',
+  cloudflareAnalyticsToken: '5d9ff6659942464fa4128f3bb0cad3d8',
   /** Optional Cloudflare Turnstile public site key for /subscribe/ (leave empty until Turnstile widget is created). */
-  publicTurnstileSiteKey: '',
+  publicTurnstileSiteKey: '0x4AAAAAAGTz2EGOQqMhQ8re',
 } as const;
 
 export const SECTION_IDS = ['engineering', 'history-politics', 'science-nature', 'signal', 'field-notes'] as const;

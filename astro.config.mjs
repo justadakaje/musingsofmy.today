@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
+import { satteri } from '@astrojs/markdown-satteri';
 import fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { SECTIONS } from './src/site.ts';
@@ -28,6 +29,7 @@ function cloudflareRedirects() {
           ...SECTIONS.flatMap((s) => s.categories.map((c) => `/category/${c.path}/ /section/${s.id}/ 301`)),
           '/wp-login.php / 302',
           '/archify/dual-harness-timeline.html /archify/dual-harness-timeline/ 301',
+          '/archify/config-as-code-cloudflare.html /archify/config-as-code-cloudflare/ 301',
           '/2026/11/30/get-used-to-it-part-1/ /2026/11/25/get-used-to-it-part-1/ 301',
           '/2026/11/28/the-patchpocalypse-and-the-great-tech-cascade/ /2026/11/25/the-patchpocalypse-and-the-great-tech-cascade/ 301',
         ];
@@ -107,6 +109,10 @@ export default defineConfig({
   trailingSlash: 'always',
   build: { format: 'directory' },
   // WordPress already curled the quotes ("wptexturize"); don't do it twice.
-  markdown: { smartypants: false },
+  // Also alias WoW `.toc` addon manifests to `ini` so Shiki highlights directives without warnings.
+  markdown: {
+    processor: satteri({ features: { smartPunctuation: false } }),
+    shikiConfig: { langAlias: { toc: 'ini' } },
+  },
   integrations: [mdx(), cloudflareRedirects()],
 });

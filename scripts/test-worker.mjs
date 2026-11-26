@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { hashKey, signToken, verifyToken } from '../src/worker/crypto.ts';
+import { hashKey, signToken, verifySharedSecret, verifyToken } from '../src/worker/crypto.ts';
 import { handleDiscordThread } from '../src/worker/discord.ts';
+import { handleNewsletterDispatch } from '../src/worker/dispatch.ts';
 import { handleSubscribe } from '../src/worker/subscribe.ts';
 import worker from '../src/worker/index.ts';
 
@@ -405,6 +406,138 @@ test('discord: returns 404 when unmapped, 503 when unconfigured, and strips snow
     text: 'Hello @member, check #channel and @role :spark:',
     reactions: [{ emoji: '🔥', count: 3 }],
   });
+});
+
+test('dispatch: enforces auth/validation and supports dry-run, testTo, and idempotent batch audience send', async () => {
+  const env = makeBaseEnv({ NEWSLETTER_DISPATCH_SECRET: 'dispatch-secret-xyz' });
+
+  assert.equal(await verifySharedSecret('dispatch-secret-xyz', 'dispatch-secret-xyz'), true);
+  assert.equal(await verifySharedSecret('wrong-secret', 'dispatch-secret-xyz'), false);
+
+  const unauthRes = await handleNewsletterDispatch(
+    new Request('https://musingsofmy.today/api/subscribe/dispatch', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer wrong', 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    }),
+    env,
+  );
+  assert.equal(unauthRes.status, 401);
+
+  const invalidPayloadRes = await handleNewsletterDispatch(
+    new Request('https://musingsofmy.today/api/subscribe/dispatch', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer dispatch-secret-xyz', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug: '../bad', url: 'https://evil.example', title: 'Hi', summary: 'x' }),
+    }),
+    env,
+  );
+  assert.equal(invalidPayloadRes.status, 400);
+
+  const calls = [];
+  const fetchImpl = async (url, init) => {
+    calls.push({ url: String(url), init });
+    if (String(url).endsWith('/contacts')) {
+      return new Response(
+        JSON.stringify({
+          data: [
+            { email: 'confirmed1@example.com', unsubscribed: false },
+            { email: 'optedout@example.com', unsubscribed: true },
+            { email: 'confirmed2@example.com', unsubscribed: false },
+            { email: 'CONFIRMED1@example.com', unsubscribed: false },
+          ],
+        }),
+        { status: 200 },
+      );
+    }
+    return new Response(JSON.stringify({ data: [{ id: 'em_1' }, { id: 'em_2' }] }), { status: 200 });
+  };
+
+  const dryRes = await handleNewsletterDispatch(
+    new Request('https://musingsofmy.today/api/subscribe/dispatch', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer dispatch-secret-xyz', 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        slug: '2026-11-26-config-as-code-cloudflare-workers-migration',
+        url: 'https://musingsofmy.today/2026/11/26/config-as-code-cloudflare-workers-migration/',
+        title: 'Config-as-Code at the Edge',
+        eyebrow: '// engineering · 2026-11-26',
+        summary: 'Summary text.',
+        dryRun: true,
+      }),
+    }),
+    env,
+    { fetchImpl, nowMs: () => 1_764_100_000_000 },
+  );
+  assert.equal(dryRes.status, 200);
+  const dryBody = await dryRes.json();
+  assert.deepEqual(dryBody, {
+    ok: true,
+    mode: 'dry-run',
+    slug: '2026-11-26-config-as-code-cloudflare-workers-migration',
+    title: 'Config-as-Code at the Edge',
+    recipientCount: 2,
+  });
+  assert.equal(calls.length, 1);
+
+  const testRes = await handleNewsletterDispatch(
+    new Request('https://musingsofmy.today/api/subscribe/dispatch', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer dispatch-secret-xyz', 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        slug: '2026-11-26-config-as-code-cloudflare-workers-migration',
+        url: 'https://musingsofmy.today/2026/11/26/config-as-code-cloudflare-workers-migration/',
+        title: 'Config-as-Code at the Edge',
+        summary: 'Summary text.',
+        testTo: 'delivered@resend.dev',
+      }),
+    }),
+    env,
+    { fetchImpl, nowMs: () => 1_764_100_000_000 },
+  );
+  assert.equal(testRes.status, 200);
+  assert.deepEqual(await testRes.json(), {
+    ok: true,
+    mode: 'test',
+    slug: '2026-11-26-config-as-code-cloudflare-workers-migration',
+    title: 'Config-as-Code at the Edge',
+    sent: 1,
+  });
+  assert.equal(calls[1].url, 'https://api.resend.com/emails');
+  assert.ok(calls[1].init.headers['Idempotency-Key'].startsWith('test-2026-11-26-'));
+
+  const audRes = await handleNewsletterDispatch(
+    new Request('https://musingsofmy.today/api/subscribe/dispatch', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer dispatch-secret-xyz', 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        slug: '2026-11-26-config-as-code-cloudflare-workers-migration',
+        url: 'https://musingsofmy.today/2026/11/26/config-as-code-cloudflare-workers-migration/',
+        title: 'Config-as-Code at the Edge',
+        summary: 'Summary text.',
+      }),
+    }),
+    env,
+    { fetchImpl, nowMs: () => 1_764_100_000_000 },
+  );
+  assert.equal(audRes.status, 200);
+  assert.deepEqual(await audRes.json(), {
+    ok: true,
+    mode: 'audience',
+    slug: '2026-11-26-config-as-code-cloudflare-workers-migration',
+    title: 'Config-as-Code at the Edge',
+    sent: 2,
+    batches: 1,
+  });
+  assert.equal(calls[3].url, 'https://api.resend.com/emails/batch');
+  assert.equal(
+    calls[3].init.headers['Idempotency-Key'],
+    'post-2026-11-26-config-as-code-cloudflare-workers-migration-batch-0',
+  );
+  const batchMessages = JSON.parse(calls[3].init.body);
+  assert.equal(batchMessages.length, 2);
+  assert.equal(batchMessages[0].headers['List-Unsubscribe-Post'], 'List-Unsubscribe=One-Click');
+  assert.match(batchMessages[0].headers['List-Unsubscribe'], /^<https:\/\/musingsofmy\.today\/api\/subscribe\/unsubscribe\?token=/);
 });
 
 test('worker index: routes unknown /api/* to 404 and falls back to ASSETS', async () => {

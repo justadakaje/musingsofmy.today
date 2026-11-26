@@ -13,6 +13,7 @@ export interface WorkerEnv {
   RESEND_AUDIENCE_ID?: string;
   RESEND_FROM_EMAIL?: string;
   SUBSCRIBE_HMAC_SECRET?: string;
+  NEWSLETTER_DISPATCH_SECRET?: string;
   TURNSTILE_SECRET_KEY?: string;
   DISCORD_BOT_TOKEN?: string;
 }
