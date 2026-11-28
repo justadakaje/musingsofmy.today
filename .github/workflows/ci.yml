@@ -95,6 +95,9 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           wranglerVersion: '4.157.0'
           command: deploy --message "${{ github.sha }}"
+      - name: Ping IndexNow (main)
+        if: steps.creds.outputs.ok == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: node scripts/ping-indexnow.mjs || true
       - name: Upload a preview (pull requests and other branches)
         if: steps.creds.outputs.ok == 'true' && (github.event_name == 'pull_request' || github.ref != 'refs/heads/main')
         uses: cloudflare/wrangler-action@v3

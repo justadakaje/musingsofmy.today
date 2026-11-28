@@ -56,7 +56,7 @@ legacyIds[2] = '/contact/';
           )}
           {NOW.rows.slice(2).map((r) => <><dt>{r.k}</dt><dd>{r.href ? <a href={r.href}>{r.v}</a> : r.v}</dd></>)}
         </dl>
-        <div class="now-foot">last updated {NOW.updated}</div>
+        <div class="now-foot"><span>last updated {NOW.updated}</span><a href="/now/">/now/ →</a></div>
       </aside>
     </div>
   </section>
@@ -110,3 +110,12 @@ legacyIds[2] = '/contact/';
     </div>
   </main>
 </Base>
+
+<style>
+  .now-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+</style>

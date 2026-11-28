@@ -5,12 +5,12 @@
  * - `PROJECTS` (`GoldFinder` release tag/facts) is synced from GitHub Releases via `npm run sync:projects` (scripts/sync-projects.mjs).
  */
 export const NOW = {
-  updated: '2026-11-25',
+  updated: '2026-11-28',
   rows: [
-    { k: 'streaming', v: 'twitch.tv/kenhenchan · off for Thanksgiving week', href: 'https://www.twitch.tv/kenhenchan' },
-    { k: 'building', v: 'daw-agent-skills: Audio DSP forensics for DAW copilots (#2)' },
+    { k: 'streaming', v: 'twitch.tv/kenhenchan · WoW: Forever & live agentic builds', href: 'https://www.twitch.tv/kenhenchan' },
+    { k: 'building', v: 'daw-agent-skills & musingsofmy.today platform' },
     // `latest ep` is filled in from the newest post with a podcast episode.
-    { k: 'focus', v: 'DAW Agent Skills, skyalerts.space & Thanksgiving break' },
+    { k: 'focus', v: 'Runtime Reality Dec 2 FAA hearing watch & DAW DSP forensics' },
   ],
 };
 

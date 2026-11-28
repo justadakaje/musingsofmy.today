@@ -1,0 +1,124 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { NOW, PROJECTS } from '../data/home';
+import { getPosts, postPath } from '../lib/posts';
+import { SHOWS } from '../site';
+
+const posts = await getPosts();
+const latestEp = posts.find((p) => p.data.podcast?.episode);
+const rr = SHOWS['runtime-reality'];
+const ca = SHOWS['chronos-archive'];
+---
+<Base
+  title="Now"
+  description="What Kenneth Henseler is streaming, building, and researching right now — active projects, Runtime Reality, and The Chronos Archive."
+  nav="about"
+>
+  <PageHead
+    eyebrow="// now"
+    title="Now"
+    lede={`Updated ${NOW.updated} — a living snapshot of what I'm streaming, building, and researching.`}
+  />
+  <main class="wrap">
+    <div class="sec"><h2>// now.log</h2><span class="rule"></span><a href="/uses/">/uses/ →</a></div>
+    <section class="now clip" aria-label="Current status">
+      <div class="now-head"><span class="dot" aria-hidden="true"></span> now.log <span class="path">~/kenhen</span></div>
+      <dl>
+        {NOW.rows.slice(0, 2).map((r) => (
+          <>
+            <dt>{r.k}</dt>
+            <dd>{r.href ? <a href={r.href}>{r.v}</a> : r.v}</dd>
+          </>
+        ))}
+        {latestEp && (
+          <>
+            <dt>latest ep</dt>
+            <dd>{SHOWS[latestEp.data.podcast!.show].name} <a href={postPath(latestEp)}>{latestEp.data.podcast!.episode}</a></dd>
+          </>
+        )}
+        {NOW.rows.slice(2).map((r) => (
+          <>
+            <dt>{r.k}</dt>
+            <dd>{r.href ? <a href={r.href}>{r.v}</a> : r.v}</dd>
+          </>
+        ))}
+      </dl>
+      <div class="now-foot"><span>last updated {NOW.updated}</span><a href="/subscribe/">subscribe →</a></div>
+    </section>
+
+    <div class="sec"><h2>// podcasts in production</h2><span class="rule"></span><a href="/podcasts/">all episodes →</a></div>
+    <div class="cards two">
+      <article class="card clip">
+        <span class="status live">active watch</span>
+        <h3 class="card-heading">{rr.name}</h3>
+        <p>Tracking the <code>rr-003</code> Dec 2 Senate FAA hearing watch alongside US aviation communications resilience and ongoing telecom breach post-mortems.</p>
+        <ul class="facts">
+          <li>rr-003 · Dec 2 Senate FAA hearing watch</li>
+          <li>follow-up to S26.E1125 (El Dorado router cascade)</li>
+          <li>full show notes &amp; transcripts on the blog</li>
+        </ul>
+        <div class="links">
+          <a href="/podcasts/">episodes on the blog</a>
+          <a href={rr.rss}>rss feed</a>
+          <a href={rr.spotify}>spotify</a>
+        </div>
+      </article>
+      <article class="card clip">
+        <span class="status test">researching</span>
+        <h3 class="card-heading">{ca.name}</h3>
+        <p>Deep-dive episodes connecting ancient material culture and deep-time natural systems with modern analytical tooling.</p>
+        <ul class="facts">
+          <li>latest on blog: S26.E1114 · The Oldest Thing in the Tent</li>
+          <li>primary-source papers + verbatim transcripts</li>
+          <li>chaptered RSS &amp; Apple Podcasts feeds</li>
+        </ul>
+        <div class="links">
+          <a href="/podcasts/">episodes on the blog</a>
+          <a href={ca.rss}>rss feed</a>
+          <a href={ca.apple}>apple podcasts</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="sec"><h2>// active projects</h2><span class="rule"></span><a href="/#projects">home snapshot →</a></div>
+    <div class="cards two">
+      {PROJECTS.map((pr) => (
+        <article class="card clip">
+          <span class={`status ${pr.status.cls}`}>{pr.status.label}</span>
+          <h3 class="card-heading">{pr.name}</h3>
+          <p>{pr.blurb}</p>
+          <ul class="facts">{pr.facts.map((f) => <li>{f}</li>)}</ul>
+          <div class="links">{pr.links.map((l) => <a href={l.href}>{l.label}</a>)}</div>
+        </article>
+      ))}
+    </div>
+
+    <div class="sec"><h2>// keep following</h2><span class="rule"></span></div>
+    <div class="now-links">
+      <a class="btn clip" href="/subscribe/">subscribe via email or rss →</a>
+      <a class="btn ghost clip" href="/podcasts/">browse podcasts</a>
+      <a class="btn ghost clip" href="/uses/">hardware &amp; software (/uses/)</a>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .now { margin-top: 0; }
+  .now-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .card-heading {
+    margin: 10px 0 8px;
+    font: 800 24px/1.15 var(--display);
+    color: var(--text);
+  }
+  .now-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+</style>

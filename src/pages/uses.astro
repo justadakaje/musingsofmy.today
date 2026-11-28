@@ -1,0 +1,100 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+
+interface UsesGroup {
+  eyebrow: string;
+  title: string;
+  summary: string;
+  items: string[];
+}
+
+const STACK_GROUPS: UsesGroup[] = [
+  {
+    eyebrow: '// audio & video',
+    title: 'Broadcast & Studio Rig',
+    summary: 'Capture chain tuned for clear speech during live addon debugging, raid nights, and podcast recording.',
+    items: [
+      'Shure MV7 (Cardioid Dynamic) + MOTIV Mix',
+      'Logitech Brio 4K Ultra HD @ 60fps',
+      'Streamlabs Desktop 1.22 + custom Cyber-Glass Browser HUD overlays',
+    ],
+  },
+  {
+    eyebrow: '// workstation & harnesses',
+    title: 'Workstation & AI Harnesses',
+    summary: 'Dual-harness agentic engineering workflow grounded in a single shared repository contract and in-memory secrets.',
+    items: [
+      'Windows 11 + Windows Terminal + WSL2 Ubuntu 24.04 LTS',
+      'Dual-harness AI workflow (Google Antigravity + Claude Code coordinating via shared AGENTS.md)',
+      'Node 24 LTS runtime across Astro, Worker, and validation tooling',
+      '1Password CLI (op) in-memory secret injection — zero plaintext tokens on disk',
+    ],
+  },
+  {
+    eyebrow: '// web & edge stack',
+    title: 'Web & Cloudflare Edge Stack',
+    summary: 'Content-as-code publishing pipeline with static-first delivery and small, isolated Worker endpoints.',
+    items: [
+      'Astro 7 + MDX + Pagefind static full-text search',
+      'Satori / Sharp dynamic OG card generation',
+      'Cloudflare Workers Static Assets + Resend + Turnstile + GraphQL Web Analytics',
+    ],
+  },
+  {
+    eyebrow: '// wow addon & podcast tooling',
+    title: 'Addon Verification & Podcast Pipeline',
+    summary: 'Live-client ground truth for Warcraft addons and local speech-to-text accuracy gates for podcast production.',
+    items: [
+      'Lua / FrameXML + ForeverProbe v0.7.0 wow-api MCP (GoldFinder, KenHenRoster)',
+      'faster-whisper local ASR + control-room accuracy gates',
+    ],
+  },
+];
+---
+<Base
+  title="Uses"
+  description="Kenneth Henseler's verified hardware, broadcast rig, dual-harness AI workflow, Cloudflare edge stack, and WoW addon & podcast tooling."
+  nav="about"
+>
+  <PageHead
+    eyebrow="// uses"
+    title="Uses"
+    lede="The verified hardware, broadcast studio, dual-harness AI workflow, and edge tooling behind my streams, addons, and podcasts."
+  />
+  <main class="wrap">
+    <div class="sec"><h2>// the stack</h2><span class="rule"></span><a href="/now/">/now/ →</a></div>
+    <div class="cards two">
+      {STACK_GROUPS.map((group) => (
+        <section class="card clip">
+          <div class="k">{group.eyebrow}</div>
+          <h3 class="card-heading">{group.title}</h3>
+          <p>{group.summary}</p>
+          <ul class="facts">
+            {group.items.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+      ))}
+    </div>
+
+    <div class="sec"><h2>// related</h2><span class="rule"></span></div>
+    <div class="uses-links">
+      <a class="btn clip" href="/now/">what I'm doing now →</a>
+      <a class="btn ghost clip" href="/podcasts/">podcasts</a>
+      <a class="btn ghost clip" href="/about/">about</a>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .card-heading {
+    margin: 10px 0 8px;
+    font: 800 24px/1.15 var(--display);
+    color: var(--text);
+  }
+  .uses-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+</style>

@@ -1,0 +1,92 @@
+---
+/**
+ * Non-blocking Twitch Live Pulse pill for the header.
+ * Stays hidden unless /api/live confirms kenhenchan is actively streaming.
+ */
+---
+<a
+  class="live-pill clip"
+  id="twitch-live-pill"
+  href="https://www.twitch.tv/kenhenchan"
+  target="_blank"
+  rel="noopener noreferrer"
+  hidden
+><span class="live-dot" aria-hidden="true"></span><span>LIVE</span></a>
+
+<script>
+  interface LiveResponse {
+    ok?: boolean;
+    live?: boolean;
+    title?: string;
+    gameName?: string;
+  }
+
+  const pill = document.getElementById('twitch-live-pill') as HTMLAnchorElement | null;
+  if (pill) {
+    void (async () => {
+      try {
+        const res = await fetch('/api/live', { headers: { Accept: 'application/json' } });
+        if (!res.ok) return;
+        const data = (await res.json()) as LiveResponse;
+        if (data.ok && data.live) {
+          const details = [data.title, data.gameName]
+            .filter((part): part is string => typeof part === 'string' && part.trim().length > 0)
+            .join(' · ');
+          const summary = details || 'Live now on Twitch';
+          pill.title = summary;
+          pill.setAttribute('aria-label', `LIVE — ${summary} (opens Twitch in new tab)`);
+          pill.hidden = false;
+        }
+      } catch {
+        // Stay hidden silently if offline or endpoint unavailable.
+      }
+    })();
+  }
+</script>
+
+<style>
+  .live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border: 1px solid rgba(248, 113, 113, 0.55);
+    background: rgba(248, 113, 113, 0.14);
+    color: var(--text);
+    font: 700 12px/1 var(--mono);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    transition: background-color var(--khc-duration-fast) var(--khc-easing-standard),
+      border-color var(--khc-duration-fast) var(--khc-easing-standard);
+  }
+  .live-pill[hidden] {
+    display: none;
+  }
+  .live-pill:hover {
+    color: var(--text);
+    background: rgba(248, 113, 113, 0.24);
+    border-color: var(--danger);
+  }
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--danger);
+    box-shadow: 0 0 8px rgba(248, 113, 113, 0.75);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .live-dot {
+      animation: live-pulse 2s ease-in-out infinite;
+    }
+  }
+  @keyframes live-pulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.45;
+      transform: scale(0.82);
+    }
+  }
+</style>

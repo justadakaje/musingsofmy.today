@@ -32,7 +32,8 @@ try {
 
 const mark = (ok) => (ok ? '✅' : '❌');
 const docs = [...report.posts, ...report.pages];
-const warnings = docs.flatMap((e) => e.warnings.map((x) => ({ e, x })));
+const RESOLVED_WARNING_IDS = new Set([2, 320]);
+const warnings = docs.filter((e) => !RESOLVED_WARNING_IDS.has(e.id)).flatMap((e) => e.warnings.map((x) => ({ e, x })));
 const NOTE_GROUPS = [
   [/^section /, 'Section chosen by hand, not by the category vote'],
   [/^transcoded /, 'Audio transcoded'],
@@ -97,10 +98,11 @@ ${[...grouped].map(([g, items]) => `**${g}** (${items.length})\n\n${items.map(({
 ## Not carried over
 
 - **Portfolio page** (WordPress page 236): ${report.skipped.find((s) => s.id === 236)?.reason ?? 'skipped'}.
-- **All-time views per post**: \`legacy.views_all_time\` is 0 everywhere. The WordPress.com connector only returns site totals, so the per-post numbers need the CSV from Stats → Posts & pages (export before cancelling the plan).
+- **All-time views per post**: \`legacy.views_all_time\` remains \`0\` in the frozen WordPress export; live site traffic now runs on Cloudflare Web Analytics.
 - **Alt text**: ${totals.alt} of ${totals.images} images have none. They had none on WordPress either; nothing was lost, but it's worth fixing over time.
-- **Contact form**: Jetpack forms don't survive a static site. \`/contact/\` has placeholder text with social links until you pick a plain email address or a small Resend form.
-- **Email subscribers**: deliberately untouched. Not exported, not in the repo.
+- **Contact form**: Jetpack forms don't survive a static site. \`/contact/\` was refreshed in \`BLOG-06\` with OrganizedChaos Discord, GitHub Discussions, newsletter reply instructions, and social links.
+- **Email subscribers**: legacy WordPress subscribers were deliberately untouched and never exported; new signups use Resend double opt-in at \`/subscribe/\`.
+- **Resolved post-import**: Contact page (\`/contact/\`, WordPress id 2) refreshed in \`BLOG-06\`; Amazon Kindle preview embed on *Piistol Star (Gravity Heals)* (WordPress id 320) retained intentionally as a labelled \`<LinkCard>\` in \`BLOG-24\`.
 - **Drafts and private posts** (16 on WordPress): not imported; this run covered published content only.
 
 ## What moved
