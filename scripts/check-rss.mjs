@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * RSS 2.0 checks on dist/rss.xml, plus the /feed/ redirect.
+ * RSS 2.0 checks on dist/rss.xml and per-section dist/section/<id>/rss.xml feeds, plus the /feed/ redirect.
  *
  *   node scripts/check-rss.mjs
  *   node scripts/check-rss.mjs --w3c=https://musingsofmy-today.musingsofmy-today.workers.dev/rss.xml   # also ask the W3C Feed Validator
@@ -21,50 +21,86 @@ const xmlValidator = /** @type {{ validate: (xml: string) => true | { err: unkno
 );
 
 const RFC822 = /^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (GMT|[+-]\d{4})$/;
+const SECTIONS = ['engineering', 'history-politics', 'science-nature', 'signal', 'field-notes'];
+
+/**
+ * Validates one built RSS 2.0 XML document and records structural check results.
+ */
+function checkFeedXml({ xml, expectedSelfPath, prefix = '', add, wpGuid }) {
+  const valid = xmlValidator.validate(xml);
+  add(`${prefix}well-formed XML`, valid === true, valid === true ? '' : JSON.stringify(valid.err));
+  if (valid !== true) return [];
+
+  const doc = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@' }).parse(xml);
+  const rss = doc.rss ?? {};
+  const ch = rss.channel ?? {};
+  add(`${prefix}rss version="2.0"`, rss['@version'] === '2.0');
+  add(`${prefix}channel has title, link, description`, ch.title && ch.link && ch.description);
+  const self = [].concat(ch['atom:link'] ?? []).find((l) => l['@rel'] === 'self');
+  add(
+    `${prefix}atom:link rel="self" points at ${expectedSelfPath}`,
+    self && new URL(self['@href']).pathname === expectedSelfPath,
+    self?.['@href'] ?? 'missing',
+  );
+
+  const items = [].concat(ch.item ?? []);
+  add(`${prefix}has items (WordPress served 10)`, items.length > 0 && items.length <= 10, `${items.length} items`);
+  const guids = items.map((i) => (typeof i.guid === 'object' ? i.guid['#text'] : i.guid));
+  add(`${prefix}every item has a unique guid`, guids.every(Boolean) && new Set(guids).size === guids.length);
+  add(`${prefix}every item has a title and link`, items.every((i) => i.title && i.link));
+  const badDates = items.filter((i) => !RFC822.test(i.pubDate ?? '') || Number.isNaN(Date.parse(i.pubDate)));
+  add(`${prefix}pubDate is RFC 822`, badDates.length === 0, badDates.map((i) => i.pubDate).join(', '));
+  const dates = items.map((i) => Date.parse(i.pubDate));
+  add(`${prefix}items newest first`, dates.every((d, n) => n === 0 || d <= dates[n - 1]));
+  const deadLinks = items.filter((i) => !distFileFor(new URL(i.link).pathname));
+  add(`${prefix}item links exist in the build`, deadLinks.length === 0, deadLinks.map((i) => i.link).join(', '));
+  const relative = items.filter((i) => /\s(?:src|href)="\/(?!\/)/.test(i['content:encoded'] ?? ''));
+  add(`${prefix}content:encoded has no site-relative URLs`, relative.length === 0, relative.map((i) => i.title).join('; '));
+  add(`${prefix}every item has full content`, items.every((i) => (i['content:encoded'] ?? '').length > 0));
+  add(`${prefix}content:encoded has no iframes (readers strip them; W3C warns)`, items.every((i) => !/<iframe/i.test(i['content:encoded'] ?? '')));
+  // RSS 2.0's <author> must be an email address; the name goes in <dc:creator>.
+  add(`${prefix}no <author> without an email address`, items.every((i) => !i.author || /@/.test(String(i.author))));
+
+  if (wpGuid) {
+    // GUIDs must match what WordPress published, or readers re-deliver old posts as new.
+    const mismatched = items.filter((i) => {
+      const g = wpGuid.get(new URL(i.link).pathname);
+      const mine = typeof i.guid === 'object' ? i.guid['#text'] : i.guid;
+      return g && g !== mine;
+    });
+    add(`${prefix}imported posts keep their WordPress guid`, mismatched.length === 0, mismatched.map((i) => i.link).join(', '));
+  }
+
+  return items;
+}
 
 export async function run({ w3c = null } = {}) {
   ensureBuilt();
   const checks = [];
   const add = (name, ok, detail = '') => checks.push({ name, ok: Boolean(ok), detail });
-  const xml = fs.readFileSync(path.join(DIST, 'rss.xml'), 'utf8');
 
-  const valid = xmlValidator.validate(xml);
-  add('well-formed XML', valid === true, valid === true ? '' : JSON.stringify(valid.err));
-  const doc = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@' }).parse(xml);
-  const rss = doc.rss ?? {};
-  const ch = rss.channel ?? {};
-  add('rss version="2.0"', rss['@version'] === '2.0');
-  add('channel has title, link, description', ch.title && ch.link && ch.description);
-  const self = [].concat(ch['atom:link'] ?? []).find((l) => l['@rel'] === 'self');
-  add('atom:link rel="self" points at /rss.xml', self && new URL(self['@href']).pathname === '/rss.xml', self?.['@href'] ?? 'missing');
-
-  const items = [].concat(ch.item ?? []);
-  add('has items (WordPress served 10)', items.length > 0 && items.length <= 10, `${items.length} items`);
-  const guids = items.map((i) => (typeof i.guid === 'object' ? i.guid['#text'] : i.guid));
-  add('every item has a unique guid', guids.every(Boolean) && new Set(guids).size === guids.length);
-  add('every item has a title and link', items.every((i) => i.title && i.link));
-  const badDates = items.filter((i) => !RFC822.test(i.pubDate ?? '') || Number.isNaN(Date.parse(i.pubDate)));
-  add('pubDate is RFC 822', badDates.length === 0, badDates.map((i) => i.pubDate).join(', '));
-  const dates = items.map((i) => Date.parse(i.pubDate));
-  add('items newest first', dates.every((d, n) => n === 0 || d <= dates[n - 1]));
-  const deadLinks = items.filter((i) => !distFileFor(new URL(i.link).pathname));
-  add('item links exist in the build', deadLinks.length === 0, deadLinks.map((i) => i.link).join(', '));
-  const relative = items.filter((i) => /\s(?:src|href)="\/(?!\/)/.test(i['content:encoded'] ?? ''));
-  add('content:encoded has no site-relative URLs', relative.length === 0, relative.map((i) => i.title).join('; '));
-  add('every item has full content', items.every((i) => (i['content:encoded'] ?? '').length > 0));
-  add('content:encoded has no iframes (readers strip them; W3C warns)', items.every((i) => !/<iframe/i.test(i['content:encoded'] ?? '')));
-  // RSS 2.0's <author> must be an email address; the name goes in <dc:creator>.
-  add('no <author> without an email address', items.every((i) => !i.author || /@/.test(String(i.author))));
-
-  // GUIDs must match what WordPress published, or readers re-deliver old posts as new.
   const wp = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'wpcom', 'posts.json'), 'utf8'));
   const wpGuid = new Map(wp.map((p) => [new URL(p.URL).pathname, p.guid]));
-  const mismatched = items.filter((i) => {
-    const g = wpGuid.get(new URL(i.link).pathname);
-    const mine = typeof i.guid === 'object' ? i.guid['#text'] : i.guid;
-    return g && g !== mine;
-  });
-  add('imported posts keep their WordPress guid', mismatched.length === 0, mismatched.map((i) => i.link).join(', '));
+
+  const xml = fs.readFileSync(path.join(DIST, 'rss.xml'), 'utf8');
+  const items = checkFeedXml({ xml, expectedSelfPath: '/rss.xml', add, wpGuid });
+
+  for (const section of SECTIONS) {
+    const secPath = path.join(DIST, 'section', section, 'rss.xml');
+    const prefix = `[section/${section}] `;
+    const exists = fs.existsSync(secPath);
+    add(`${prefix}dist/section/${section}/rss.xml exists`, exists);
+    if (exists) {
+      const secXml = fs.readFileSync(secPath, 'utf8');
+      checkFeedXml({
+        xml: secXml,
+        expectedSelfPath: `/section/${section}/rss.xml`,
+        prefix,
+        add,
+        wpGuid,
+      });
+    }
+  }
 
   const rules = loadRedirects();
   const feed = matchRedirect(rules, '/feed/');
