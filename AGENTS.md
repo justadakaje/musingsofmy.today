@@ -40,11 +40,12 @@ GitHub Actions (`.github/workflows/ci.yml`) builds, validates, then deploys `mai
 - 2026-11-14: Operational docs, handoffs, scripts and Archify receipts stay local-only (PR #1). Static podcast RSS feeds added.
 - 2026-11-15: Real-world locations in fiction posts are generalized before publishing.
 - 2026-11-25: Dynamic OG cards, 2x2 Projects grid, Archify trailing-slash redirect, Giscus fallback for zero-comment posts (PR #2).
+- 2026-11-26: Air-gapped newsletter dispatch (`/api/subscribe/dispatch`), Cloudflare Web Analytics & Turnstile on `/subscribe/`, live Discord thread previews (`/api/discord/thread/:postId`), and Cloudflare Workers migration post (PR #4, Wave 2).
+- 2026-11-28: Discovery & UX polish (mobile nav drawer, RSS discovery, series nav, code copy & heading anchors, 404 search), Section & Podcast RSS/Transcripts/JSON-LD, `/now/` & `/uses/` living pages, edge-cached Twitch Live Pulse (`/api/live`), IndexNow submission + strict CSP/`_headers`, and migration closeout (Waves 3–5).
 
-### In flight (as of 2026-11-26)
+### In flight (as of 2026-11-28)
 
-- No open PRs.
-- `VALIDATION.md` lists import items still needing a decision (for example an Amazon embed rendered as a link card).
+- None — Waves 3–5 complete and legacy import closeout (`BLOG-24`) resolved.
 
 ## Working across Claude Code and Antigravity
 

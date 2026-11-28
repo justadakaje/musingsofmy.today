@@ -16,4 +16,7 @@ export interface WorkerEnv {
   NEWSLETTER_DISPATCH_SECRET?: string;
   TURNSTILE_SECRET_KEY?: string;
   DISCORD_BOT_TOKEN?: string;
+  TWITCH_CLIENT_ID?: string;
+  TWITCH_ACCESS_TOKEN?: string;
+  TWITCH_CLIENT_SECRET?: string;
 }
