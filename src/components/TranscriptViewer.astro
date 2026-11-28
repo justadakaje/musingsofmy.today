@@ -1,0 +1,490 @@
+---
+import fs from 'node:fs/promises';
+import path from 'node:path';
+
+interface Props {
+  transcriptPath: string;
+  episodeTitle?: string;
+}
+
+interface Segment {
+  id: string;
+  label: string;
+  seconds: number;
+  text: string;
+}
+
+interface Chapter {
+  id: string;
+  label: string;
+  seconds: number;
+}
+
+const { transcriptPath, episodeTitle } = Astro.props;
+
+async function loadTranscript(relPath: string): Promise<{ segments: Segment[]; chapters: Chapter[] } | null> {
+  if (!relPath) return null;
+  const cleaned = relPath.replace(/^\/+/, '');
+  const publicRoot = path.resolve(process.cwd(), 'public');
+  const resolved = path.resolve(publicRoot, cleaned);
+  if (!resolved.startsWith(publicRoot + path.sep)) return null;
+
+  let raw: string;
+  try {
+    raw = await fs.readFile(resolved, 'utf8');
+  } catch {
+    return null;
+  }
+
+  const lineRe = /^(\d{2}):(\d{2}):(\d{2})\s+(.*)$/;
+  const seen = new Map<string, number>();
+  const segments: Segment[] = [];
+  const chapters: Chapter[] = [];
+  let nextMark = 0;
+
+  for (const line of raw.split(/\r?\n/)) {
+    const match = lineRe.exec(line);
+    if (!match) continue;
+    const [, hh, mm, ss, body] = match;
+    const text = body.trim();
+    if (!text) continue;
+
+    const h = Number(hh);
+    const m = Number(mm);
+    const s = Number(ss);
+    const seconds = h * 3600 + m * 60 + s;
+
+    const baseId = `t-${h > 0 ? `${String(h).padStart(2, '0')}h` : ''}${String(m).padStart(2, '0')}m${String(s).padStart(2, '0')}s`;
+    const count = (seen.get(baseId) ?? 0) + 1;
+    seen.set(baseId, count);
+    const id = count === 1 ? baseId : `${baseId}-${count}`;
+    const label = `${hh}:${mm}:${ss}`;
+
+    segments.push({ id, label, seconds, text });
+
+    if (seconds >= nextMark) {
+      const chapterLabel = h > 0 ? `${hh}:${mm}:${ss}` : `${mm}:${ss}`;
+      chapters.push({ id, label: chapterLabel, seconds });
+      nextMark = Math.floor(seconds / 300) * 300 + 300;
+    }
+  }
+
+  return segments.length > 0 ? { segments, chapters } : null;
+}
+
+const parsed = await loadTranscript(transcriptPath);
+---
+{parsed && (
+  <details
+    id="transcript"
+    class="transcript-viewer clip"
+    data-wc-ignore
+    aria-label={episodeTitle ? `Transcript: ${episodeTitle}` : 'Full episode transcript'}
+  >
+    <summary class="ts-summary">
+      <span class="ts-summary-label">
+        <span class="ts-chevron" aria-hidden="true">▸</span>
+        <span>// full episode transcript · {parsed.segments.length} segments</span>
+      </span>
+      <a class="ts-raw" href={transcriptPath} target="_blank" rel="noopener" data-ts-raw>
+        raw .txt ↗
+      </a>
+    </summary>
+    <div class="ts-body">
+      {parsed.chapters.length > 0 && (
+        <nav class="ts-chapters" aria-label="Transcript chapters">
+          <span class="ts-chapters-k">// jump</span>
+          {parsed.chapters.map((ch) => (
+            <a class="ts-chapter" href={`#${ch.id}`} data-seconds={ch.seconds}>
+              {ch.label}
+            </a>
+          ))}
+        </nav>
+      )}
+      <ol class="ts-list">
+        {parsed.segments.map((seg) => (
+          <li class="ts-row" data-seconds={seg.seconds}>
+            <a class="ts-link" id={seg.id} href={`#${seg.id}`} data-seconds={seg.seconds}>
+              {seg.label}
+            </a>
+            <span class="ts-text">{seg.text}</span>
+          </li>
+        ))}
+      </ol>
+      <span class="sr-only" role="status" aria-live="polite" data-ts-status></span>
+    </div>
+  </details>
+)}
+
+<script>
+  const scrollBehavior = (): ScrollBehavior =>
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+
+  const seekAudio = (seconds: number) => {
+    if (!Number.isFinite(seconds)) return;
+    document.querySelectorAll<HTMLAudioElement>('audio').forEach((audio) => {
+      audio.currentTime = seconds;
+    });
+  };
+
+  document.querySelectorAll<HTMLDetailsElement>('details.transcript-viewer').forEach((viewer) => {
+    const rawLink = viewer.querySelector<HTMLAnchorElement>('[data-ts-raw]');
+    const listEl = viewer.querySelector<HTMLElement>('.ts-list');
+    const chaptersEl = viewer.querySelector<HTMLElement>('.ts-chapters');
+    const statusEl = viewer.querySelector<HTMLElement>('[data-ts-status]');
+
+    rawLink?.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    const clearActive = () => {
+      viewer.querySelectorAll('.ts-row[data-active]').forEach((el) => {
+        el.removeAttribute('data-active');
+      });
+    };
+
+    const highlightTarget = (target: HTMLElement, scroll: boolean) => {
+      clearActive();
+      const row = target.closest<HTMLElement>('.ts-row');
+      if (row) row.setAttribute('data-active', 'true');
+      if (scroll) {
+        requestAnimationFrame(() => {
+          (row ?? target).scrollIntoView({ behavior: scrollBehavior(), block: 'center' });
+        });
+      }
+    };
+
+    const syncFromHash = () => {
+      const hash = window.location.hash;
+      if (hash === '#transcript') {
+        viewer.open = true;
+        requestAnimationFrame(() => {
+          viewer.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
+        });
+        return;
+      }
+      if (/^#t-\d/.test(hash)) {
+        const id = decodeURIComponent(hash.slice(1));
+        const target = document.getElementById(id);
+        if (target && viewer.contains(target)) {
+          viewer.open = true;
+          highlightTarget(target, true);
+        }
+      }
+    };
+
+    const copyTimers = new WeakMap<HTMLElement, number>();
+    let lastStatus = '';
+    let statusTimer: number | undefined;
+
+    const announce = (msg: string) => {
+      if (!statusEl) return;
+      window.clearTimeout(statusTimer);
+      const next = msg === lastStatus ? `${msg}\u00A0` : msg;
+      lastStatus = msg;
+      statusEl.textContent = '';
+      requestAnimationFrame(() => {
+        statusEl.textContent = next;
+      });
+      statusTimer = window.setTimeout(() => {
+        statusEl.textContent = '';
+      }, 1800);
+    };
+
+    const setCopiedFeedback = (link: HTMLElement) => {
+      window.clearTimeout(copyTimers.get(link));
+      link.setAttribute('data-copied', 'true');
+      const timer = window.setTimeout(() => {
+        link.removeAttribute('data-copied');
+      }, 1800);
+      copyTimers.set(link, timer);
+    };
+
+    listEl?.addEventListener('click', async (e) => {
+      const target = e.target;
+      if (!(target instanceof Element)) return;
+      const link = target.closest<HTMLAnchorElement>('a.ts-link');
+      if (!link) return;
+
+      e.preventDefault();
+      const href = link.getAttribute('href');
+      if (href) history.replaceState(null, '', href);
+      highlightTarget(link, false);
+      seekAudio(Number(link.dataset.seconds));
+
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        setCopiedFeedback(link);
+        announce(`Copied link to ${link.textContent?.trim() ?? 'timestamp'}`);
+      } catch {
+        // Clipboard API may be unavailable or denied in non-secure contexts.
+      }
+    });
+
+    chaptersEl?.addEventListener('click', (e) => {
+      const target = e.target;
+      if (!(target instanceof Element)) return;
+      const pill = target.closest<HTMLAnchorElement>('a.ts-chapter');
+      if (!pill) return;
+
+      e.preventDefault();
+      const href = pill.getAttribute('href');
+      if (!href) return;
+      history.replaceState(null, '', href);
+      const segEl = document.getElementById(href.slice(1));
+      if (segEl && viewer.contains(segEl)) {
+        viewer.open = true;
+        highlightTarget(segEl, true);
+      }
+      seekAudio(Number(pill.dataset.seconds));
+    });
+
+    syncFromHash();
+    window.addEventListener('hashchange', syncFromHash);
+  });
+</script>
+
+<style>
+  .transcript-viewer {
+    margin: 0 0 30px;
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    scroll-margin-top: 84px;
+  }
+
+  .ts-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 18px;
+    cursor: pointer;
+    list-style: none;
+    font: 500 13px/1.4 var(--mono);
+    color: var(--gold);
+    background: rgba(17, 29, 38, 0.72);
+    user-select: none;
+  }
+
+  .ts-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .ts-summary:hover {
+    background: rgba(17, 29, 38, 0.95);
+    color: var(--gold-bright);
+  }
+
+  .ts-summary:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: -2px;
+  }
+
+  .ts-summary-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .ts-chevron {
+    display: inline-block;
+    color: var(--cyan);
+    transition: transform var(--khc-duration-fast) var(--khc-easing-standard);
+  }
+
+  .transcript-viewer[open] .ts-chevron {
+    transform: rotate(90deg);
+  }
+
+  .transcript-viewer[open] .ts-summary {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .ts-raw {
+    flex: none;
+    font: 500 12.5px var(--mono);
+    color: var(--cyan);
+    padding: 4px 10px;
+    border: 1px solid var(--line);
+    background: rgba(5, 7, 10, 0.65);
+    white-space: nowrap;
+  }
+
+  .ts-raw:hover {
+    color: var(--cyan-bright);
+    border-color: var(--line-strong);
+  }
+
+  .ts-raw:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
+  }
+
+  .ts-chapters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--line-quiet);
+    background: rgba(5, 7, 10, 0.45);
+  }
+
+  .ts-chapters-k {
+    font: 500 12px var(--mono);
+    color: var(--gold);
+    margin-right: 4px;
+  }
+
+  .ts-chapter {
+    font: 500 12px var(--mono);
+    color: var(--muted);
+    padding: 3px 9px;
+    border: 1px solid var(--line-quiet);
+    background: rgba(17, 29, 38, 0.65);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ts-chapter:hover {
+    color: var(--cyan-bright);
+    border-color: var(--line-strong);
+  }
+
+  .ts-chapter:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
+  }
+
+  .ts-list {
+    margin: 0;
+    padding: 10px 18px 16px;
+    list-style: none;
+    max-height: min(62vh, 520px);
+    overflow-y: auto;
+    --scrollbar-thumb: var(--cyan-dim);
+    --scrollbar-track: var(--bg);
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    scrollbar-width: thin;
+  }
+
+  @supports not (scrollbar-color: auto) {
+    .ts-list {
+      scrollbar-width: auto;
+    }
+
+    .ts-list::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .ts-list::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+    }
+
+    .ts-list::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+    }
+  }
+
+  .ts-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    align-items: baseline;
+    padding: 7px 8px;
+    border-left: 2px solid transparent;
+    border-bottom: 1px solid var(--line-quiet);
+    transition: background var(--khc-duration-fast) var(--khc-easing-standard);
+  }
+
+  .ts-row:last-child {
+    border-bottom: 0;
+  }
+
+  .ts-row:hover {
+    background: rgba(34, 211, 238, 0.04);
+  }
+
+  .ts-row[data-active='true'] {
+    background: rgba(34, 211, 238, 0.09);
+    border-left-color: var(--gold);
+  }
+
+  .ts-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 7px;
+    font: 500 12.5px/1.4 var(--mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--cyan);
+    border: 1px solid var(--line);
+    background: rgba(5, 7, 10, 0.55);
+    scroll-margin-top: 24px;
+    white-space: nowrap;
+  }
+
+  .ts-link:hover {
+    color: var(--cyan-bright);
+    border-color: var(--line-strong);
+  }
+
+  .ts-link:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
+  }
+
+  .ts-link[data-copied='true'] {
+    border-color: var(--cyan);
+  }
+
+  .ts-link[data-copied='true']::after {
+    content: 'copied';
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: var(--cyan);
+    color: var(--on-accent);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .ts-text {
+    color: var(--read);
+    font-size: 15.5px;
+    line-height: 1.6;
+    min-width: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ts-chevron,
+    .ts-row {
+      transition: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .ts-summary {
+      flex-wrap: wrap;
+      padding: 12px 14px;
+    }
+
+    .ts-chapters,
+    .ts-list {
+      padding-left: 14px;
+      padding-right: 14px;
+    }
+
+    .ts-row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    .ts-link {
+      justify-self: start;
+    }
+  }
+</style>

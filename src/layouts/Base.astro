@@ -12,6 +12,8 @@ import '@fontsource/jetbrains-mono/latin-700.css';
 import '../styles/global.css';
 import { getImage } from 'astro:assets';
 import avatar from '../assets/avatar.png';
+import CommandPalette from '../components/CommandPalette.astro';
+import LivePulse from '../components/LivePulse.astro';
 import { SITE, SOCIAL, SUPPORT } from '../site';
 
 interface Props {
@@ -103,6 +105,14 @@ const links = [
           {links.map((l) => <a href={l.href} aria-current={nav === l.id ? 'page' : undefined}>{l.label}</a>)}
         </nav>
         <span class="spacer"></span>
+        <LivePulse />
+        <button
+          type="button"
+          class="btn ghost clip cmd-open-btn"
+          command="show-modal"
+          commandfor="cmd-palette"
+          aria-label="Search and quick navigation (Ctrl+K)"
+        ><span aria-hidden="true">⌕</span><kbd>⌘K</kbd></button>
         <a class="btn ghost clip" href="/rss.xml">rss</a>
         <button
           type="button"
@@ -128,6 +138,7 @@ const links = [
             ))}
           </ul>
           <div class="nav-drawer-actions">
+            <button type="button" class="btn ghost clip" command="show-modal" commandfor="cmd-palette">search · ⌘K</button>
             <a class="btn ghost clip" href="/rss.xml">rss</a>
             <a class="btn clip" href="/subscribe/">subscribe →</a>
           </div>
@@ -234,11 +245,25 @@ const links = [
 
         sheet.addEventListener('click', (event) => {
           const target = event.target;
-          if (target instanceof Element && target.closest('a[href]')) {
+          if (target instanceof Element && target.closest('a[href], button[commandfor="cmd-palette"]')) {
             closeDrawer();
           }
         });
       }
     </script>
+    <CommandPalette />
+    <style>
+      .cmd-open-btn { gap: 6px; padding: 7px 12px; }
+      .cmd-open-btn kbd {
+        font: 500 11px var(--mono);
+        color: var(--muted);
+        border: 1px solid var(--line);
+        padding: 1px 5px;
+        background: rgba(5, 7, 10, 0.55);
+      }
+      @media (max-width: 760px) {
+        .cmd-open-btn { display: none; }
+      }
+    </style>
   </body>
 </html>

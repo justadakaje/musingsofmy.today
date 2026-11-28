@@ -5,8 +5,9 @@ import { SHOWS } from '../site';
 interface Props {
   podcast: NonNullable<Post['data']['podcast']>;
   fallbackTitle: string;
+  hasInlineTranscript?: boolean;
 }
-const { podcast, fallbackTitle } = Astro.props;
+const { podcast, fallbackTitle, hasInlineTranscript = false } = Astro.props;
 const show = SHOWS[podcast.show];
 const listen = podcast.spotify ?? podcast.apple ?? podcast.youtube ?? show.spotify;
 ---
@@ -20,6 +21,10 @@ const listen = podcast.spotify ?? podcast.apple ?? podcast.youtube ?? show.spoti
     <a href={podcast.apple ?? show.apple}>apple podcasts</a>
     <a href={podcast.spotify ?? show.spotify}>spotify</a>
     {podcast.youtube && <a href={podcast.youtube}>youtube</a>}
-    {podcast.transcript && <a href={podcast.transcript}>transcript</a>}
+    {podcast.transcript && (
+      <a href={hasInlineTranscript ? '#transcript' : podcast.transcript}>
+        {hasInlineTranscript ? 'transcript ↓' : 'transcript'}
+      </a>
+    )}
   </div>
 </div>

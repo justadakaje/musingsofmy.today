@@ -1,0 +1,140 @@
+---
+/**
+ * Related posts grid rendered at the bottom of an article.
+ * Renders nothing when no related dispatches match.
+ */
+import { fmtDate, postPath, readMinutes, type Post } from '../lib/posts';
+import { sectionById } from '../site';
+
+interface Props {
+  posts: Post[];
+}
+
+const { posts } = Astro.props;
+---
+{posts.length > 0 && (
+  <section class="related-posts" aria-labelledby="related-posts-heading">
+    <div class="sec">
+      <h2 id="related-posts-heading">// related dispatches</h2>
+      <span class="rule"></span>
+    </div>
+    <div class="related-grid">
+      {posts.map((p) => {
+        const sec = sectionById(p.data.section);
+        const toneClass = sec.tone ? ` ${sec.tone}` : '';
+        return (
+          <article class="related-card clip">
+            <span class={`related-badge${toneClass}`}>{sec.label}</span>
+            <h3 class="related-title">
+              <a href={postPath(p)}>{p.data.title}</a>
+            </h3>
+            <div class="related-meta">
+              <time datetime={p.data.date.toISOString()}>{fmtDate(p.data.date)}</time>
+              <span>{readMinutes(p.body)} min read</span>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+)}
+
+<style>
+  .related-posts {
+    margin-top: 48px;
+  }
+
+  .related-posts .sec {
+    margin-top: 0;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .related-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    transition: border-color 140ms ease, background 140ms ease;
+  }
+
+  .related-card:hover {
+    border-color: var(--line-strong);
+    background: rgba(17, 29, 38, 0.92);
+  }
+
+  .related-badge {
+    align-self: flex-start;
+    font: 500 11.5px var(--mono);
+    letter-spacing: 0.03em;
+    color: var(--cyan);
+    padding: 2px 8px;
+    border: 1px solid var(--line);
+    background: rgba(5, 7, 10, 0.55);
+  }
+
+  .related-badge.h {
+    color: #c4b5fd;
+    border-color: rgba(196, 181, 253, 0.35);
+  }
+
+  .related-badge.s {
+    color: var(--success);
+    border-color: rgba(52, 211, 153, 0.35);
+  }
+
+  .related-badge.m {
+    color: #f0abfc;
+    border-color: rgba(240, 171, 252, 0.35);
+  }
+
+  .related-badge.f {
+    color: var(--gold);
+    border-color: rgba(224, 169, 59, 0.4);
+  }
+
+  .related-title {
+    margin: 0;
+    font: 700 17px/1.32 var(--display);
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+
+  .related-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .related-title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .related-title a:hover {
+    color: var(--cyan-bright);
+  }
+
+  .related-meta {
+    margin-top: auto;
+    padding-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    font: 400 12px var(--mono);
+    color: var(--subtle);
+  }
+
+  @media (max-width: 760px) {
+    .related-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

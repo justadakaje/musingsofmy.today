@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { hashKey, signToken, verifySharedSecret, verifyToken } from '../src/worker/crypto.ts';
 import { handleDiscordThread } from '../src/worker/discord.ts';
 import { handleNewsletterDispatch } from '../src/worker/dispatch.ts';
+import { handleLiveStatus } from '../src/worker/live.ts';
 import { handleSubscribe } from '../src/worker/subscribe.ts';
 import worker from '../src/worker/index.ts';
 
@@ -538,6 +539,68 @@ test('dispatch: enforces auth/validation and supports dry-run, testTo, and idemp
   assert.equal(batchMessages.length, 2);
   assert.equal(batchMessages[0].headers['List-Unsubscribe-Post'], 'List-Unsubscribe=One-Click');
   assert.match(batchMessages[0].headers['List-Unsubscribe'], /^<https:\/\/musingsofmy\.today\/api\/subscribe\/unsubscribe\?token=/);
+});
+
+test('live: handles /api/live offline fallback, client_credentials live payload sanitization, and 405 POST', async () => {
+  const postRes = await handleLiveStatus(
+    new Request('https://musingsofmy.today/api/live', { method: 'POST' }),
+    makeBaseEnv(),
+    { cache: null },
+  );
+  assert.equal(postRes.status, 405);
+
+  const unconfRes = await handleLiveStatus(
+    new Request('https://musingsofmy.today/api/live'),
+    makeBaseEnv(),
+    { cache: null },
+  );
+  assert.equal(unconfRes.status, 200);
+  assert.deepEqual(await unconfRes.json(), {
+    ok: true,
+    live: false,
+    channelUrl: 'https://www.twitch.tv/kenhenchan',
+  });
+
+  const fetchImpl = async (url) => {
+    const s = String(url);
+    if (s.includes('oauth2/token')) {
+      return new Response(JSON.stringify({ access_token: 'app_tok_123' }), { status: 200 });
+    }
+    return new Response(
+      JSON.stringify({
+        data: [
+          {
+            id: 'secret_stream_id',
+            user_id: 'secret_user_id',
+            type: 'live',
+            title: 'Building GoldFinder v2',
+            game_name: 'World of Warcraft',
+            viewer_count: 42,
+            started_at: '2026-11-28T05:00:00Z',
+          },
+        ],
+      }),
+      { status: 200 },
+    );
+  };
+
+  const liveRes = await handleLiveStatus(
+    new Request('https://musingsofmy.today/api/live'),
+    makeBaseEnv({ TWITCH_CLIENT_ID: 'cid_test', TWITCH_CLIENT_SECRET: 'csec_test' }),
+    { fetchImpl, cache: null },
+  );
+  assert.equal(liveRes.status, 200);
+  assert.match(liveRes.headers.get('Cache-Control') || '', /s-maxage=60/);
+  const liveBody = await liveRes.json();
+  assert.deepEqual(liveBody, {
+    ok: true,
+    live: true,
+    channelUrl: 'https://www.twitch.tv/kenhenchan',
+    title: 'Building GoldFinder v2',
+    gameName: 'World of Warcraft',
+    viewerCount: 42,
+    startedAt: '2026-11-28T05:00:00Z',
+  });
 });
 
 test('worker index: routes unknown /api/* to 404 and falls back to ASSETS', async () => {

@@ -1,6 +1,6 @@
 # Validation report
 
-Generated 2026-11-26 08:04 UTC from commit `680c98a` by `scripts/validate.mjs`.
+Generated 2026-11-28 05:17 UTC from commit `25056c9` by `scripts/validate.mjs`.
 Baselines are what WordPress.com served on 2026-11-04 (frozen in `data/wpcom/`).
 
 ## Checks
@@ -9,9 +9,9 @@ Baselines are what WordPress.com served on 2026-11-04 (frozen in `data/wpcom/`).
 | --- | --- |
 | 1. Every URL in WordPress's `sitemap.xml` resolves on the build | ✅ 58/58 (dist/ (frozen sitemap)) |
 | 2. Word count per post within ±2% of WordPress | ✅ 57/57 |
-| 3. Internal links, images and #anchors resolve | ✅ 17550/17550 across 543 pages |
+| 3. Internal links, images and #anchors resolve | ✅ 19612/19612 across 545 pages |
 | 3b. External links (lychee) | CI only: see the `links` job in GitHub Actions. Informational, doesn't block a deploy |
-| 4. RSS 2.0 structure, GUIDs kept, `/feed/` redirects | ✅ 16/16 (W3C validator runs only with --base) |
+| 4. RSS 2.0 structure, GUIDs kept, `/feed/` redirects | ✅ 96/96 (W3C validator runs only with --base) |
 | 5. Side-by-side screenshots of five posts | Not automated. Done by eye on the preview |
 
 No hard failures.
@@ -19,8 +19,7 @@ No hard failures.
 
 ## Didn't convert cleanly (needs a decision or a fix)
 
-- [Interpreting Chevelle’s “Piistol Star (Gravity Heals)”](/2021/05/03/interpreting-chevelles-piistol-star-gravity-heals/): embed without a component, rendered as a link card: https://read.amazon.com/kp/card?preview=inline&linkCode=kpd&ref_=k4w_oembed_2YFXJ4scAdjwW6&asin=B08QRRYD6M&tag=kpembed-20
-- [Contact](/contact/): WordPress served an empty Contact page (the Jetpack form is not in the API); wrote a placeholder for you to replace
+- Nothing.
 
 ## Converted, but not 1:1 (worth knowing)
 
@@ -64,10 +63,11 @@ No hard failures.
 ## Not carried over
 
 - **Portfolio page** (WordPress page 236): never-published draft page; still the theme’s lorem-ipsum template.
-- **All-time views per post**: `legacy.views_all_time` is 0 everywhere. The WordPress.com connector only returns site totals, so the per-post numbers need the CSV from Stats → Posts & pages (export before cancelling the plan).
+- **All-time views per post**: `legacy.views_all_time` remains `0` in the frozen WordPress export; live site traffic now runs on Cloudflare Web Analytics.
 - **Alt text**: 166 of 170 images have none. They had none on WordPress either; nothing was lost, but it's worth fixing over time.
-- **Contact form**: Jetpack forms don't survive a static site. `/contact/` has placeholder text with social links until you pick a plain email address or a small Resend form.
-- **Email subscribers**: deliberately untouched. Not exported, not in the repo.
+- **Contact form**: Jetpack forms don't survive a static site. `/contact/` was refreshed in `BLOG-06` with OrganizedChaos Discord, GitHub Discussions, newsletter reply instructions, and social links.
+- **Email subscribers**: legacy WordPress subscribers were deliberately untouched and never exported; new signups use Resend double opt-in at `/subscribe/`.
+- **Resolved post-import**: Contact page (`/contact/`, WordPress id 2) refreshed in `BLOG-06`; Amazon Kindle preview embed on *Piistol Star (Gravity Heals)* (WordPress id 320) retained intentionally as a labelled `<LinkCard>` in `BLOG-24`.
 - **Drafts and private posts** (16 on WordPress): not imported; this run covered published content only.
 
 ## What moved
@@ -136,7 +136,7 @@ No hard failures.
 | [The Illusion of Containment: Engineering Lessons from the 2026 AI Sandbox Breaches](/2026/09/10/ai-sandbox-containment-hugging-face-artifactory-breach/) | 890 | 887 | -0.3% |
 | [Confidently Wrong: Four AI Errors a Beta Game Client Caught in Four Hours](/2026/09/24/ai-confidently-wrong-wow-addon-verification/) | 1744 | 1740 | -0.2% |
 | [Absent from the Docs, Present in the Client: Mapping WoW Forever’s Real API Surface](/2026/09/24/wow-forever-api-surface-build-69913/) | 1463 | 1459 | -0.3% |
-| [About](/about/) | 150 | 284 | — |
+| [About](/about/) | 150 | 301 | — |
 | [Contact](/contact/) | 0 | 78 | — |
 
 </details>
