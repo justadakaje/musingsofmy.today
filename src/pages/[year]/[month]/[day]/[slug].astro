@@ -11,10 +11,13 @@ import ArchivedComments from '../../../../components/ArchivedComments.astro';
 import DiscordThread from '../../../../components/DiscordThread.astro';
 import Giscus from '../../../../components/Giscus.astro';
 import SeriesNav from '../../../../components/SeriesNav.astro';
+import RelatedPosts from '../../../../components/RelatedPosts.astro';
+import TranscriptViewer from '../../../../components/TranscriptViewer.astro';
 import PostCta from '../../../../components/PostCta.astro';
 import PostEnhancements from '../../../../components/PostEnhancements.astro';
 import { mdxComponents } from '../../../../components/mdx';
 import { getPosts, postParams, postPath, fmtDate, readMinutes, tagSlug, type Post } from '../../../../lib/posts';
+import { getRelatedPosts } from '../../../../lib/related';
 import { sectionById, SITE } from '../../../../site';
 
 export async function getStaticPaths() {
@@ -28,7 +31,7 @@ export async function getStaticPaths() {
       : [];
     return {
       params: postParams(post),
-      props: { post, newer: posts[i - 1], older: posts[i + 1], seriesParts },
+      props: { post, newer: posts[i - 1], older: posts[i + 1], seriesParts, relatedPosts: getRelatedPosts(post, posts, 3) },
     };
   });
 }
@@ -38,8 +41,9 @@ interface Props {
   newer?: Post;
   older?: Post;
   seriesParts: Post[];
+  relatedPosts: Post[];
 }
-const { post, newer, older, seriesParts } = Astro.props;
+const { post, newer, older, seriesParts, relatedPosts } = Astro.props;
 const { Content, headings } = await render(post);
 const d = post.data;
 const section = sectionById(d.section);
@@ -110,7 +114,7 @@ const blogPostingLd: Record<string, unknown> = {
       </aside>
     )}
     <article>
-      {d.podcast && <EpisodeCard podcast={d.podcast} fallbackTitle={d.title} />}
+      {d.podcast && <EpisodeCard podcast={d.podcast} fallbackTitle={d.title} hasInlineTranscript={Boolean(d.podcast.transcript)} />}
       {d.cover && !d.cover.inline && (
         <figure class="cover">
           <Image src={d.cover.src} alt={d.cover.alt} widths={[720, 1080, 1440]} sizes="(max-width: 760px) 100vw, 720px" loading="eager" />
@@ -122,6 +126,9 @@ const blogPostingLd: Record<string, unknown> = {
       <div class="prose" data-post-body data-pagefind-body>
         <Content components={mdxComponents} />
       </div>
+      {d.podcast?.transcript && (
+        <TranscriptViewer transcriptPath={d.podcast.transcript} episodeTitle={d.podcast.title ?? d.title} />
+      )}
       <div class="post-foot">
         <div>filed under <a href={`/section/${section.id}/`}>{section.label}</a>{d.categories.length > 0 && <> · originally {d.categories.join(', ')}</>}</div>
         {d.tags.length > 0 && (
@@ -129,6 +136,7 @@ const blogPostingLd: Record<string, unknown> = {
         )}
       </div>
       <PostCta title={d.title} url={canonicalUrl} />
+      <RelatedPosts posts={relatedPosts} />
       <div id="comments" class="comments-zone">
         <ArchivedComments wpcomId={d.legacy?.wpcom_id} />
         <DiscordThread postId={post.id} threadId={d.discord_thread} />

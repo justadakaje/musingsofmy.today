@@ -5,6 +5,7 @@
 
 import { handleDiscordThread } from './discord.ts';
 import { handleNewsletterDispatch } from './dispatch.ts';
+import { handleLiveStatus } from './live.ts';
 import { handleSubscribe } from './subscribe.ts';
 import type { WorkerEnv } from './types.ts';
 
@@ -12,6 +13,10 @@ export default {
   async fetch(request: Request, env: WorkerEnv): Promise<Response> {
     const url = new URL(request.url);
     const { pathname } = url;
+
+    if (pathname === '/api/live') {
+      return handleLiveStatus(request, env);
+    }
 
     if (pathname === '/api/subscribe/dispatch') {
       return handleNewsletterDispatch(request, env);

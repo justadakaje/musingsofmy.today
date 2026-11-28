@@ -160,7 +160,7 @@ const serializedStatic = JSON.stringify(staticItems).replace(/</g, '\\u003c');
     function loadPagefind(): Promise<PagefindModule | null> {
       if (pfPromise) return pfPromise;
       const pfUrl = '/pagefind/pagefind.js';
-      pfPromise = (new Function('u', 'return import(u)')(pfUrl) as Promise<PagefindModule>).catch(() => {
+      pfPromise = (import(/* @vite-ignore */ pfUrl) as Promise<PagefindModule>).catch(() => {
         pfUnavailable = true;
         return null;
       });

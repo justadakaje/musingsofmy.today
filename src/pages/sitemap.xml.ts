@@ -15,6 +15,8 @@ export async function GET(context: APIContext) {
     { loc: '/archive/' },
     { loc: '/podcasts/' },
     { loc: '/subscribe/' },
+    { loc: '/now/' },
+    { loc: '/uses/' },
     ...pages.map((p) => ({ loc: `/${p.id}/`, lastmod: p.data.updated })),
     ...SECTIONS.map((s) => ({ loc: `/section/${s.id}/` })),
     ...posts.map((p) => ({ loc: postPath(p), lastmod: p.data.updated ?? p.data.date })),

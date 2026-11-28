@@ -54,11 +54,11 @@ function cloudflareRedirects() {
         await fs.writeFile(new URL('_redirects', dir), lines.join('\n') + '\n');
         const csp = [
           "default-src 'self'",
-          "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://challenges.cloudflare.com",
+          "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://challenges.cloudflare.com https://giscus.app",
           "style-src 'self' 'unsafe-inline'",
-          "img-src 'self' data: https://musingsofmytoday.wordpress.com https://media.musingsofmy.today https://*.ytimg.com https://i.scdn.co",
+          "img-src 'self' data: blob: https://musingsofmytoday.wordpress.com https://media.musingsofmy.today https://*.ytimg.com https://i.scdn.co https://avatars.githubusercontent.com",
           "font-src 'self' data:",
-          "media-src 'self' https://media.musingsofmy.today https://videos.files.wordpress.com",
+          "media-src 'self' blob: https://media.musingsofmy.today https://videos.files.wordpress.com",
           "connect-src 'self' https://cloudflareinsights.com https://giscus.app",
           "frame-src 'self' https://giscus.app https://challenges.cloudflare.com https://www.youtube.com https://www.youtube-nocookie.com https://open.spotify.com https://embed.podcasts.apple.com https://embed.music.apple.com https://videopress.com https://video.wordpress.com",
           "object-src 'none'",
