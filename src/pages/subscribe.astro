@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import SubscribeBox from '../components/SubscribeBox.astro';
-import { SHOWS, SHOW_IDS } from '../site';
+import { SECTIONS, SHOWS, SHOW_IDS } from '../site';
 ---
 <Base title="Subscribe" description="Follow Musings of My Today by RSS, email or podcast.">
   <PageHead eyebrow="// subscribe" title="Follow along" lede="Three ways, none of which need an account here." />
@@ -13,6 +13,12 @@ import { SHOWS, SHOW_IDS } from '../site';
         The feed is <a href="/rss.xml">musingsofmy.today/rss.xml</a>. The old WordPress address,
         <code>/feed/</code>, redirects there, so existing feed readers keep working without a change.
       </p>
+      <p>Or subscribe to a single section:</p>
+      <ul>
+        {SECTIONS.map((s) => (
+          <li><strong>{s.label}</strong>: <a href={`/section/${s.id}/rss.xml`}>/section/{s.id}/rss.xml</a> — {s.blurb}</li>
+        ))}
+      </ul>
       <h2 id="email">Email</h2>
       <p id="subscribe-status-banner" class="sub-status" role="status" hidden></p>
       <p>

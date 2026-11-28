@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
 import PostRow from '../../components/PostRow.astro';
 import { getPosts, type Post } from '../../lib/posts';
-import { SECTIONS, type Section } from '../../site';
+import { SECTIONS, SITE, type Section } from '../../site';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -19,6 +19,7 @@ interface Props {
 const { section, posts } = Astro.props;
 ---
 <Base title={section.label} description={section.blurb} nav="writing">
+  <link slot="head" rel="alternate" type="application/rss+xml" title={`${SITE.title} · ${section.label}`} href={`/section/${section.id}/rss.xml`} />
   <PageHead eyebrow="// section" title={section.label} lede={`${section.blurb} ${posts.length} post${posts.length === 1 ? '' : 's'}.`}>
     <nav class="lanes" aria-label="Sections">
       <a class="lane clip" href="/archive/">all</a>
@@ -26,7 +27,7 @@ const { section, posts } = Astro.props;
     </nav>
   </PageHead>
   <main class="wrap">
-    <div class="sec"><h2>// {posts.length} posts</h2><span class="rule"></span></div>
+    <div class="sec"><h2>// {posts.length} posts</h2><span class="rule"></span><a href={`/section/${section.id}/rss.xml`}>rss feed →</a></div>
     <div class="log">{posts.map((p) => <PostRow post={p} />)}</div>
     <p class="meta" style="margin-top:28px">Old WordPress category links ({section.categories.map((c) => c.name).join(', ')}) redirect here.</p>
   </main>
